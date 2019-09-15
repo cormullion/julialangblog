@@ -1,7 +1,7 @@
 @def published = "4 April 2019"
 @def title =  "DiffEqFlux.jl – Julia 的神經微分方程套件"
 @def authors ="Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit, 譯者：杜岳華（Yueh-Hua Tu）Dboy Liao (Yin-Chen Liao)"
-
+@def hascode = true
 
 
 在這篇文章中，我們將會展示在 Julia 中使用微分方程解算器（DiffEq solver）搭配神經網路有多麼簡單、有效而且穩定。
@@ -112,43 +112,43 @@ if you know the exact functional form that relates the input to the output.
 However, in many cases, such exact relations are not known *a priori*.
 So how do you do nonlinear modeling if you don't know the nonlinearity? -->
 
-其中一種解決方法是使用機器學習演算法。典型的機器學習處理的問題裡，會給定一些輸入資料 [[x]] 和你想預測的輸出 [[y]]。
-而由給定 [[x]] 產生預測值 [[y]] 就是一個機器學習模型（以下稱作 [[ML]]）。
-在訓練階段，我們想辦法調整 [[ML]] 的參數讓它得以產生更正確的預測值。
-接下來，我們即可用 [[ML]] 進行推論 (即針對事前沒見過的 [[x]] 值去產生相對應的 [[y]])。
-同時，這也不過是一個非線性轉換而已 [[y=ML(x)]]。
-但是 [[ML]] 有趣的地方在於他本身數學模型的形式可以非常基本但卻可以調整適應至各種資料。
+其中一種解決方法是使用機器學習演算法。典型的機器學習處理的問題裡，會給定一些輸入資料 x 和你想預測的輸出 y。
+而由給定 $x$ 產生預測值 $y$ 就是一個機器學習模型（以下稱作 $ML$）。
+在訓練階段，我們想辦法調整 $ML$ 的參數讓它得以產生更正確的預測值。
+接下來，我們即可用 $ML$ 進行推論 (即針對事前沒見過的 $x$ 值去產生相對應的 $y$)。
+同時，這也不過是一個非線性轉換而已 $y=ML(x)$。
+但是 $ML$ 有趣的地方在於他本身數學模型的形式可以非常基本但卻可以調整適應至各種資料。
 舉例來說，一個簡單的以 sigmoid 函數作為激活函數的神經網路模型（以設計矩陣的形式，design matrix），
 本質上來說就是簡單的矩陣運算複合帶入 sigmoid 函數裡。
-舉例來說，$[[ML(x)=σ(W3⋅σ(W2⋅σ(W1⋅x)))]]$ 即是一個簡單的三層神經網路模型，
-其中 [[W=(W1, W2, W3)]] 為可以被調整的模型參數。
-接下來即是選擇適當的 [[W]] 使得 $[[ML(x)=y]]$ 可以合理的逼近收集到的資料。
+舉例來說，$ML(x)=σ(W3⋅σ(W2⋅σ(W1⋅x)))$ 即是一個簡單的三層神經網路模型，
+其中 $W=(W1, W2, W3)$ 為可以被調整的模型參數。
+接下來即是選擇適當的 W 使得 $ML(x)=y$ 可以合理的逼近收集到的資料。
 相關機器學習理論已經保證了這是一個估計非線性系統的一個好方法。
-舉例來說，Universal Approximation Theorem 說明了只要有足夠的層數或參數（即夠大的 [[W]] 矩陣），
-[[ML(x)]] 可以逼近任何非線性函數 (在常見的限制條件下)。
+舉例來說，Universal Approximation Theorem 說明了只要有足夠的層數或參數（即夠大的 W 矩陣），
+ML(x) 可以逼近任何非線性函數 (在常見的限制條件下)。
 
 <!-- One way to address this is to use machine
-learning. In a typical machine learning problem, you are given some input [[x]] and
-you want to predict an output [[y]]. This generation of a prediction [[y]] from [[x]]
-is a machine learning model (let's call it [[ML]]).  During training, we attempt to
-adjust the parameters of [[ML]] so that it generates accurate predictions.  We
-can then use [[ML]] for inference (i.e., produce [[y]]s for novel inputs [[x]]).
-This is just a nonlinear transformation $[[y=ML(x)]]$.
-The reason [[ML]] is interesting is because its form is basic but adapts to the
+learning. In a typical machine learning problem, you are given some input x and
+you want to predict an output y. This generation of a prediction y from x
+is a machine learning model (let's call it ML).  During training, we attempt to
+adjust the parameters of ML so that it generates accurate predictions.  We
+can then use ML for inference (i.e., produce ys for novel inputs x).
+This is just a nonlinear transformation $y=ML(x)$.
+The reason ML is interesting is because its form is basic but adapts to the
 data itself. For example, a simple neural network (in design matrix form) with
 sigmoid activation functions is simply matrix multiplications followed
-by application of sigmoid functions. Specifically,  $[[ML(x)=\sigma(W_{3}\cdot\sigma(W_{2}\cdot\sigma(W_{1}\cdot x)))]]$ is a three-layer deep
-neural network, where $[[W=(W_1,W_2,W_3)]]$ are learnable parameters.
-You then choose [[W]] such that $[[ML(x)=y]]$ reasonably fits the function you wanted it to fit.
+by application of sigmoid functions. Specifically,  $ML(x)=\sigma(W_{3}\cdot\sigma(W_{2}\cdot\sigma(W_{1}\cdot x)))$ is a three-layer deep
+neural network, where $W=(W_1,W_2,W_3)$ are learnable parameters.
+You then choose W such that $ML(x)=y$ reasonably fits the function you wanted it to fit.
 The theory and practice of machine learning confirms that this is a good way to learn nonlinearities.
 For example, the Universal Approximation Theorem states that, for
-enough layers or enough parameters (i.e. sufficiently large $[[W_{i}]]$ matrices), [[ML(x)]]
+enough layers or enough parameters (i.e. sufficiently large $W_{i}$ matrices), ML(x)
 can approximate any nonlinear function sufficiently close (subject to common constraints). -->
 
 這太好了，它總是有解！然而有幾個必須注意的地方，主要在於這模型需直接從資料裡學習非線性轉換。
 但在大多數的狀況，我們並不知曉實際的非線性方程整體，但我們卻可以知道它的*結構細節*。
 舉例來說，這個非線性轉換可以是關於森林裡的兔子的數量，而我們可能知道兔子群體的出生率正比於其數量。
-因此，與其從無到有去學習兔子群體數量的非線性模型，我們或許希望能夠套用這個數量與出生率的已知*先驗（a priori）*關係，
+因此，與其從無到有去學習兔子群體數量的非線性模型，我們或許希望能夠套用這個數量與出生率的已知*先驗（a priori）關係，
 和一組參數來描寫它。對於我們的兔子群體模型來說，可以寫成
 
 <!-- So great, this always works! But it has some caveats, the main being
@@ -159,7 +159,7 @@ and we might know that their rate of births is dependent on the current populati
 Thus instead of starting from nothing, we may want to use this known _a priori_ relation and a set of parameters that defines it.
 For the rabbits, let's say that we want to learn -->
 
-$\text{rabbits(明日)} = \text{Model}(\text{rabbits(今日)}).$
+$$\text{rabbits(明日)} = \text{Model}(\text{rabbits(今日)}).$$
 
 在這個例子裡，我們得知群體出生率正比於群體數量這個先驗知識。
 而如果用數學的方式去描述這個關於兔子群體大小結構的假設，即是微分方程。
@@ -172,17 +172,17 @@ structural assumption is via a differential equation. Here, what we are saying
 is that the birth rate of the rabbit population at a given time point increases
 when we have more rabbits. The simplest way of encoding that is -->
 
-$\text{rabbits}'(t) = \alpha\cdot \text{rabbits}(t)$
+$$\text{rabbits}'(t) = \alpha\cdot \text{rabbits}(t)$$
 
-其中，[[α]] 是可以學習調整的參數。如果你還記得以前學過的微積分，
-這個方程的解即為成長率為 $[[\alpha]]$ 的指數成長函數:
+其中，$α$ 是可以學習調整的參數。如果你還記得以前學過的微積分，
+這個方程的解即為成長率為 $\alpha$ 的指數成長函數:
 
-<!-- where $[[\alpha]]$ is some learnable constant. If you know your calculus, the solution
-here is exponential growth from the starting point with a growth rate $[[\alpha]]$: -->
+<!-- where $\alpha$ is some learnable constant. If you know your calculus, the solution
+here is exponential growth from the starting point with a growth rate $\alpha$: -->
 
-$\text{rabbits}(t_\text{start})e^{(\alpha t)}$
+$$\text{rabbits}(t_\text{start})e^{(\alpha t)}$$
 
-其中 $[[rabbits(start)]]$ 為初始的兔子數量。但值得注意的是，其實我們並不需要知道這個微分方程的解
+其中 $\text{rabbits}(t_\text{start})$ 為初始的兔子數量。但值得注意的是，其實我們並不需要知道這個微分方程的解
 才能驗證以下想法：我們只需描寫模型的結構條件，數學即可幫助我們求解出這個解應該有的樣子。
 基於這個理由，使得微分方程成為許多科學領域的工具。例如物理學的基本定律明述了電荷的作用力 ([馬克士威方程組](https://en.wikipedia.org/wiki/Maxwell%27s_equations))。
 這些方程組對於物體如何改變是重要的方程組，因此這些方程組的解即是物體*將會*在哪裡的預測結果。
@@ -219,34 +219,36 @@ PK/PD modelling in systems pharmacology. -->
 
 神經微分方程只是眾多結合這兩個領域的方法之一。
 最簡單的解釋方法就是，並不是直接去學非線性轉換，我們希望去學到非線性轉換的結構。
-如此一來，不用去計算 $[[y=ML(x)]]$，我們將機器學習模型放在導數項上 $[[y'(x) = ML(x)]]$，然後我們解微分方程。
+如此一來，不用去計算 $y=ML(x)$，我們將機器學習模型放在導數項上 $y'(x) = ML(x)$，然後我們解微分方程。
 為什麼要這麼做？這是因為，一個動機就是這樣定義的模型，然後用最簡單、最容易出錯的方式，尤拉法（Euler method），
 解微分方程，你會得到跟[殘差神經網路（residual neural network）](https://arxiv.org/abs/1512.03385)等價的結果。
-尤拉法的工作原理是基於 $[[y'(x) = \frac{dy}{dx}]]$ 這個事實，因此，
+尤拉法的工作原理是基於 $y'(x) = \frac{dy}{dx}$ 這個事實，因此，
 
 <!-- The neural ordinary differential equation is one of many ways to put these two
 subjects together. The simplest way of explaining it is that, instead of
 learning the nonlinear transformation directly, we wish to learn the structures
-of the nonlinear transformation. Thus instead of doing $[[y=ML(x)]]$, we put the
-machine learning model on the derivative, $[[y'(x) = ML(x)]]$, and now solve the ODE.
+of the nonlinear transformation. Thus instead of doing $y=ML(x)$, we put the
+machine learning model on the derivative, $y'(x) = ML(x)$, and now solve the ODE.
 Why would you ever do this? Well, one motivation is that defining the model in this way
 and then solving the ODE using the simplest and most error prone method, the
 Euler method, what you get is equivalent to a [residual neural network](https://arxiv.org/abs/1512.03385).
-The way the Euler method works is based on the fact that $[[y'(x) = \frac{dy}{dx}]]$, thus -->
+The way the Euler method works is based on the fact that $y'(x) = \frac{dy}{dx}$, thus -->
 
-$\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$，
+$$\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$$
+
 則會導出
-$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i})。$
 
-<!-- $[[\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)]]$
+$$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i})。$$
+
+<!-- $\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$
 which implies that
-$[[y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i}).]] $-->
+$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i}). $-->
 
 這在結構上相似於 ResNet，最為成功的影像處理模型之一。
 Neural ODEs 論文的洞見就是，更加深、更加強大的類 ResNet 的模型可以有效地逼近類似於「無限深」，
 如同每一層趨近於零的模型。
 我們可以直接建構微分方程，不透過增加層數這種手段，隨後用特製的微分方程方法求解。
-數值微分方程方法是門可以追溯到第一台電腦出現時期的科學，而現代方法可以動態調整 step sizes $[[\Delta x]]$，
+數值微分方程方法是門可以追溯到第一台電腦出現時期的科學，而現代方法可以動態調整 step sizes $\Delta x$，
 以及使用高階逼近的方法來大幅減少實際需要的步數。並且事實證明，它實務上也運作得很好。
 
 <!-- This looks similar in structure to a ResNet, one of the most successful image
@@ -256,7 +258,7 @@ of "infinitely deep" model as each layer tends to zero. Rather than adding more
 layers, we can just model the differential equation directly and then solve it
 using a purpose-built ODE solver. Numerical ODE solvers are a science that goes
 all the way back to the first computers, and modern ones can adaptively choose
-step sizes $[[\Delta x]]$ and use high order approximations to dratically reduce the
+step sizes $\Delta x$ and use high order approximations to dratically reduce the
 number of actual steps required. And as it turns out, this works well in
 practice, too. -->
 
@@ -286,8 +288,8 @@ specify the parameters `p`. -->
 [Lotka-Volterra equations describe the dynamics of the population of rabbits and wolves](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations).
 They can be written as: -->
 
-$[[x^\prime = \alpha x + \beta x y]] $
-$[[y^\prime = -\gamma y + \gamma x y]] $
+$$x^\prime = \alpha x + \beta x y $$
+$$y^\prime = -\gamma y + \gamma x y $$
 
 進一步轉成 Julia 會像：
 
@@ -327,7 +329,7 @@ plot(sol)
 to be functions of the parameters (the elements of `p`). For example, we can define the `ODEProblem`: -->
 
 ```julia
-u0_f(p,t0) = [p[2],p[4]]
+u0_f(p,t0) = [p[2],p[4
 tspan_f(p) = (0.0,10*p[4])
 p = [1.5,1.0,3.0,1.0]
 prob = ODEProblem(lotka_volterra,u0_f,tspan_f,p)

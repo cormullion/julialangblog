@@ -1,21 +1,22 @@
 @def published = "2 May 2019"
 @def title ="Beyond machine learning pipelines with MLJ"
 @def authors ="Anthony Blaom, Diego Arenas, Franz Kiraly, Yiannis Simillides, Sebastian Vollmer"
+@def hascode = true
 
-
-~~~
 <!--
 - learning curves (from `examples/random_forest.jl`)
 - tuning plots (from `examples/two_parameter_plot.jl`)
 -->
+
+~~~
 <p float="left" align="middle">
-  <img src="/assets/images/blog/2019-05-02-MLJ/learningcurves.png" width="300" />
-  <img src="/assets/images/blog/2019-05-02-MLJ/heatmap.png" width="300" />
+  <img style="width:40%;padding:0;" src="/assets/images/blog/2019-05-02-MLJ/learningcurves.png"/>
+  <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/heatmap.png"/>
 </p>
 
 <p float="left" align="middle">
-  <img src="/assets/images/blog/2019-05-02-MLJ/wrapped_ridge.png" width="300" />
-  <img src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png" width="300" />
+  <img style="width:40%;padding:0;" src="/assets/images/blog/2019-05-02-MLJ/wrapped_ridge.png"/>
+  <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png"/>
 </p>
 ~~~
 
@@ -42,19 +43,18 @@ composition.
 
 &#9758; Video from [London Julia User Group meetup in March 2019](https://www.youtube.com/watch?v=CfHkjNmj1eE) (skip to [demo at 21'39](https://youtu.be/CfHkjNmj1eE?t=21m39s)) &nbsp;
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/CfHkjNmj1eE?start=1300" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+~~~
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CfHkjNmj1eE?start=1300" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></br>
+~~~
 
 &#9758;  The MLJ [tour](https://github.com/alan-turing-institute/MLJ.jl/blob/master/docs/src/tour.ipynb)
-&nbsp;
 
 &#9758; Building a [self-tuning random
   forest](https://github.com/alan-turing-institute/MLJ.jl/blob/master/examples/random_forest.ipynb)
-&nbsp;
 
 &#9758; An MLJ [docker image](https://github.com/ysimillides/mlj-docker) (including tour)
 
 &#9758; Implementing the MLJ interface for a [new model](https://alan-turing-institute.github.io/MLJ.jl/dev/adding_models_for_general_use/)
-&nbsp;
 
 &#9758; How to [contribute](https://github.com/alan-turing-institute/MLJ.jl/blob/master/CONTRIBUTE.md)
 

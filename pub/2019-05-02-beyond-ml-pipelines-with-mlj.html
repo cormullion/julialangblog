@@ -18,7 +18,9 @@
    <!-- Un-minified script so that can play a bit -->
 <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -57,18 +59,14 @@
 
 <div class="jd-content">
 
-<!--
-- learning curves (from `examples/random_forest.jl`)
-- tuning plots (from `examples/two_parameter_plot.jl`)
--->
 <p float="left" align="middle">
-  <img src="/assets/images/blog/2019-05-02-MLJ/learningcurves.png" width="300" />
-  <img src="/assets/images/blog/2019-05-02-MLJ/heatmap.png" width="300" />
+  <img style="width:40%;padding:0;" src="/assets/images/blog/2019-05-02-MLJ/learningcurves.png"/>
+  <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/heatmap.png"/>
 </p>
 
 <p float="left" align="middle">
-  <img src="/assets/images/blog/2019-05-02-MLJ/wrapped_ridge.png" width="300" />
-  <img src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png" width="300" />
+  <img style="width:40%;padding:0;" src="/assets/images/blog/2019-05-02-MLJ/wrapped_ridge.png"/>
+  <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png"/>
 </p>
 
 <h2><a id="introduction" href="#introduction">Introduction</a></h2> <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> is an open-source machine learning toolbox written in pure Julia. It provides a uniform interface for interacting with supervised and unsupervised learning models currently scattered in different Julia packages.</p>
@@ -77,11 +75,13 @@
 <p><strong>Quick links:</strong></p>
 &#9758; <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/frequently_asked_questions/">MLJ vs ScikitLearn.jl</a></p>
 &#9758; Video from <a href="https://www.youtube.com/watch?v&#61;CfHkjNmj1eE">London Julia User Group meetup in March 2019</a> &#40;skip to <a href="https://youtu.be/CfHkjNmj1eE?t&#61;21m39s">demo at 21&#39;39</a>&#41; &nbsp;
-<p>&lt;iframe width&#61;&quot;560&quot; height&#61;&quot;315&quot; src&#61;&quot;https://www.youtube.com/embed/CfHkjNmj1eE?start&#61;1300&quot; frameborder&#61;&quot;0&quot; allow&#61;&quot;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;</p>
-&#9758;  The MLJ <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/docs/src/tour.ipynb">tour</a> &nbsp;
-&#9758; Building a <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/examples/random_forest.ipynb">self-tuning random   forest</a> &nbsp;
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CfHkjNmj1eE?start=1300" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></br>
+
+&#9758;  The MLJ <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/docs/src/tour.ipynb">tour</a></p>
+&#9758; Building a <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/examples/random_forest.ipynb">self-tuning random   forest</a></p>
 &#9758; An MLJ <a href="https://github.com/ysimillides/mlj-docker">docker image</a> &#40;including tour&#41;</p>
-&#9758; Implementing the MLJ interface for a <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/adding_models_for_general_use/">new model</a> &nbsp;
+&#9758; Implementing the MLJ interface for a <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/adding_models_for_general_use/">new model</a></p>
 &#9758; How to <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/CONTRIBUTE.md">contribute</a></p>
 &#9758; Julia <a href="http://julialang.slack.com">Slack</a> channel: #mlj.</p>
 &#9758; Star&#39;ing us to show support for <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> would be greatly appreciated&#33;</p>
@@ -187,6 +187,10 @@ fit!(yhat, rows=1:1300)
 <script>renderMathInElement(document.body)</script>
 
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

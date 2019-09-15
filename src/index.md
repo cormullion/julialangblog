@@ -62,7 +62,7 @@ This is a mirror of the official Julia blog, a playground useful when developing
 
 [DiffEqFlux.jl – A Julia Library for Neural Differential Equations](/pub/2019-01-18-fluxdiffeq.html) 2019-01-18
 
-2018
+**2018**
 
 [Building a Language and Compiler for Machine Learning](/pub/2018-12-03-ml-language-compiler.html) 2018-12-03
 
@@ -100,7 +100,7 @@ This is a mirror of the official Julia blog, a playground useful when developing
 
 [Julia joins NumFOCUS in Google Summer of Code 2018](/pub/2018-02-21-gsoc2018-numfocus.html) 2018-02-21
 
-2017
+**2017**
 
 [機器學習以及程式語言](/pub/2017-12-25-ml&pl-zh_tw.html) 2017-12-25
 
@@ -148,7 +148,7 @@ This is a mirror of the official Julia blog, a playground useful when developing
 
 [More Dots: Syntactic Loop Fusion in Julia](/pub/2017-01-21-moredots.html) 2017-01-21
 
-2016
+**2016**
 
 [Julia 0.5 Highlights](/pub/2016-10-11-julia-0.5-highlights.html) 2016-10-11
 
@@ -178,7 +178,7 @@ This is a mirror of the official Julia blog, a playground useful when developing
 
 [Julia IDE work in Atom](/pub/2016-01-07-atom-work.html) 2016-01-07
 
-2015
+**2015**
 
 [JSoC 2015 project: DataStreams.jl](/pub/2015-10-25-datastreams.html) 2015-10-25
 
@@ -206,7 +206,7 @@ This is a mirror of the official Julia blog, a playground useful when developing
 
 [JuliaCon 2014 Opening Session Presentations](/pub/2014-08-09-juliacon-opening-session.html) 2014-08-09
 
-2013
+**2013**
 
 [Fast Numeric Computation in Julia](/pub/2013-09-04-fast-numeric.html) 2013-09-04
 

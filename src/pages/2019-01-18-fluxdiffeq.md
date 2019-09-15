@@ -1,6 +1,7 @@
 @def published = "18 January 2019"
 @def title = "DiffEqFlux.jl – A Julia Library for Neural Differential Equations"
 @def authors = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""
+@def hascode = true
 
 Translations: ~~~ <a href="https://julialang.org/blog/2019/04/fluxdiffeq-zh_tw">Traditional Chinese</a>~~~
 
@@ -92,7 +93,7 @@ and we might know that their rate of births is dependent on the current populati
 Thus instead of starting from nothing, we may want to use this known _a priori_ relation and a set of parameters that defines it.
 For the rabbits, let's say that we want to learn
 
-$\text{rabbits tomorrow} = \text{Model}(\text{rabbits today}).$
+$$\text{rabbits tomorrow} = \text{Model}(\text{rabbits today}).$$
 
 In this case, we have prior knowledge of the rate of births being dependent on
 the current population. The way to mathematically state this
@@ -100,7 +101,7 @@ structural assumption is via a differential equation. Here, what we are saying
 is that the birth rate of the rabbit population at a given time point increases
 when we have more rabbits. The simplest way of encoding that is
 
-$\text{rabbits}'(t) = \alpha\cdot \text{rabbits}(t)$
+$$\text{rabbits}'(t) = \alpha\cdot \text{rabbits}(t)$$
 
 where $\alpha$ is some learnable constant. If you know your calculus, the solution
 here is exponential growth from the starting point with a growth rate $\alpha$:
@@ -138,11 +139,11 @@ and then solving the ODE using the simplest and most error prone method, the
 Euler method, what you get is equivalent to a [residual neural network](https://arxiv.org/abs/1512.03385).
 The way the Euler method works is based on the fact that $y'(x) = \frac{dy}{dx}$, thus
 
-$\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$
+$$\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$$
 
 which implies that
 
-$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i}).$
+$$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i}).$$
 
 This looks similar in structure to a ResNet, one of the most successful image
 processing models. The insight of the the Neural ODEs paper was that
@@ -170,8 +171,8 @@ For example, the
 [Lotka-Volterra equations describe the dynamics of the population of rabbits and wolves](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations).
 They can be written as:
 
-$x^\prime = \alpha x + \beta x y$
-$y^\prime = -\delta y + \gamma x y$
+$$x^\prime = \alpha x + \beta x y$$
+$$y^\prime = -\delta y + \gamma x y$$
 
 and encoded in Julia like:
 

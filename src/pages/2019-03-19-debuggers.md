@@ -1,6 +1,7 @@
 @def published = "19 March 2019"
 @def title = "A Julia interpreter and debugger"
 @def authors = """<a href="https://github.com/timholy">Tim Holy</a>, <a href="https://github.com/KristofferC">Kristoffer Carlsson</a>, <a href="https://github.com/pfitzseb">Sebastian Pfitzner</a>, <a href="https://github.com/Keno">Keno Fischer</a>"""
+@def hascode = true
 
 The authors are pleased to announce the release of a fully-featured
 debugger for Julia. You can now easily debug and introspect Julia code
