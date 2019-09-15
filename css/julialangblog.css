@@ -18,8 +18,14 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-.language-bash-script  {
-    background: #ffe;
+p code {
+    color: #e83e8c;
+    font-size: 90%;
+}
+
+.language-bash-script < pre {
+
+    border-left: 4px solid #008800;
 }
 
 body {

@@ -2,6 +2,8 @@
 @def title = "Julia’s Release Process"
 @def authors = "Stefan Karpinski (Julia Computing)"
 
+# Julia's release process
+
 People involved in the day-to-day development of a project tend to become so familiar with its rhythm and process that they internalize it and it feels like everyone must just _know_ how each stage unfolds. Of course, from the outside looking in it's not so obvious. So I thought it might be helpful to the broader Julia community—and maybe even for other programming language communities—to actually write down Julia's release process, including the details of:
 
 - what kinds of releases there are
@@ -12,7 +14,7 @@ People involved in the day-to-day development of a project tend to become so fam
 
 This information is collected from a small set of posts on [discourse](https://discourse.julialang.org/) and conversations on [Slack](https://slackinvite.julialang.org/), so the information exists "out there", but this blog post brings it all together in a single place. We may turn this post into an official document if it's well received. Julia follows "semantic versioning" as specified in the [SemVer](https://semver.org/) standard, but SemVer leaves a fair amount of room for interpretation and says very little about process, so this post aims to fill in those details.
 
-# Patch releases
+## Patch releases
 
 - Patch releases increment the last digit of Julia's version number, e.g. going from `1.2.3` to `1.2.4`.
 
@@ -24,7 +26,7 @@ This information is collected from a small set of posts on [discourse](https://d
 
 - About five days before a patch release is supposed to go out, we will run PkgEval on the backports branch; if it looks good, we'll merge it and then freeze the release branch and announce on discourse that the release branch is ready for testing. If everything looks good after five days, the new patch version will be tagged.
 
-# Minor releases
+## Minor releases
 
 - Minor releases increment the middle digit of Julia's version number, e.g. going from `1.2.3` to `1.3.0`.
 
@@ -34,13 +36,13 @@ This information is collected from a small set of posts on [discourse](https://d
 
 - Minor releases are branched every **four months**, which means that there are three minor releases per year. The rate is controlled by doing timed features freezes for minor releases: every four months, we announce on discourse that the current development version is about to feature freeze (with about two weeks notice); then on the freeze date, we branch a `release-1.3` branch for the minor release and after that no more feature development is allowed on that branch, from which the release will be tagged. More on that process below.
 
-# Major releases
+## Major releases
 
 - Major releases can, according to SemVer, break anything at all. However, realistically we know how we want to write Julia code and that's not going to fundamentally change: most user-level code will stay the same in Julia `2.0` even though we're "allowed" to break things. Breaking things for no reason is not what this is about.
 
 - What a major release does allow, however, is fixing obvious API design mistakes—the kinds of bad, confusing APIs that everyone will be glad to be rid of. It also allows changing low-level things that will break some libraries, but which need to be broken in order to make really fundamental improvements to the language.
 
-# Long term support
+## Long term support
 
 Some users are happy to upgrade Julia all the time to get the hottest new features as soon as they're ready. Some people are even happy to build Julia's master branch every day and try out new features before they may be fully baked. Others don't want to upgrade Julia more than every year or so, if that often. Ideally, we'd love to provide bug fixes forever for every minor release of Julia we've ever made. If we had infinite resources, we'd backport every bug fix to every old release branch it applies to. Realistically, however, we don't really have the capacity to maintain more than a few active backport branches at a time. So we've decided on a compromise of having at most four active branches going at any time:
 
@@ -56,7 +58,7 @@ A new unstable release branch is created every time there's a feature freeze, it
 
 The big question is when to change long term support branches. The `release-1.0` branch is the only LTS branch we've ever had. It's gotten four patch releases and has become very stable and widely supported. At some point, however, it will become increasingly rare for bug fix patches made on `master` to apply to `release-1.0` and fewer and fewer current versions of packages will support `1.0.x` versions of Julia—they'll be using too many new features. When that happens—and the right time is a judgment call—we'll have to pick a new long term support branch and declare the `1.0.x` series unmaintained. The new LTS branch might end up being `1.4` or `1.8`—or maybe it won't happen until `2.0`. We're not sure, but it will happen at some point. Fortunately, even this does not force people using Julia `1.0.x` to upgrade: they can keep using the last `1.0.x` version and packages that are compatible with it. At that point it will be the most stable, thoroughly tested, patched version of Julia in existence, so it will be safe to keep using indefinitely if one doesn't need newer features. Moreover, if some person or organization has a vested interest in keeping any particular older release branch going and is willing to contribute the work to make that happen (cherry-picking backports and kicking off PkgEval runs to make sure things aren't broken), we're more than happy to accept that help and make more releases. So you can always get longer term support by doing the maintenance yourself (or paying for someone to do it). For now, `release-1.0` continues to be an excellent, stable LTS branch and there will be plenty of warning before we change LTS branches.
 
-# Risk Tolerance Personas
+## Risk Tolerance Personas
 
 Different users of a language have very different levels of risk tolerance. Some users are perfectly ok with discovering and reporting the occasional bug and helping figure out why some packages aren't working with a new release. Others only want to use a version of the language that has had a many rounds of bug fixes and for which every package has been working flawlessly for a long time already. And there's a spectrum of risk tolerances between these cases. Most users will fall into one of the following four categories of risk tolerance:
 
@@ -75,7 +77,7 @@ These profiles make it a bit clearer that the main criteria for the long-term-su
 
 If these two criteria are satisfied by a new LTS branch, then users in the "low risk tolerance" category will be able to upgrade to the new LTS branch since they can already be confident that it will be reliable and well-debugged and that packages they need will be ready to use (although they may need to upgrade their versions of packages). We’ll have to learn from experience how many releases the LTS branch should lag the stable release branch by.
 
-# The release process
+## The release process
 
 We've discussed what various kinds of releases mean and what types of changes can go into them, but we haven't talked much about how a release actually gets made. In this section I'll outline how we go from working on features on the `master` branch to tagging a final version of the release and after that making patches of that release. I will use the word “bugs” to refer to both bugs in the usual sense of incorrect code but also “performance bugs”—i.e. code that runs slower than we consider acceptable. In Julia, performance is a vital property and we often consider performance issues to be blocking bugs. The following is an outline of the sequence of events surrounding a `x.y.0` minor release:
 
@@ -116,7 +118,7 @@ As a result of overlapping development and stabilization, if release candidate p
 
 One point to note, since people are sometimes confused by this: feature freeze only affects new functionality—bugs can be fixed at any point on any branch. It is never too late for a bug fix. The only time where a bug fix will not go on a release branch is if it is no longer maintained. Even then, if someone else wants to fix a bug and go through the process of making a new release, we will gladly help, we just won’t do it ourselves.
 
-# Why pre-release versions?
+## Why pre-release versions?
 
 Even though they are a standard part of release process, it may not be obvious to people what the purpose of alpha and beta releases is or what a "release candidate" is. Why do these "pre-release" versions exist? I know this was not fully apparent to me until I started to try to actually make software releases. These releases are all about communication with the people who depend on your software. They act as a signal saying "please test this now". Each one requests a different kind of feedback from different kinds of users:
 
@@ -128,13 +130,13 @@ Even though they are a standard part of release process, it may not be obvious t
 
 So when you see an alpha or a beta or a release candidate, try it! Let us know if it doesn't work for you in any way. Doing that will help make sure that the final release is as smooth and high quality _for you_ as possible.
 
-# Release maintenance
+## Release maintenance
 
 On the subject of bug fixes: the life of a release is not done when `x.y.0` is tagged—there are any number of `x.y.z` bug-fix releases that may be tagged as well. How does this process work? Bugs are fixed on all active branches, but they are generally fixed on the most current branch which has the bug and then "backported" to all earlier branches which are still active. So, for example, if a bug exists on `master`, it will be fixed on `master` and the pull request (PR) that fixes it is labeled on GitHub with `backport x.y` for all active branches which also have the bug. Since the current active branches are `master`, `release-1.3` (unstable), `release-1.2` (stable) and `release-1.0` (LTS), the fix for a bug on master would be labeled with `backport 1.3`, `backport 1.2` and `backport 1.0`. The change is then cherry-picked (using `git cherry-pick -x`) onto each of these branches for the next patch release of that branch. If the fix applies cleanly and passes tests, that's great. If not, then additional manual work may be required to make a fix that applies to a branch.
 
 Once a release branch has accumulated enough bug fixes and enough time has passed, a new bug fix release `x.y.z` is made. This is announced on discourse about five days in advance so that people can test the new version. We do not currently have the bandwidth or resources to make binaries or release candidates for patch releases—there are just too many of them. So in order to test you need to either use a nightly build or build Julia from source. Helping to automate and streamline the patch release process is another high-impact area for anyone looking to get involved in the project.
 
-# Conclusion
+## Conclusion
 
 Hopefully you've found this overview of Julia's release process and policies illuminating. The very best thing we can hope for is that some of you reading this will find it interesting and want to get involved and that by demystifying things, we've helped make becoming a Julia developer a little more accessible.
 

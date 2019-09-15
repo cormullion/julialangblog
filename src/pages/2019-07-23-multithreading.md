@@ -1,6 +1,7 @@
 @def published = "23 July 2019"
 @def title = "Announcing composable multi-threaded parallelism in Julia"
 @def authors = "Jeff Bezanson (Julia Computing), Jameson Nash (Julia Computing), Kiran Pamnany (Intel)"
+@def hascode = true
 
 Software performance depends more and more on exploiting multiple processor cores.
 The [free lunch][] from Moore's Law is still over.
@@ -117,7 +118,7 @@ But first, let's take it for a spin.
 To use Julia with multiple threads, set the `JULIA_NUM_THREADS` environment
 variable:
 
-```bash-script
+```bash
 $ JULIA_NUM_THREADS=4 ./julia
 ```
 
@@ -129,7 +130,7 @@ in that environment.
 The `Threads` submodule of `Base` houses most of the thread-specific functionality,
 such as querying the number of threads and the ID of the current thread:
 
-```julia
+```julia-repl
 julia> Threads.nthreads()
 4
 
@@ -139,7 +140,7 @@ julia> Threads.threadid()
 
 Existing `@threads for` uses will still work, and now I/O is fully supported:
 
-```julia
+```julia-repl
 julia> Threads.@threads for i = 1:10
            println("i = $i on thread $(Threads.threadid())")
        end
@@ -225,7 +226,7 @@ to make sure we're comparing apples to apples — `sort!` actually uses
 quicksort by default for sorting numbers, which tends to be faster for random data.
 Let's time the code under `JULIA_NUM_THREADS=2`:
 
-```julia
+```julia-repl
 julia> a = rand(20000000);
 
 julia> b = copy(a); @time sort!(b, alg = MergeSort);   # single-threaded
@@ -246,7 +247,7 @@ two threads.
 The laptop we ran this on has four hyperthreads, and it is especially amazing
 that performance continues to improve if we add a third thread:
 
-```julia
+```julia-repl
 julia> b = copy(a); @time psort!(b);
   1.511860 seconds (3.77 k allocations: 686.935 MiB, 6.45% gc time)
 ```
@@ -259,7 +260,7 @@ parallelism feel.
 Let's try a different machine with slightly lower single thread performance,
 but more CPU cores:
 
-```bash-script
+```bash
 $ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.949212 seconds (3.58 k allocations: 686.932 MiB, 4.70% gc time)
   1.861985 seconds (3.77 k allocations: 686.935 MiB, 9.32% gc time)
@@ -367,7 +368,7 @@ and resize it as needed:
 After these minor modifications, let's check performance on our large
 machine:
 
-```bash-script
+```bash
 $ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.813555 seconds (3.08 k allocations: 153.448 MiB, 1.44% gc time)
   1.731088 seconds (3.28 k allocations: 192.195 MiB, 0.37% gc time)

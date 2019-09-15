@@ -1,9 +1,7 @@
 @def published = "30 July 2019"
-layout: post
-title:  Julia将支持可组合的多线程并行机制
-author: Jeff Bezanson (Julia Computing), Jameson Nash (Julia Computing), Kiran Pamnany (Intel)
-
-
+@def title =  "Julia将支持可组合的多线程并行机制"
+@def author = "Jeff Bezanson (Julia Computing), Jameson Nash (Julia Computing), Kiran Pamnany (Intel)"
+@def hascode = true
 
 摩尔定律带来的[免费性能提升（free lunch）][free lunch]几近结束，
 软件性能越来越依赖于利用多个处理器核心。
@@ -13,7 +11,7 @@ Julia社区一直以对计算性能的关注而出名。
 今天，我们很高兴地宣布这一方向的重要进展。
 我们将发布一个全新的Julia线程接口：
 一个受到[Cilk][]，[Intel Threading Building Blocks][] (TBB) 以及 [Go][]等启发的
-通用任务并行（general task parallelism）机制。 
+通用任务并行（general task parallelism）机制。
 任务并行现在已在 v1.3.0-alpha 版本中提供，Julia 1.3.0 的早期预览版预计将在几个月内发布。
 您可以在下载页面上找到具有此功能的二进制文件，或者从源代码[主分支][master branch]构建。
 
@@ -22,7 +20,7 @@ Julia社区一直以对计算性能的关注而出名。
 动态调度程序会处理所有决策和细节。
 下面是一个并行代码示例，现在您可以在 Julia 中如此编写:
 
-```
+```julia
 import Base.Threads.@spawn
 
 function fib(n::Int)
@@ -93,7 +91,7 @@ Yichao Yu在垃圾回收器和线程局部存储性能方面投入了一些特�
 
 要在 Julia 中使用多线程，请设置环境变量：JULIA_NUM_THREADS
 
-```
+```bash
 $ JULIA_NUM_THREADS=4 ./julia
 ```
 
@@ -101,7 +99,7 @@ $ JULIA_NUM_THREADS=4 ./julia
 
 `Base` 的子模块 `Threads` 包含大多数线程特定的功能，例如查询线程数和当前线程的ID：
 
-```
+```julia-repl
 julia> Threads.nthreads()
 4
 
@@ -111,7 +109,7 @@ julia> Threads.threadid()
 
 现有的 `@threads for` 仍然可用，而且现在完全支持 I/O：
 
-```
+```julia-repl
 julia> Threads.@threads for i = 1:10
            println("i = $i on thread $(Threads.threadid())")
        end
@@ -132,7 +130,7 @@ i = 6 on thread 2
 这两部分可以独立排序，自然带来了并行的可能。
 下面是代码:
 
-```
+```julia
 import Base.Threads.@spawn
 
 # sort the elements of `v` in place, from indices `lo` to `hi` inclusive
@@ -149,7 +147,7 @@ function psort!(v, lo::Int=1, hi::Int=length(v))
 
     half = @spawn psort!(v, lo, mid)  # 排序前半部分的任务将会与
     psort!(v, mid+1, hi)              # 当前排序后半部分的代码并行运行
-                                      # 
+                                      #
     wait(half)                        # 等待前半部分完成
 
     temp = v[lo:mid]                  # 用于合并的空间
@@ -188,7 +186,7 @@ Julia 的 `Distributed` 标准库在相当长的一段时间内也导出了宏`@
 对于随机数据来说，这往往更快。
 让我们在 `JULIA_NUM_THREADS=2` 的前提下运行代码并计时：
 
-```
+```julia-repl
 julia> a = rand(20000000);
 
 julia> b = copy(a); @time sort!(b, alg = MergeSort);   # 单线程
@@ -208,7 +206,7 @@ julia> b = copy(a); @time psort!(b);
 我们运行此代码的笔记本有四个超线程，如果我们添加第三个线程，
 性能将继续提高，这尤其令人惊异:
 
-```
+```julia-repl
 julia> b = copy(a); @time psort!(b);
   1.511860 seconds (3.77 k allocations: 686.935 MiB, 6.45% gc time)
 ```
@@ -217,7 +215,7 @@ julia> b = copy(a); @time psort!(b);
 
 让我们尝试一台单线程性能稍低但 CPU 核心较多的机器:
 
-```
+```bash
 $ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.949212 seconds (3.58 k allocations: 686.932 MiB, 4.70% gc time)
   1.861985 seconds (3.77 k allocations: 686.935 MiB, 9.32% gc time)
@@ -250,7 +248,7 @@ $ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
 这需要是一个独立的类型，因为使用线程安全的条件变量需要获取锁。
 在 Julia 中，锁与条件捆绑在一起，因此 `lock` 只能在条件本身上调用：
 
-```
+```julia
 lock(cond::Threads.Condition)
 try
     while !ready
@@ -280,20 +278,20 @@ Julia 代码一般倾向于纯函数式（没有副作用或可变性），或�
 首先，我们修改函数签名以接受预分配的缓冲区，
 当调用方不提供预分配缓冲区时使用默认参数自动分配空间:
 
-```
+```julia
 function psort!(v, lo::Int=1, hi::Int=length(v), temps=[similar(v, 0) for i = 1:Threads.nthreads()])
 ```
 
 我们只需要为每个线程分配一个初始空数组。接下来，我们将修改递归调用以重用这一空间:
 
-```
+```julia
     half = @spawn psort!(v, lo, mid, temps)
     psort!(v, mid+1, hi, temps)
 ```
 
 最后，使用为当前线程预留的数组（而不是分配一个新的）并根据需要调整其大小:
 
-```
+```julia
     temp = temps[Threads.threadid()]
     length(temp) < m-lo+1 && resize!(temp, m-lo+1)
     copyto!(temp, 1, v, lo, m-lo+1)
@@ -301,7 +299,7 @@ function psort!(v, lo::Int=1, hi::Int=length(v), temps=[similar(v, 0) for i = 1:
 
 经过这些细微的修改后，让我们测试一下程序在大规模机器上的性能:
 
-```
+```bash
 $ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.813555 seconds (3.08 k allocations: 153.448 MiB, 1.44% gc time)
   1.731088 seconds (3.28 k allocations: 192.195 MiB, 0.37% gc time)

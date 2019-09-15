@@ -18,7 +18,9 @@
    <!-- Un-minified script so that can play a bit -->
 <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -78,18 +80,18 @@ end
 <p>So the next logical step was to merge the <code>Task</code> and threading systems, and &quot;simply&quot; &#40;cue laughter&#41; allow <code>Task</code>s to run simultaneously on a pool of threads. We had many early discussions with Arch Robison &#40;then of Intel&#41; and concluded that this was the best model for our language. After version 0.5 &#40;around 2016&#41;, Kiran started experimenting with a new parallel task scheduler <a href="https://github.com/kpamnany/partr"title="partr">partr</a> based on the idea of depth-first scheduling. He sold all of us on it with some nice animated slides, and it also didn&#39;t hurt that he was willing to do some of the work. The plan was to first develop partr as a standalone C library so it could be tested and benchmarked on its own and then integrate it with the Julia runtime.</p>
 <p>After Kiran completed the standalone version of partr, a few of us &#40;the authors of this post, as well as Keno Fischer and Intel&#39;s Anton Malakhov&#41; embarked on a series of face-to-face work sessions to figure out how to do the integration. The Julia runtime brings many extra features, such as garbage collection and event-based I/O, so this was not entirely straightforward. Somewhat disappointingly, though not unusually for a complex software project, it took much longer than expected — nearly two years — to get the new system working reliably. A later section of this post will explain some of the internals and difficulties involved for the curious. But first, let&#39;s take it for a spin.</p>
 <h2><a id="how_to_use_it" href="#how_to_use_it">How to use it</a></h2> To use Julia with multiple threads, set the <code>JULIA_NUM_THREADS</code> environment variable:</p>
-<pre><code class="language-bash-script">$ JULIA_NUM_THREADS=4 ./julia
+<pre><code class="language-bash">$ JULIA_NUM_THREADS=4 ./julia
 </code></pre>
 <p>The <a href="https://junolab.org/"title="Juno IDE">Juno IDE</a> automatically sets the number of threads based on the number of available processor cores, and also provides a graphical interface for changing the number of threads, so setting the variable manually is not necessary in that environment.</p>
 <p>The <code>Threads</code> submodule of <code>Base</code> houses most of the thread-specific functionality, such as querying the number of threads and the ID of the current thread:</p>
-<pre><code class="language-julia">julia> Threads.nthreads()
+<pre><code class="language-julia-repl">julia> Threads.nthreads()
 4
 
 julia> Threads.threadid()
 1
 </code></pre>
 <p>Existing <code>@threads for</code> uses will still work, and now I/O is fully supported:</p>
-<pre><code class="language-julia">julia> Threads.@threads for i = 1:10
+<pre><code class="language-julia-repl">julia> Threads.@threads for i = 1:10
            println("i = $i on thread $(Threads.threadid())")
        end
 i = 1 on thread 1
@@ -147,7 +149,7 @@ end
 </code></pre>
 <p>This is just a standard mergesort implementation, similar to the one in Julia&#39;s <code>Base</code> library, with only the tiny addition of the <code>@spawn</code> construct on one of the recursive calls. Julia&#39;s <code>Distributed</code> standard library has also exported a <code>@spawn</code> macro for quite a while, but we plan to discontinue it in favor of the new threaded meaning &#40;though it will still be available in 1.x versions, for backwards compatibility&#41;. This way of expressing parallelism is much more useful in shared memory, and &quot;spawn&quot; is a pretty standard term in task parallel APIs &#40;used in Cilk as well as <a href="https://software.intel.com/en-us/node/506304"title="TBB">TBB</a>, for example&#41;.</p>
 <code>wait</code> simply waits for the specified task to finish. The code works by modifying its input, so we don&#39;t need the task&#39;s return value. Indicating that a return value is not needed is the only difference with the <code>fetch</code> call used in the earlier <code>fib</code> example. Note that we explicitly request <code>MergeSort</code> when calling Julia&#39;s standard <code>sort&#33;</code>, to make sure we&#39;re comparing apples to apples — <code>sort&#33;</code> actually uses quicksort by default for sorting numbers, which tends to be faster for random data. Let&#39;s time the code under <code>JULIA_NUM_THREADS&#61;2</code>:</p>
-<pre><code class="language-julia">julia> a = rand(20000000);
+<pre><code class="language-julia-repl">julia> a = rand(20000000);
 
 julia> b = copy(a); @time sort!(b, alg = MergeSort);   # single-threaded
   2.589243 seconds (11 allocations: 76.294 MiB, 0.17% gc time)
@@ -162,12 +164,12 @@ julia> b = copy(a); @time psort!(b);
   1.741141 seconds (3.78 k allocations: 686.935 MiB, 4.16% gc time)
 </code></pre>
 <p>While the run times are bit variable, we see a definite speedup from using two threads. The laptop we ran this on has four hyperthreads, and it is especially amazing that performance continues to improve if we add a third thread:</p>
-<pre><code class="language-julia">julia> b = copy(a); @time psort!(b);
+<pre><code class="language-julia-repl">julia> b = copy(a); @time psort!(b);
   1.511860 seconds (3.77 k allocations: 686.935 MiB, 6.45% gc time)
 </code></pre>
 <p>Thinking about this two-way decomposition algorithm running on three threads can make your head hurt a little&#33; In our view, this helps underscore how &quot;automatic&quot; this interface makes parallelism feel.</p>
 <p>Let&#39;s try a different machine with slightly lower single thread performance, but more CPU cores:</p>
-<pre><code class="language-bash-script">$ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
+<pre><code class="language-bash">$ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.949212 seconds (3.58 k allocations: 686.932 MiB, 4.70% gc time)
   1.861985 seconds (3.77 k allocations: 686.935 MiB, 9.32% gc time)
   1.112285 seconds (3.78 k allocations: 686.935 MiB, 4.45% gc time)
@@ -203,7 +205,7 @@ end
     copyto!(temp, 1, v, lo, m-lo+1)
 </code></pre>
 <p>After these minor modifications, let&#39;s check performance on our large machine:</p>
-<pre><code class="language-bash-script">$ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
+<pre><code class="language-bash">$ for n in 1 2 4 8 16; do    JULIA_NUM_THREADS=$n ./julia psort.jl; done
   2.813555 seconds (3.08 k allocations: 153.448 MiB, 1.44% gc time)
   1.731088 seconds (3.28 k allocations: 192.195 MiB, 0.37% gc time)
   1.028344 seconds (3.30 k allocations: 221.997 MiB, 0.37% gc time)
@@ -270,6 +272,10 @@ end
 <script>renderMathInElement(document.body)</script>
 
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>
