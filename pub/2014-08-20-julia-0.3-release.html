@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <base href="/pub/">
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.png">
+
+   <title>Julia 0.3 Release Announcement</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>Julia 0.3 Release Announcement</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 20 August 2014 </span>
+      |
+      
+       <span style="font-weight: bold;">The Julia Community </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+<p>We are pleased to announce the release of Julia 0.3.0.  This release contains numerous improvements across the board from standard library changes to pure performance enhancements as well as an expanded ecosystem of packages as compared to the 0.2 releases. A summary of changes is available in <a href="https://github.com/JuliaLang/julia/blob/release-0.3/NEWS.md">NEWS.md</a> found in our main repository, and binaries are now available on our <a href="http://julialang.org/downloads/">main download page</a>.</p>
+<p>A few notable changes:</p>
+<ul>
+<li><p>System image caching for fast startup.</p>
+</li>
+<li><p>A pure-Julia REPL was introduced, replacing readline and providing expanded functionality and customization.</p>
+</li>
+<li><p>The <code>workspace&#40;&#41;</code> function was added, to clear the environment without restarting.</p>
+</li>
+<li><p>Tab substitution of Latex character codes is now supported in the REPL, IJulia, and several editor environments.</p>
+</li>
+<li><p>Unicode improvements including expanded operators and NFC normalization.</p>
+</li>
+<li><p>Multi-process shared memory support. &#40;multi-threading support is in progress and has been a major summer focus&#41;</p>
+</li>
+<li><p>Improved hashing and floating point range support.</p>
+</li>
+<li><p>Better tuple performance.</p>
+</li>
+</ul>
+<p>We are now transitioning into the 0.4 development cycle and encourage users to use the 0.3.X line if they need a stable julia environment.  Many breaking changes will be entering the environment over the course of the next few months. To reflect this period of change, nightly builds will use the versioning scheme 0.4.0-dev.  Once the major breaking changes have been merged and the development cycle progresses towards a stable release, the version will shift to 0.4.0-pre, at which point package authors and users should start to think about transitioning the codebases over to the 0.4.X line.</p>
+<p>The release-0.3 branch of the codebase will remain open for bugfixes during this time. We encourage users facing problems to open issues on our GitHub tracker, or email the julia-users mailing list.</p>
+<p>Happy coding.</p>
+<hr />
+<p><strong>News</strong></p>
+<p><a href="http://www.juliabloggers.com/">JuliaBloggers</a> and the <a href="http://pkg.julialang.org/">searchable package listing</a> were recently introduced.</p>
+<p>The first ever <a href="http://www.juliacon.org">JuliaCon</a> was held in Chicago in June, 2014. Several session recordings are available, and the others will be released soon:</p>
+<ul>
+<li><p><a href="http://julialang.org/blog/2014/08/juliacon-opening-session/">Opening session</a></p>
+</li>
+<li><p><a href="http://julialang.org/blog/2014/08/juliacon-opt-session/">Optimization session</a></p>
+</li>
+</ul>
+<p>The Julia community participated in <a href="http://julialang.org/gsoc/2014/">Google Summer of Code 2014</a>. Wrap-up blog posts will be coming soon from the participants:</p>
+<ul>
+<li><p><a href="https://github.com/SimonDanisch">Simon Danisch</a> &#40;<a href="https://randomphantasies.wordpress.com/">3D visualization</a>&#41;</p>
+</li>
+<li><p><a href="https://github.com/shashi">Shashi Gowda</a> &#40;<a href="https://github.com/shashi/Interact.jl">Interactive Widgets for IJulia</a> and <a href="http://shashi.github.io/React.jl">React.jl</a>&#41;</p>
+</li>
+<li><p><a href="https://github.com/one-more-minute">Mike Innes</a> &#40;<a href="https://github.com/one-more-minute/Juno-LT">Julia &#43; LightTable</a>&#41;</p>
+</li>
+</ul>
+<p><strong>Topical highlights</strong></p>
+<p>&quot;<a href="http://jiahao.github.io/julia-blog/2014/06/09/the-colors-of-chemistry.html">The colors of chemistry</a>&quot; notebook by <a href="http://github.com/jiahao">Jiahao Chen</a> demonstrating IJulia, Gadfly, dimensional computation with SIUnits, and more.</p>
+<p><a href="http://juliastats.github.io/">JuliaStats</a> - statistical and machine learning community.</p>
+<p><a href="http://www.juliaopt.org/">JuliaOpt</a> - optimization community.</p>
+<p><a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a> - notebook interface built on IPython.</p>
+<p><a href="https://github.com/timholy/Images.jl">Images</a> - image processing and i/o library.</p>
+<p><a href="http://gadflyjl.org/">Gadfly</a> - Grammar of Graphics-inspired statistical plotting.</p>
+<p><a href="https://github.com/nolta/Winston.jl">Winston</a> - 2D plotting.</p>
+
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Last modified: September 14, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>

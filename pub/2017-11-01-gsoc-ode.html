@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <base href="/pub/">
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.png">
+
+   <title>GSoC 2017: Native Julia second order ODE and BVP solvers</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>GSoC 2017: Native Julia second order ODE and BVP solvers</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 1 November 2017 </span>
+      |
+      
+       <span style="font-weight: bold;">Yingbo Ma, Chris Rackauckas, Jiahao Chen, Christoph Ortner </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+processEscapes: true,
+processEnvironments: true
+},
+// Center justify equations in code and markdown cells. Elsewhere
+// we use CSS to left justify single line equations in code cells.
+displayAlign: 'center',
+"HTML-CSS": {
+styles: {'.MathJax_Display': {"margin": 0}},
+linebreaks: { automatic: true }
+}
+});
+</script>
+
+<p>My original GSoC project was about implementing native Julia solvers for solving boundary value problems &#40;BVPs&#41; that were determined from second order ordinary differential equations &#40;ODEs&#41;. I started down the BVP path, built a shooting method to solve BVPs from initial value problems &#40;IVPs&#41;, and then built the beginning of the mono-implicit Runge-Kutta &#40;MIRK&#41; method. Those solvers are in the <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl">BoundaryValueDiffEq.jl</a> repository. Instead of trying to jump directly to the end point, and talk about how to do every detail in MIRK, I went to explore how those details naturally arise in second order ODEs. I implemented many solvers for dynamical IVPs. Although I didn’t fully complete my original goal by the end of GSoC, I am almost there.</p>
+<h2><a id="symplecticity" href="#symplecticity">Symplecticity</a></h2> First, there the idea of symplecticity, because the Labatto &#40;Lobatto IIIA-IIIB&#41; MIRK tableaux are actually symplectic. Basically, symplecticity is another way to say that first integrals &#40;energy, angular momentum and etc.&#41; are conserved, so symplectic integrators are specialized for solving second order ODEs that are raised from dynamic systems which require energy conservation. It is easier to see what symplecticity actually entails on dynamical IVPs. For instance, the Hamiltonian \(\mathcal{H}\) and the angular momentum \(L\) for the Kepler problem are</p>
+\[
+\mathcal{H} = \frac{1}{2}(\dot{q}^2_1+\dot{q}^2_2)-\frac{1}{\sqrt{q^2_1+q^2_2}},\quad
+L = q_1\dot{q_2} - \dot{q_1}q_2.
+\]
+<p>We can solve the Hamilton’s equations</p>
+\[
+\dot{\boldsymbol{p}}=-\frac{\partial{\mathcal{H}}}{\partial{\boldsymbol{q}}}\quad ,\quad \dot{\boldsymbol{q}}=\frac{\partial{\mathcal{H}}}{\partial{\boldsymbol{p}}}
+\]
+<p>to get the solution of the Kepler problem.</p>
+<pre><code class="language-julia">using OrdinaryDiffEq, ForwardDiff, LinearAlgebra
+H(q,p) = norm(p)^2/2 - inv(norm(q))
+L(q,p) = q[1]*p[2] - p[1]*q[2]
+pdot(dp,p,q,params,t) = ForwardDiff.gradient!(dp, q->-H(q, p), q)
+qdot(dq,p,q,params,t) = ForwardDiff.gradient!(dq, p-> H(q, p), p)
+</code></pre>
+<p>Then, we solve this problem by <code>Ruth3</code> symplectic integrator with appropriate initial conditions.</p>
+<pre><code class="language-julia">initial_position = [.4, 0]
+initial_velocity = [0., 2.]
+tspan = (0,20.)
+prob = DynamicalODEProblem(pdot, qdot, initial_velocity, initial_position, tspan)
+sol = solve(prob, Ruth3(), dt=1//50);
+</code></pre>
+<p>Finally, we analyze the solution by computing the first integrals and plotting them.</p>
+<p><img src="/assets/images/blog/2017-11-01-gsoc-ode/symplectic_ruth3.svg" alt="first integrals" /></p>
+<p>Note that symplectic integrator doesn&#39;t mean that it has exact conservation. The solutions of a symplectic integrator are on a symplectic manifold, but don&#39;t necessarily conserve the Hamiltonian &#40;energy&#41;. The energy can have fluctuations in a &#40;quasi-&#41;periodic manner, so that the first integrals have small variations. In the above case, the energy varies at most <code>6e-6</code>, and it tends to come back. The variations also decrease as <code>dt</code> is smaller. The angular momentum is conserved perfectly. More details are in this <a href="http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb">notebook</a>.</p>
+<h2><a id="adaptivity_and_dense_output" href="#adaptivity_and_dense_output">Adaptivity and Dense Output</a></h2> Again, I explored adaptivity and dense output in the IVP world. I implemented several adaptive Runge-Kutta-Nyström &#40;RKN&#41; solvers. The MIRK adaptivity and RKN adaptivity share one common theme, which is error estimation, and MIRK does it by using dense output. Calculating Poincaré section is an example of a practical usage of the dense output. When plotting the Poincaré section, we usually need to use <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a> or <a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html#ContinuousCallbacks-1"><code>ContinuousCallback</code></a>, and both of them need dense output in order to do well. Dense output is essentially a continuous solution of a ODE. <code>saveat</code> uses dense output to evaluate values at the specified time, so the ODE integration can still be adaptive &#40;the integrator doesn&#39;t need to hit the exact <code>saveat</code> point&#41;. <code>ContinuousCallback</code> performs root-finding on the dense output to find when does an event occur. Thus, high order dense output is important for calculating accurate <code>saveat</code> and <code>ContinuousCallback</code>. Here are two examples of plotting Poincaré section.</p>
+<h4><a id="duffing_oscillator" href="#duffing_oscillator">Duffing oscillator</a></h4> <a href="http://www.scholarpedia.org/article/Duffing_oscillator">Duffing oscillator</a> is a forced oscillator that has nonlinear elasticity, which has the form</p>
+\[
+\ddot{x} + \delta \dot{x} + \beta x + \alpha x^3 = \gamma \cos(\omega t).
+\]
+<p>First, we need to write the ordinary differential equation with parameters.</p>
+<pre><code class="language-julia">using OrdinaryDiffEq, Plots; pgfplots()
+function draw_duffing(Γ, α, β, δ, ω)
+  function driven_pendulum(dv,v,x,p,t)
+    Γ, α, β, δ, ω = p
+    dv[1] = Γ*cos(ω*t) - β*x[1]^3 - α*x[1] - δ*v[1]
+  end
+  prob = SecondOrderODEProblem(driven_pendulum, [1.5], [0.], (5000., 35000.), (Γ, α, β, δ, ω))
+  sol = solve(prob, DPRKN6(), saveat=2pi/prob.p[end])
+  y1, x1 = [map(x->x[i], sol.u[end-2000:end]) for i in 1:2]
+  scatter(x1, y1, markersize=0.8, leg=false, title="Poincaré surface of duffing oscillator", xlabel="\$x\$", ylabel="\$\\dot{x}\$", color=:black, xlims=(0.5,1.7))
+end
+draw_duffing(8, 1, 5, 0.02, 0.5)
+</code></pre>
+<p>Then, we need to get the solution at \(\omega t \mod 2\pi=0\) to plot the Poincaré section, and we can achieve this by using <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a>.</p>
+<p><img src="/assets/images/blog/2017-11-01-gsoc-ode/duffing_poincare_0.svg" alt="duffing Poincaré section" /></p>
+<h4><a id="driven_pendulum" href="#driven_pendulum">Driven pendulum</a></h4> Drive pendulum is a periodically forced pendulum, which has the form of</p>
+\[
+\ddot{\theta} + \sin(\theta) = f_0 cos(\omega t)
+\]
+<p>Again, we do the same thing as what we did above.</p>
+<pre><code class="language-julia">using OrdinaryDiffEq, Plots; pgfplots()
+function draw_driven_pendulum(f₀,q,ω)
+  function driven_pendulum(dv,v,x,p,t)
+    f₀, q, ω, = p
+    dv[1] = -sin(x[1]) - q*v[1] + f₀*cos(ω*t)
+  end
+  prob = SecondOrderODEProblem(driven_pendulum, [0.], [2pi], (0.,50000.), (f₀,q,ω))
+  sol = solve(prob, DPRKN6(), saveat=2pi/prob.p[end])
+  y1, x1 = [map(x->x[i], sol.u[500:end]) for i in 1:2]
+  scatter(x1.%pi, y1, markersize=0.8, leg=false, title="Poincaré surface of driven pendulum", xlabel="\$\\theta\$", ylabel="\$\\dot{\\theta}\$", color=:black)
+end
+draw_driven_pendulum(1.12456789, 0.23456789, 0.7425755501794571)
+</code></pre>
+<p><img src="/assets/images/blog/2017-11-01-gsoc-ode/driven_poincare_0.svg" alt="driven pendulum Poincaré section" /></p>
+<h2><a id="boundary_value_problem" href="#boundary_value_problem">Boundary Value Problem</a></h2> The MIRK solver in <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl"><code>BoundaryValueDiffEq</code></a> doesn&#39;t have adaptivity and dense output yet, but with all the things that I have learned from IVPs, most of the pieces have been implemented or understood and so we can expect this to be completed in the near future. Here is an example of using the <code>BoundaryValueDiffEq</code> package. In this example, we will solve the problem</p>
+\[
+\ddot{\theta}+\frac{g}{L}\theta=0,\quad \theta(\frac{\pi}{4})=-\frac{\pi}{2},\quad \dot{\theta}(\frac{\pi}{2})=\frac{\pi}{2}.
+\]
+<pre><code class="language-julia">using BoundaryValueDiffEq
+const g = 9.81
+L = 1.0
+tspan = (0.0,pi/2)
+function simplependulum(du,u,p,t)
+    θ  = u[1]
+    dθ = u[2]
+    du[1] = dθ
+    du[2] = -(g/L)*sin(θ)
+end
+function bc1(residual, u, p, t)
+    residual[1] = u[end÷2][1] + pi/2 # the solution at the middle of the time span should be -pi/2
+    residual[2] = u[end][1] - pi/2 # the solution at the end of the time span should be pi/2
+end
+bvp1 = BVProblem(simplependulum, bc1, [pi/2,pi/2], tspan)
+sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)
+</code></pre>
+<p><img src="/assets/images/blog/2017-11-01-gsoc-ode/bvp.svg" alt="bvp" /></p>
+<p>More details can be found in <a href="http://docs.juliadiffeq.org/latest/tutorials/bvp_example.html">here</a>.</p>
+<h2><a id="acknowledgements" href="#acknowledgements">Acknowledgements</a></h2> I would like to thank all my mentors Chris Rackauckas, Jiahao Chen and Christoph Ortner for their responsiveness and kind guidance. Especially my mentor Rackauckas, he can answer my questions in five minutes after I asked on Slack. I would also like to thank Julia community for managing GSoC project and JuliaCon 2017.
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Last modified: September 13, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>

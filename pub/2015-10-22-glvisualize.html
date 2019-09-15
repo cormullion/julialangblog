@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <base href="/pub/">
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.png">
+
+   <title>JSoC 2015 project: Interactive Visualizations in Julia with GLVisualize.jl</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>JSoC 2015 project: Interactive Visualizations in Julia with GLVisualize.jl</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 22 October 2015 </span>
+      |
+      
+       <span style="font-weight: bold;"><a href="https://github.com/SimonDanisch">Simon Danisch</a> </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+<p>GLVisualize is an interactive visualization library that supports 2D and 3D rendering as well as building of basic GUIs. It&#39;s written entirely in Julia and OpenGL. I&#39;m really glad that I could continue working on this project with the support of Julia Summer of Code.</p>
+<p>During <strong>JSoC</strong>, my main focus was on advancing <a href="https://github.com/JuliaGL/GLVisualize.jl">GLVisualize</a>, but also improving the surrounding infrastructure like <a href="https://github.com/JuliaGeometry/GeometryTypes.jl">GeometryTypes</a>, <a href="https://github.com/JuliaIO/FileIO.jl">FileIO</a>, <a href="https://github.com/JuliaIO/ImageMagick.jl">ImageMagick</a>, <a href="https://github.com/JuliaIO/MeshIO.jl">MeshIO</a> and <a href="https://github.com/SimonDanisch/FixedSizeArrays.jl">FixedSizeArrays</a>. All recorded gifs in this blog post suffer from lossy compression. You can click on most of them to see the code that produced them.</p>
+<p>One of the most interesting parts of <strong>GLVisualize</strong> is, that it&#39;s combining GUIs and visualizations, instead of relying on a 3rd party library like <strong>QT</strong> for GUIs. This has many advantages and disadvantages. The main advantage is, that interactive visualization share a lot of infrastructure with GUI libraries. By combining these two, new features are possible, e.g. text editing of labels in 3D space, or making elements of a visualization work like a button. These features should end up being pretty snappy, since <strong>GLVisualize</strong> was created with <a href="http://randomfantasies.com/2015/05/glvisualize-benchmark/">high performance</a> in mind.</p>
+<p>Obviously, the biggest downside is, that it is really hard to reach the maturity and feature completeness from e.g. <strong>QT</strong>.</p>
+<p>So to really get the best of both worlds a lot of work is needed.</p>
+<h2><a id="current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc" href="#current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc">Current status of GLVisualize, and what I&#39;ve been doing during <strong>JSoC</strong></a></h2> A surprisingly large amount of time went into improving <strong>FileIO</strong> together with <a href="https://github.com/timholy">Tim Holy</a>. The selling point of <strong>FileIO</strong> is, that one can just load a file into <strong>FileIO</strong> and it will recognize the format and load the respective IO library. This makes it a lot easier to start working with files in Julia, since no prior knowledge about formats and loading files in Julia is needed. This is perfect for a visualization library, since most visualization start from data, that comes in some format, which might even be unknown initially.</p>
+<p>Since all files are loaded with the same function, it becomes much easier to implement functionality like drag and drop of any file supported by FileIO. To give you an example, the implementation of the drag and drop feature in <strong>GLVisualize</strong> only needs a <a href="https://gist.github.com/SimonDanisch/e0a8a2cbc3106ce6c123#file-dragndrop-jl">few lines of code</a> thanks to FileIO:</p>
+<p><a href=" https://gist.github.com/SimonDanisch/e0a8a2cbc3106ce6c123#file-dragndrop-jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/dragndrop2.gif?raw&#61;true" alt="drag and drop" /></a></p>
+<p>Another feature I&#39;ve been working on is better 2D support. I&#39;ve implemented different anti-aliased marker, text rendering and line types. Apart from the image markers, they all use the <a href="http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf">distance field technique</a>, to achieve view independent anti-aliasing. Here are a few examples:</p>
+<p><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/lines.png?raw&#61;true" alt="lines" /> <a href=" https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/marker.jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/markers.gif?raw&#61;true" alt="markers" /></a></p>
+<p>In the last example all the markers move together. This is actually one of the core feature of <strong>GLVisualize</strong>. The markers share the same memory for the positions on the GPU without any overhead. Each marker then just has a different offset to that shared position. This is easily achieved in <strong>GLVisualize</strong>, since all visualization methods are defined on the GPU objects. This also works for GPU objects which come from some simulation calculated on the GPU.</p>
+<p>During <strong>JSoC</strong>, I also implemented sliders and line editing widgets for GLVisualize. One can use them to add interactivity to parameters of a visualization:</p>
+<p><a href=" https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/color_volume.jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/volume_color.gif?raw&#61;true" alt="line_edit" /></a> <a href=" https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/arbitrary_surf.jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/arbitrary_surf.gif?raw&#61;true" alt="arbitrary_surf" /></a></p>
+<p>I have also worked with <a href="https://github.com/dpsanders">David P. Sanders</a> to visualize his <a href="https://github.com/dpsanders/BilliardModels.jl">billiard model</a>, which demonstrates the particle system and a new camera type.</p>
+<p><a href=" https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/billard.jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/billiard.gif?raw&#61;true" alt="billiard" /></a></p>
+<p>The particle system can use any mesh primitive. To make it easy to load and create meshes, <a href="https://github.com/sjkelly">Steve Kelly</a> and I rewrote the <a href="https://github.com/JuliaGeometry/Meshes.jl">Meshes</a> package to include more features and have a better separation of mesh IO and manipulation. The IO is now in <strong>MeshIO</strong>, which supports the <strong>FileIO</strong> interface. The mesh types are in <strong>GeometryTypes</strong> and meshing algorithms are in different packages in the <a href="https://github.com/JuliaGeometry">JuliaGeometry</a> org.</p>
+<p>In this example one can see, that there are also some GUI widgets to interact with the camera. The small rectangles in the corner are for switching between orthographic and perspective projection. The cube can be used to center the camera on a particular side. These kind of widgets are easy to implement in <strong>GLVisualize</strong>, as it is build for GUIs and interactivity from the beginning. Better camera controls are a big usability win, and I will put more time into improving these even further.</p>
+<p>I recorded one last demo to give you some more ideas of what <strong>GLVisualize</strong> is currently capable of:</p>
+<p><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/interactivity.gif?raw&#61;true" alt="interactivity" /></p>
+<p>The demo shows different kind of animations, 3D text editing and pop ups that are all relatively easy to include in any visualization created with <strong>GLVisualize</strong>.</p>
+<p>All of this looks promising, but there is still a lot of work needed&#33; First of all, there is still no tagged version of <strong>GLVisualize</strong> that will just install via Julia&#39;s package manager. This is because <a href="https://github.com/JuliaLang/Reactive.jl">Reactive.jl</a> and <a href="https://github.com/timholy/Images.jl">Images.jl</a> are currently not tagged on a version that works with <strong>GLVisualize</strong>.</p>
+<p>On the other side, the API is not that thought out yet. It is planned to use more ideas from <a href="https://github.com/shashi/Escher.jl">Escher.jl</a> and <a href="https://github.com/dcjones/Compose.jl">Compose.jl</a> to improve the API. The goal is to fully support the Compose interface at some point. Like that, <strong>GLVisualize</strong> can be used as a backend for <a href="https://github.com/dcjones/Gadfly.jl">Gadfly</a>. This will make <strong>Gadfly</strong> much fitter for large, animated data sets. In the next weeks, I will need to work on tutorials, documentations and handling edge cases better.</p>
+<p>Big thanks go to the Julia team and everyone involved to make this possible&#33;</p>
+
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Last modified: September 14, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
