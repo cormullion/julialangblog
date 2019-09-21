@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017: Native Julia second order ODE and BVP solvers</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 1 November 2017 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Yingbo Ma, Chris Rackauckas, Jiahao Chen, Christoph Ortner </span> 
   </h3>
 
@@ -78,7 +80,8 @@ linebreaks: { automatic: true }
 </script>
 
 <p>My original GSoC project was about implementing native Julia solvers for solving boundary value problems &#40;BVPs&#41; that were determined from second order ordinary differential equations &#40;ODEs&#41;. I started down the BVP path, built a shooting method to solve BVPs from initial value problems &#40;IVPs&#41;, and then built the beginning of the mono-implicit Runge-Kutta &#40;MIRK&#41; method. Those solvers are in the <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl">BoundaryValueDiffEq.jl</a> repository. Instead of trying to jump directly to the end point, and talk about how to do every detail in MIRK, I went to explore how those details naturally arise in second order ODEs. I implemented many solvers for dynamical IVPs. Although I didn’t fully complete my original goal by the end of GSoC, I am almost there.</p>
-<h2><a id="symplecticity" href="#symplecticity">Symplecticity</a></h2> First, there the idea of symplecticity, because the Labatto &#40;Lobatto IIIA-IIIB&#41; MIRK tableaux are actually symplectic. Basically, symplecticity is another way to say that first integrals &#40;energy, angular momentum and etc.&#41; are conserved, so symplectic integrators are specialized for solving second order ODEs that are raised from dynamic systems which require energy conservation. It is easier to see what symplecticity actually entails on dynamical IVPs. For instance, the Hamiltonian \(\mathcal{H}\) and the angular momentum \(L\) for the Kepler problem are</p>
+<h2 id="symplecticity"><a href="/pub/2017-11-01-gsoc-ode.html#symplecticity">Symplecticity</a></h2>
+<p>First, there the idea of symplecticity, because the Labatto &#40;Lobatto IIIA-IIIB&#41; MIRK tableaux are actually symplectic. Basically, symplecticity is another way to say that first integrals &#40;energy, angular momentum and etc.&#41; are conserved, so symplectic integrators are specialized for solving second order ODEs that are raised from dynamic systems which require energy conservation. It is easier to see what symplecticity actually entails on dynamical IVPs. For instance, the Hamiltonian \(\mathcal{H}\) and the angular momentum \(L\) for the Kepler problem are</p>
 \[
 \mathcal{H} = \frac{1}{2}(\dot{q}^2_1+\dot{q}^2_2)-\frac{1}{\sqrt{q^2_1+q^2_2}},\quad
 L = q_1\dot{q_2} - \dot{q_1}q_2.
@@ -104,8 +107,10 @@ sol = solve(prob, Ruth3(), dt=1//50);
 <p>Finally, we analyze the solution by computing the first integrals and plotting them.</p>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/symplectic_ruth3.svg" alt="first integrals" /></p>
 <p>Note that symplectic integrator doesn&#39;t mean that it has exact conservation. The solutions of a symplectic integrator are on a symplectic manifold, but don&#39;t necessarily conserve the Hamiltonian &#40;energy&#41;. The energy can have fluctuations in a &#40;quasi-&#41;periodic manner, so that the first integrals have small variations. In the above case, the energy varies at most <code>6e-6</code>, and it tends to come back. The variations also decrease as <code>dt</code> is smaller. The angular momentum is conserved perfectly. More details are in this <a href="http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb">notebook</a>.</p>
-<h2><a id="adaptivity_and_dense_output" href="#adaptivity_and_dense_output">Adaptivity and Dense Output</a></h2> Again, I explored adaptivity and dense output in the IVP world. I implemented several adaptive Runge-Kutta-Nyström &#40;RKN&#41; solvers. The MIRK adaptivity and RKN adaptivity share one common theme, which is error estimation, and MIRK does it by using dense output. Calculating Poincaré section is an example of a practical usage of the dense output. When plotting the Poincaré section, we usually need to use <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a> or <a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html#ContinuousCallbacks-1"><code>ContinuousCallback</code></a>, and both of them need dense output in order to do well. Dense output is essentially a continuous solution of a ODE. <code>saveat</code> uses dense output to evaluate values at the specified time, so the ODE integration can still be adaptive &#40;the integrator doesn&#39;t need to hit the exact <code>saveat</code> point&#41;. <code>ContinuousCallback</code> performs root-finding on the dense output to find when does an event occur. Thus, high order dense output is important for calculating accurate <code>saveat</code> and <code>ContinuousCallback</code>. Here are two examples of plotting Poincaré section.</p>
-<h4><a id="duffing_oscillator" href="#duffing_oscillator">Duffing oscillator</a></h4> <a href="http://www.scholarpedia.org/article/Duffing_oscillator">Duffing oscillator</a> is a forced oscillator that has nonlinear elasticity, which has the form</p>
+<h2 id="adaptivity_and_dense_output"><a href="/pub/2017-11-01-gsoc-ode.html#adaptivity_and_dense_output">Adaptivity and Dense Output</a></h2>
+<p>Again, I explored adaptivity and dense output in the IVP world. I implemented several adaptive Runge-Kutta-Nyström &#40;RKN&#41; solvers. The MIRK adaptivity and RKN adaptivity share one common theme, which is error estimation, and MIRK does it by using dense output. Calculating Poincaré section is an example of a practical usage of the dense output. When plotting the Poincaré section, we usually need to use <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a> or <a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html#ContinuousCallbacks-1"><code>ContinuousCallback</code></a>, and both of them need dense output in order to do well. Dense output is essentially a continuous solution of a ODE. <code>saveat</code> uses dense output to evaluate values at the specified time, so the ODE integration can still be adaptive &#40;the integrator doesn&#39;t need to hit the exact <code>saveat</code> point&#41;. <code>ContinuousCallback</code> performs root-finding on the dense output to find when does an event occur. Thus, high order dense output is important for calculating accurate <code>saveat</code> and <code>ContinuousCallback</code>. Here are two examples of plotting Poincaré section.</p>
+<h4 id="duffing_oscillator"><a href="/pub/2017-11-01-gsoc-ode.html#duffing_oscillator">Duffing oscillator</a></h4>
+<p><a href="http://www.scholarpedia.org/article/Duffing_oscillator">Duffing oscillator</a> is a forced oscillator that has nonlinear elasticity, which has the form</p>
 \[
 \ddot{x} + \delta \dot{x} + \beta x + \alpha x^3 = \gamma \cos(\omega t).
 \]
@@ -125,7 +130,8 @@ draw_duffing(8, 1, 5, 0.02, 0.5)
 </code></pre>
 <p>Then, we need to get the solution at \(\omega t \mod 2\pi=0\) to plot the Poincaré section, and we can achieve this by using <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a>.</p>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/duffing_poincare_0.svg" alt="duffing Poincaré section" /></p>
-<h4><a id="driven_pendulum" href="#driven_pendulum">Driven pendulum</a></h4> Drive pendulum is a periodically forced pendulum, which has the form of</p>
+<h4 id="driven_pendulum"><a href="/pub/2017-11-01-gsoc-ode.html#driven_pendulum">Driven pendulum</a></h4>
+<p>Drive pendulum is a periodically forced pendulum, which has the form of</p>
 \[
 \ddot{\theta} + \sin(\theta) = f_0 cos(\omega t)
 \]
@@ -144,7 +150,8 @@ end
 draw_driven_pendulum(1.12456789, 0.23456789, 0.7425755501794571)
 </code></pre>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/driven_poincare_0.svg" alt="driven pendulum Poincaré section" /></p>
-<h2><a id="boundary_value_problem" href="#boundary_value_problem">Boundary Value Problem</a></h2> The MIRK solver in <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl"><code>BoundaryValueDiffEq</code></a> doesn&#39;t have adaptivity and dense output yet, but with all the things that I have learned from IVPs, most of the pieces have been implemented or understood and so we can expect this to be completed in the near future. Here is an example of using the <code>BoundaryValueDiffEq</code> package. In this example, we will solve the problem</p>
+<h2 id="boundary_value_problem"><a href="/pub/2017-11-01-gsoc-ode.html#boundary_value_problem">Boundary Value Problem</a></h2>
+<p>The MIRK solver in <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl"><code>BoundaryValueDiffEq</code></a> doesn&#39;t have adaptivity and dense output yet, but with all the things that I have learned from IVPs, most of the pieces have been implemented or understood and so we can expect this to be completed in the near future. Here is an example of using the <code>BoundaryValueDiffEq</code> package. In this example, we will solve the problem</p>
 \[
 \ddot{\theta}+\frac{g}{L}\theta=0,\quad \theta(\frac{\pi}{4})=-\frac{\pi}{2},\quad \dot{\theta}(\frac{\pi}{2})=\frac{\pi}{2}.
 \]
@@ -167,7 +174,8 @@ sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)
 </code></pre>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/bvp.svg" alt="bvp" /></p>
 <p>More details can be found in <a href="http://docs.juliadiffeq.org/latest/tutorials/bvp_example.html">here</a>.</p>
-<h2><a id="acknowledgements" href="#acknowledgements">Acknowledgements</a></h2> I would like to thank all my mentors Chris Rackauckas, Jiahao Chen and Christoph Ortner for their responsiveness and kind guidance. Especially my mentor Rackauckas, he can answer my questions in five minutes after I asked on Slack. I would also like to thank Julia community for managing GSoC project and JuliaCon 2017.
+<h2 id="acknowledgements"><a href="/pub/2017-11-01-gsoc-ode.html#acknowledgements">Acknowledgements</a></h2>
+<p>I would like to thank all my mentors Chris Rackauckas, Jiahao Chen and Christoph Ortner for their responsiveness and kind guidance. Especially my mentor Rackauckas, he can answer my questions in five minutes after I asked on Slack. I would also like to thank Julia community for managing GSoC project and JuliaCon 2017.
 <div class="page-foot">
   <div class="copyright">
     &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.

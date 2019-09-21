@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   {{isdef title}} <title>{{fill title}}</title>  {{end}}
 </head>
@@ -46,6 +46,8 @@
       {{isdef published}} <span style="font-weight: lighter;"> {{fill published}} </span>
       |
       {{end}}
+      {{isdef author}} <span style="font-weight: bold;">{{fill author}} </span> {{end}}
+      <!-- assumption that only one of the two is defined -->
       {{isdef authors}} <span style="font-weight: bold;">{{fill authors}} </span> {{end}}
   </h3>
 

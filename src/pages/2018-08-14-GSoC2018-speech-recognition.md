@@ -1,7 +1,7 @@
 @def published = "14 August 2018"
 @def title = "GSoC 2018 and Speech Recognition for the Flux Model Zoo: The Conclusion"
 @def authors = """<a href="https://github.com/maetshju">Matthew C. Kelley</a>"""
-
+@def hascode = true
 
 
 ~~~
@@ -13,6 +13,8 @@
 Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn't have it any other way. I am thankful to the Julia community, and especially my mentor [@MikeInnes](https://github.com/mikeinnes), for supporting me through this. I've learned a lot and become even more familiar with neural nets than I was before, and I learned how to do basic GPU programming, which will be incredibly useful for my academic career.
 
 The rest of this blog post will summarize my project and the work I've done over the whole summer, remark on what work remains to be done, and conclude with a brief tutorial of how to run the code I've written to try it out for yourself.
+
+\toc
 
 # Have you ever wanted your computer to understand speech?
 
@@ -34,12 +36,11 @@ The real trial was getting the CTC loss to run correctly and efficiently. I at f
 
 As it would turn out, there was a slight error in my implementation that stemmed from Baidu's warp-ctc library itself. As I did when I wrote a [blog post about this error](https://maetshju.github.io/update5.html), I do not know whether it is actually an error in the context of the rest of Baidu's code. However, after fixing the error, I saw the loss decrease significantly in my code. Specifically, there was a section of code that evaluated to
 
-~~~<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x3B2;</mi><mo>(</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>)</mo><mo>=</mo><msubsup><mi>y</mi><mrow><mi>l</mi><msub><mo>'</mo><mi>u</mi></msub></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msubsup><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mi>u</mi></mrow><mrow><mi>g</mi><mo>(</mo><mi>u</mi><mo>)</mo></mrow></munderover><mi>&#x3B2;</mi><mo>(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>)</mo><mo>&#x200A;</mo><mo>,</mo></math>~~~
+$$ \beta(t, u) = y_{l'_{u}}^{t+1}\sum_{i=u}^{g(u)}\beta(t+1,i) $$ <!--_-->
 
 when it should have evaluated to
 
-~~~<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x3B2;</mi><mo>(</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>)</mo><mo>=</mo><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mi>u</mi></mrow><mrow><mi>g</mi><mo>(</mo><mi>u</mi><mo>)</mo></mrow></munderover><mi>&#x3B2;</mi><mo>(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>)</mo><msubsup><mi>y</mi><mrow><mi>l</mi><msub><mo>'</mo><mi>i</mi></msub></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msubsup><mo>&#x200A;</mo><mo>.</mo></math>
-~~~
+$$ \beta(t, u) = \sum_{i=u}^{g(u)}\beta(t+1,i)y_{l'_{i}}^{t+1} $$ <!--_-->
 
 More information on this is available in [my previous post on it](https://maetshju.github.io/update5.html). Making this change caused the network to finally output label predictions for each time step of data. The labels don't necessarily always make sense, but it is at least making predictions.
 
@@ -47,20 +48,20 @@ And this is where the speech recognition system is sitting right now. The networ
 
 **Textual transcription**
 
-```
-> The reasons for this dive seemed foolish now.
+```plain
+The reasons for this dive seemed foolish now.
 ```
 
 **Target sequence of phones**
 
-```
-> h# dh ix r iy z ax n z f axr dh ih s dcl d ay v s iy m dcl d f uw l ix sh epi n aw h#
+```plain
+h# dh ix r iy z ax n z f axr dh ih s dcl d ay v s iy m dcl d f uw l ix sh epi n aw h#
 ```
 
 **Predicted sequence of phones**
 
-```
-> h# pau w iy bcl r iy ux z bcl b iy bcl b uw z ay n pcl p z iy n dcl d v w iy er h#
+```plain
+h# pau w iy bcl r iy ux z bcl b iy bcl b uw z ay n pcl p z iy n dcl d v w iy er h#
 ```
 
 The phone error rate for this prediction compared to the target was approximately 84%. This model is obviously not ready to be added to the model zoo, as it is not performing well.
@@ -83,8 +84,8 @@ The validation loss is settling at a suboptimal level, even though the training 
 
 Running the training procedure for the models should be straightforward. Make sure that the WAV, Flux, CuArrays, JLD, and BSON packages are installed. As well, install [the fork I've made of the MFCC package](https://github.com/maetshju/MFCC.jl) (which only updates one line to make a function run on Julia 0.6). Start by cloning the Git repository for the project:
 
-```
-> $ git clone https://github.com/maetshju/gsoc2018.git
+```bash
+$> git clone https://github.com/maetshju/gsoc2018.git
 ```
 
 The user will need to download the TIMIT speech corpus from the Linguistic Data Consortium, as I discussed in the first section of [this previous blog post](https://maetshju.github.io/speech-features.html).
@@ -93,14 +94,14 @@ The user will need to download the TIMIT speech corpus from the Linguistic Data 
 
 Navigate into the `speech-cnn` folder. To extract the data from the TIMIT corpus, use the `00-data.jl` script. More information on this script can be found in [the blog post dedicated to it](https://maetshju.github.io/speech-features.html).
 
-```
-> $ julia 00-data.jl
+```bash
+$> julia 00-data.jl
 ```
 
 Now, to train the network, run the `01-speech-cnn.jl` script. Make sure you've removed the `README.md` files from the data folders, if you downloaded them.
 
-```
-> $ julia 01-speech-cnn.jl
+```bash
+$> julia 01-speech-cnn.jl
 ```
 
 Note that it is essentially necessary to have a GPU to train the network on because the training process is extremely slow on just the CPU. Additionally, the script calls out to the GPU implementation of the CTC algorithm, which will fail without a GPU. The script will likely take over a day to run, so come back to it later. After the script finishes, the model should be trained and ready for use in making predictions.
@@ -109,14 +110,14 @@ Note that it is essentially necessary to have a GPU to train the network on beca
 
 Navigate into the `speech-blstm` folder. To extract the data from the TIMIT corpus, use the `00-data.jl` script.
 
-```
-> $ julia 00-data.jl
+```bash
+$> julia 00-data.jl
 ```
 
 Now, to train the network, run the `01-speech-blstm.jl` script. Make sure you've removed the `README.md` files from the data folders, if you downloaded them.
 
-```
-> $ julia 01-speech-blstm.jl
+```bash
+$> julia 01-speech-blstm.jl
 ```
 
 This network trains reasonably fast on the CPU, so GPU functionality was not implemented.
@@ -131,8 +132,6 @@ The code written during this project may be found [on my GitHub](https://github.
 
 # References
 
-Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. *Neural Networks, 18*(5-6), 602-610.
-
-Graves, A., Fernández, S., Gomez, F., & Schmidhuber, J. (2006). Connectionist temporal classification: Labelling unsegmented sequence data with recurrent neural networks. In *Proceedings of the 23rd international conference on machine learning* (pp. 369-376). ACM.
-
-Zhang, Y., Pezeshki, M., Brakel, P., Zhang, S., Bengio, C. L. Y., & Courville, A. (2017). Towards end-to-end speech recognition with deep convolutional neural networks. *arXiv preprint arXiv:1701.02720*.
+* Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. *Neural Networks, 18*(5-6), 602-610.
+* Graves, A., Fernández, S., Gomez, F., & Schmidhuber, J. (2006). Connectionist temporal classification: Labelling unsegmented sequence data with recurrent neural networks. In *Proceedings of the 23rd international conference on machine learning* (pp. 369-376). ACM.
+* Zhang, Y., Pezeshki, M., Brakel, P., Zhang, S., Bengio, C. L. Y., & Courville, A. (2017). Towards end-to-end speech recognition with deep convolutional neural networks. *arXiv preprint arXiv:1701.02720*.

@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017: Documentation Browser for Juno</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 28 August 2017 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Sebastian Pfitzner </span> 
   </h3>
 
@@ -80,10 +82,10 @@ linebreaks: { automatic: true }
 <p>The aim of this GSoC project is to provide a convenient way to access documentation in the Juno IDE. Any work on this has to be on the Julia side &#40;for getting the necessary information by introspection&#41; <em>and</em> on the Atom side &#40;for presenting said information&#41;.</p>
 <p>Most of the work on the Julia side went into a new package, <a href="https://github.com/pfitzseb/DocSeeker.jl">DocSeeker.jl</a>, which implements all of the introspection necessary to get docstrings from installed packages; a small shim in Atom.jl &#40;<a href="https://github.com/JunoLab/Atom.jl/pull/99">Atom.jl#99</a>&#41; then delegates any front end requests to that package.</p>
 <p>The front end work is directly included in the Juno stack &#40;<a href="https://github.com/JunoLab/atom-julia-client/pull/377">atom-julia-client#377</a> and <a href="https://github.com/JunoLab/atom-ink/pull/148">atom-ink#148</a>, to be precise&#41;, since it&#39;s pretty fundamental IDE functionality.</p>
-<h2><a id="backend_docseekerjl" href="#backend_docseekerjl">Backend: DocSeeker.jl</a></h2>The two main challenges here are <em>collecting docstrings</em> and <em>filtering docstrings</em>, both in the most performant and reliable manner possible.</p>
-<h3><a id="collecting_information" href="#collecting_information">Collecting Information</a></h3>DocSeeker.jl contains a function <code>alldocs&#40;&#41;</code>, which will return information about all symbols available in the current Julia session. Those symbols are easily found by recursing through all currently loaded <code>Module</code>s and calling <code>Base.names&#40;&#41;</code> on them. Additionally, Julia&#39;s docsystem collects all symbols with attached docstrings, which can be easily retrieved.</p>
+<h2 id="backend_docseekerjl"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#backend_docseekerjl">Backend: DocSeeker.jl</a></h2>  The two main challenges here are <em>collecting docstrings</em> and <em>filtering docstrings</em>, both in the most performant and reliable manner possible.</p>
+<h3 id="collecting_information"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#collecting_information">Collecting Information</a></h3>  DocSeeker.jl contains a function <code>alldocs&#40;&#41;</code>, which will return information about all symbols available in the current Julia session. Those symbols are easily found by recursing through all currently loaded <code>Module</code>s and calling <code>Base.names&#40;&#41;</code> on them. Additionally, Julia&#39;s docsystem collects all symbols with attached docstrings, which can be easily retrieved.</p>
 <p>All of that is pretty slow – it takes on the order of half a second on my machine with a couple of loaded packages &#40;and returns information about ~13,000 symbols&#41;. At the same time the available symbols don&#39;t change too often, so caching is a viable solution.</p>
-<h3><a id="filtering" href="#filtering">Filtering</a></h3>There are all sorts of possible options to consider when filtering and searching through the symbols &#40;and attached docstrings&#41; returned by <code>alldocs</code>, but I&#39;ve decided on a few that turned out to be most important while testing:</p>
+<h3 id="filtering"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#filtering">Filtering</a></h3>  There are all sorts of possible options to consider when filtering and searching through the symbols &#40;and attached docstrings&#41; returned by <code>alldocs</code>, but I&#39;ve decided on a few that turned out to be most important while testing:</p>
 <ul>
 <li><p>Exported: Julia doesn&#39;t &#40;yet&#41; have a way to make certain symbols part of a module&#39;s public API, so I&#39;m using the set of exported symbols instead.</p>
 </li>
@@ -99,11 +101,11 @@ linebreaks: { automatic: true }
 <p>At first I tried rolling my own string comparison function &#40;with mixed success&#41;, but then I stumbled upon the excellent <a href="https://github.com/matthieugomez/StringDistances.jl">StringDistances.jl</a> which does pretty much all I needed.</p>
 <p>The scoring function is applied to all relevant symbols in a threaded loop &#40;which gives a free 1.5x speedup on my machine&#41;; afterwards all applicable filters are applied and the top 20 results are returned.</p>
 <p>Filtering and searching takes about 0.1s on my machine, which means that it&#39;s almost negligible compared to the time necessary for retrieving the docstrings.</p>
-<h2><a id="frontend" href="#frontend">Frontend</a></h2>Now that DocSeeker.jl has found the results we asked for, it&#39;s time to display them in an appealing manner: <img src="/assets/images/blog/2017-08-28-gsoc-docs-in-juno/search.png" alt="search" /></p>
+<h2 id="frontend"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#frontend">Frontend</a></h2>  Now that DocSeeker.jl has found the results we asked for, it&#39;s time to display them in an appealing manner: <img src="/assets/images/blog/2017-08-28-gsoc-docs-in-juno/search.png" alt="search" /></p>
 <p>If you&#39;ve used Juno before you may notice the much improved markdown rendering &#40;which is of course available all throughout Juno&#41;: There&#39;s syntax highlighting, LaTeX rendering and lots of general improvements.</p>
 <p>Apart from that the docpane UI shows most relevant information &#40;type of the binding, defining module, whether the binding is exported etc.&#41;; a click on the binding will take you to the defining location and a click on the module will give some information on that. Links also generally work fine &#40;external ones will open in your default browser, while those defined with Documenter.jl&#39;s <code>&#91;link&#93;&#40;@ref&#41;</code> syntax will start a new search&#41;.</p>
-<h2><a id="try_it" href="#try_it">Try it&#33;</a></h2>These features will have been integrated into Juno at the beginning of September 2017, so feel free to try them&#33;</p>
-<h2><a id="acknowledgements" href="#acknowledgements">Acknowledgements</a></h2>I&#39;d like to thank Mike Innes for all the fruitful discussions about implementation and functionality, as well as his guidance on Julia/Juno development in general &#40;well before GSoC even started&#41;.
+<h2 id="try_it"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#try_it">Try it&#33;</a></h2>  These features will have been integrated into Juno at the beginning of September 2017, so feel free to try them&#33;</p>
+<h2 id="acknowledgements"><a href="/pub/2017-08-28-gsoc-docs-in-juno.html#acknowledgements">Acknowledgements</a></h2>  I&#39;d like to thank Mike Innes for all the fruitful discussions about implementation and functionality, as well as his guidance on Julia/Juno development in general &#40;well before GSoC even started&#41;.
 <div class="page-foot">
   <div class="copyright">
     &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.

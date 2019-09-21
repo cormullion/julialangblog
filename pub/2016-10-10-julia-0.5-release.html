@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Julia 0.5 Release Announcement</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 10 October 2016 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">The Julia Community </span> 
   </h3>
 
@@ -60,7 +62,7 @@
 <p>We&#39;ll be releasing regular bugfix backports from the 0.5.x line, which is recommended for users requiring a stable language and API. Major feature work is ongoing on master for 0.6-dev.</p>
 <p>The Julia ecosystem continues to grow, and there are now <a href="http://pkg.julialang.org/pulse.html">over one thousand</a> registered packages&#33; The third annual <a href="http://juliacon.org/">JuliaCon</a> took place in Cambridge, MA in the <a href="http://julialang.org/blog/2016/09/juliacon2016">summer of 2016</a>, with an exciting line up of talks and keynotes. Most of them are <a href="https://www.youtube.com/playlist?list&#61;PLP8iPy9hna6SQPwZUDtAM59-wPzCPyD_S">available to view</a>.</p>
 <p>Binaries are available from the <a href="http://julialang.org/downloads/">main download page</a> or visit <a href="https://juliabox.com/">JuliaBox</a> to try this release from the comfort of your browser. Happy Coding&#33;</p>
-<h3><a id="notable_compiler_and_language_changes" href="#notable_compiler_and_language_changes">Notable compiler and language changes:</a></h3>
+<h3 id="notable_compiler_and_language_changes"><a href="/pub/2016-10-10-julia-0.5-release.html#notable_compiler_and_language_changes">Notable compiler and language changes:</a></h3>
 <ul>
 <li><p>The major focus of this release has been the ability to write fast functional code, removing the earlier performance penalty for anonymous functions and closures. This has been achieved via each function and closure now being its own type, and the captured variables of a closure are fields of its type. All functions, including anonymous functions, are now generic and support all features.</p>
 </li>
@@ -79,8 +81,10 @@
 <li><p>And <a href="https://github.com/JuliaLang/julia/blob/release-0.5/NEWS.md#julia-v050-release-notes">many many more</a> changes and improvements...</p>
 </li>
 </ul>
-<h3><a id="ports" href="#ports">Ports</a></h3> Julia now runs on the ARM and Power architectures, making it possible to use it on the widest variety of hardware, from the smallest embedded machines to the largest HPC systems. Porting a language to a new architecture is never easy, so special thanks to the people who made it possible. Part of the work to create the Power port was supported by IBM, for which we are grateful.</p>
-<h3><a id="developing_with_julia" href="#developing_with_julia">Developing with Julia</a></h3> The Julia debugger, <a href="https://github.com/Keno/Gallium.jl">Gallium</a>, is now ready to use. It allows for a full, multi language debug experience, debugging Julia and C code with ease. The debugger is also integrated with <a href="http://junolab.org">Juno</a>, the Julia IDE that is now fully featured and ready to use.</p>
+<h3 id="ports"><a href="/pub/2016-10-10-julia-0.5-release.html#ports">Ports</a></h3>
+<p>Julia now runs on the ARM and Power architectures, making it possible to use it on the widest variety of hardware, from the smallest embedded machines to the largest HPC systems. Porting a language to a new architecture is never easy, so special thanks to the people who made it possible. Part of the work to create the Power port was supported by IBM, for which we are grateful.</p>
+<h3 id="developing_with_julia"><a href="/pub/2016-10-10-julia-0.5-release.html#developing_with_julia">Developing with Julia</a></h3>
+<p>The Julia debugger, <a href="https://github.com/Keno/Gallium.jl">Gallium</a>, is now ready to use. It allows for a full, multi language debug experience, debugging Julia and C code with ease. The debugger is also integrated with <a href="http://junolab.org">Juno</a>, the Julia IDE that is now fully featured and ready to use.</p>
 
 <div class="page-foot">
   <div class="copyright">

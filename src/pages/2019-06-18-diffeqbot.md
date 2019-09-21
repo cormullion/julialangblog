@@ -5,6 +5,8 @@
 
 Hi! Today we all got a new member to the DiffEq family. Say hi to our own [DiffEqBot](https://github.com/DiffEqBot) - A bot which helps run benchmarks and compares with the current master of a given package. It also generates and stores the Reports generated in a [repository](https://github.com/DiffEqBot/Reports). What's special about this is that it is completely stateless (no databases involved at all, just juggling between repositories!) and it has no exposed public URLs. Even though highly inspired by Nanosoldier, this has a completely unique workflow.
 
+\toc
+
 ## How do you make it work?
 
 So what all you need to do is call `@DiffEqBot runbenchmarks` in a comment in a PR of a JuliaDiffEq repository and it will do all the work for you.  It will benchmark your pull request against the current master and post the link of report when the job gets completed. Found a bug in PR and now you don't need to complete previous job? Just comment `@DiffEqBot abort` and it won't run now. You also need to maintain two folders `diagrams` (For diagrams generation of the report) and `benchmark`(for comparing the results with master) (like `test` folder) in the root of your repository. `benchmark` folder should have `benchmark/runbenchmarks.jl` (it uses the package `PkgBenchmark`) and `diagrams` should have `diagrams/diagrams.jl`. You can store `REQUIRE`/`Project.toml` in the `diagrams` folder to define the dependencies specifically for `diagrams` generation.

@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Put This In Your Pipe</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 8 April 2013 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;"><a href="http://karpinski.org/">Stefan Karpinski</a> </span> 
   </h3>
 
@@ -64,7 +66,8 @@
 </li>
 </ul>
 <p>This post describes the system we designed and implemented for Julia, and how it avoids the major flaws of shelling out in other languages. First, I&#39;ll present the Julia version of the previous post&#39;s example – counting the number of lines in a given directory containing the string &quot;foo&quot;. The fact that Julia provides complete, specific diagnostic error messages when pipelines fail turns out to reveal a surprising and subtle bug, lurking in what appears to be a perfectly innocuous UNIX pipeline. After fixing this bug, we go into details of how Julia&#39;s external command execution and pipeline construction system actually works, and why it provides greater flexibility and safety than the traditional approach of using an intermediate shell to do all the heavy lifting.</p>
-<h2><a id="simple_pipeline_subtle_bug" href="#simple_pipeline_subtle_bug">Simple Pipeline, Subtle Bug</a></h2> Here&#39;s how you write the example of counting the number of lines in a directory containing the string &quot;foo&quot; in Julia &#40;you can follow along at home if you have Julia installed from source by changing directories into the Julia source directory and doing <code>cp -a src &quot;source code&quot;; mkdir tmp</code> and then firing up the Julia repl&#41;:</p>
+<h2 id="simple_pipeline_subtle_bug"><a href="/pub/2013-04-08-put-this-in-your-pipe.html#simple_pipeline_subtle_bug">Simple Pipeline, Subtle Bug</a></h2>
+<p>Here&#39;s how you write the example of counting the number of lines in a directory containing the string &quot;foo&quot; in Julia &#40;you can follow along at home if you have Julia installed from source by changing directories into the Julia source directory and doing <code>cp -a src &quot;source code&quot;; mkdir tmp</code> and then firing up the Julia repl&#41;:</p>
 <pre><code class="language-julia">julia> dir = "src";
 
 julia> int(readchomp(`find $dir -type f -print0` |> `xargs -0 grep foo` |> `wc -l`))
@@ -147,7 +150,8 @@ julia> int(readchomp(`find $dir -type f -print0` |> ignorestatus(`xargs -0 grep 
 0
 </code></pre>
 <p>This works correctly in all cases. Next I&#39;ll explain <em>how</em> all of this works, but for now it&#39;s enough to note that the detailed error message provided when our pipeline failed exposed a rather subtle bug that would eventually cause subtle and hard-to-debug problems when used in production. Without such detailed error reporting, this bug would be pretty difficult to track down.</p>
-<h2><a id="do-nothing_backticks" href="#do-nothing_backticks">Do-Nothing Backticks</a></h2> Julia borrows the backtick syntax for external commands form Perl and Ruby, both of which in turn got it from the shell. Unlike in these predecessors, however, in Julia backticks don&#39;t immediately run commands, nor do they necessarily indicate that you want to capture the output of the command. Instead, backticks just construct an object representing a command:</p>
+<h2 id="do-nothing_backticks"><a href="/pub/2013-04-08-put-this-in-your-pipe.html#do-nothing_backticks">Do-Nothing Backticks</a></h2>
+<p>Julia borrows the backtick syntax for external commands form Perl and Ruby, both of which in turn got it from the shell. Unlike in these predecessors, however, in Julia backticks don&#39;t immediately run commands, nor do they necessarily indicate that you want to capture the output of the command. Instead, backticks just construct an object representing a command:</p>
 <pre><code class="language-julia">julia> `echo Hello`
 `echo Hello`
 
@@ -202,7 +206,8 @@ julia> cmd.exec
  "print \"Hello\\n\""
 </code></pre>
 <p>This field is a plain old array of strings that can be manipulated like any other Julia array.</p>
-<h2><a id="constructing_commands" href="#constructing_commands">Constructing Commands</a></h2> The purpose of the backtick notation in Julia is to provide a familiar, shell-like syntax for making objects representing commands with arguments. To that end, quotes and spaces work just as they do in the shell. The real power of backtick syntax doesn&#39;t emerge, however, until we begin constructing commands programmatically. Just as in the shell &#40;and in Julia strings&#41;, you can interpolate values into commands using the dollar sign &#40;<code>&#36;</code>&#41;:</p>
+<h2 id="constructing_commands"><a href="/pub/2013-04-08-put-this-in-your-pipe.html#constructing_commands">Constructing Commands</a></h2>
+<p>The purpose of the backtick notation in Julia is to provide a familiar, shell-like syntax for making objects representing commands with arguments. To that end, quotes and spaces work just as they do in the shell. The real power of backtick syntax doesn&#39;t emerge, however, until we begin constructing commands programmatically. Just as in the shell &#40;and in Julia strings&#41;, you can interpolate values into commands using the dollar sign &#40;<code>&#36;</code>&#41;:</p>
 <pre><code class="language-julia">julia> dir = "src";
 
 julia> `find $dir -type f`.exec
@@ -291,7 +296,8 @@ julia> `cat $dir/$names.$exts`
 `cat /data/foo.csv /data/foo.tsv /data/bar.csv /data/bar.tsv`
 </code></pre>
 <p>This is the same Cartesian product expansion that the shell does if multiple <code>&#123;...&#125;</code> expressions are used in the same word.</p>
-<h2><a id="further_reading" href="#further_reading">Further Reading</a></h2> You can read more in Julia&#39;s <a href="http://docs.julialang.org/en/release-0.1/manual/running-external-programs/">online manual</a>, including how to construct complex pipelines, and how shell-compatible quoting and interpolation rules in Julia&#39;s backtick syntax make it both simple and safe to cut-and-paste shell commands into Julia code. The whole system is designed on the principle that the easiest thing to do should also be the right thing. The end result is that starting and interacting with external processes in Julia is both convenient and safe.</p>
+<h2 id="further_reading"><a href="/pub/2013-04-08-put-this-in-your-pipe.html#further_reading">Further Reading</a></h2>
+<p>You can read more in Julia&#39;s <a href="http://docs.julialang.org/en/release-0.1/manual/running-external-programs/">online manual</a>, including how to construct complex pipelines, and how shell-compatible quoting and interpolation rules in Julia&#39;s backtick syntax make it both simple and safe to cut-and-paste shell commands into Julia code. The whole system is designed on the principle that the easiest thing to do should also be the right thing. The end result is that starting and interacting with external processes in Julia is both convenient and safe.</p>
 <p>     </p>
 
 <div class="page-foot">

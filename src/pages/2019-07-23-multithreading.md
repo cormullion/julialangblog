@@ -65,6 +65,8 @@ such as BLAS).
 This is, in fact, the main reason we are excited about this announcement: from this point on,
 the capability of adding multi-core parallelism is unleashed over the entire Julia package ecosystem.
 
+\toc
+
 ## Some history
 
 One of the most surprising aspects of this new feature is just how long it has been in

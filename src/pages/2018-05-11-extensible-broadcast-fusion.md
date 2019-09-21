@@ -1,6 +1,7 @@
 @def published = "11 May 2018"
 @def title = "Extensible broadcast fusion"
 @def authors ="""<a href="https://github.com/mbauman">Matt Bauman (Julia Computing)</a>"""
+@def hascode = true
 
 Julia version 0.7 brings with it an exciting new feature: the ability to customize broadcast
 fusion! This recently-merged change is the culmination of a long iterative design process

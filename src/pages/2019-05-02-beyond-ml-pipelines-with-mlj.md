@@ -20,6 +20,8 @@
 </p>
 ~~~
 
+\toc
+
 ## Introduction
 
 [MLJ](https://github.com/alan-turing-institute/MLJ.jl) is an

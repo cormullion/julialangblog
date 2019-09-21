@@ -2,8 +2,6 @@
 @def title = "Julia’s Release Process"
 @def authors = "Stefan Karpinski (Julia Computing)"
 
-# Julia's release process
-
 People involved in the day-to-day development of a project tend to become so familiar with its rhythm and process that they internalize it and it feels like everyone must just _know_ how each stage unfolds. Of course, from the outside looking in it's not so obvious. So I thought it might be helpful to the broader Julia community—and maybe even for other programming language communities—to actually write down Julia's release process, including the details of:
 
 - what kinds of releases there are
@@ -13,6 +11,8 @@ People involved in the day-to-day development of a project tend to become so fam
 - the phases of a release and sequence of events surrounding it.
 
 This information is collected from a small set of posts on [discourse](https://discourse.julialang.org/) and conversations on [Slack](https://slackinvite.julialang.org/), so the information exists "out there", but this blog post brings it all together in a single place. We may turn this post into an official document if it's well received. Julia follows "semantic versioning" as specified in the [SemVer](https://semver.org/) standard, but SemVer leaves a fair amount of room for interpretation and says very little about process, so this post aims to fill in those details.
+
+\toc
 
 ## Patch releases
 

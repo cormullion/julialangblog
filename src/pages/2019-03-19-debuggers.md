@@ -28,12 +28,14 @@ by [Debugger][DB]. All these new debugging capabilities seamlessly
 integrate with [Revise][RV], so that you can continuously analyze and
 modify code in a single session.
 
-# A brief user-level introduction to the front end debuggers
+\toc
+
+## A brief user-level introduction to the front end debuggers
 
 To orient potential users to the debugger front-ends, here we include
 a couple of screen shots that highlight the new capabilities.
 
-## Juno
+### Juno
 
 Juno provides a rich user interface around the interpreter and allows
 you to set breakpoints and step through directly in the source
@@ -47,7 +49,7 @@ The `Juno.@run` macro interprets your code and drops you in a
 debugging session if it hits a breakpoint, while `Juno.@enter` allows
 you to step through starting from the first line.
 
-## Debugger and Rebugger
+### Debugger and Rebugger
 
 If you have a different favorite editor than Atom — or sometimes work
 in remote sessions through a console interface — you can alternatively
@@ -82,13 +84,13 @@ possible actions:
 Rebugger also features an "edit" interface. For more information, see
 [Rebugger's documentation](https://timholy.github.io/Rebugger.jl/dev/).
 
-# An overview of the packages
+## An overview of the packages
 
 With several packages making their initial debut, and some old ones
 getting new capabilities, we felt it would be appropriate to provide
 an overview of the underpinnings of the new ecosystem.
 
-## JuliaInterpreter
+### JuliaInterpreter
 
 [JuliaInterpreter][JI] is the lynch pin of the entire stack; it
 contains the logic needed to evaluate and inspect running Julia code.
@@ -184,7 +186,7 @@ A = rand(1:10, 5)
 If all is working well, you should see the same answer you get from
 running `sum(A)` without `@interpret`.
 
-## LoweredCodeUtils
+### LoweredCodeUtils
 
 [LoweredCodeUtils][LCU] is the most specialized and opaque of the new
 packages.  Its purpose is to build links between multiple
@@ -212,7 +214,7 @@ If you ever wanted to be able to parse Julia code and extract the
 signatures of the methods it defines (without redefining the methods),
 LoweredCodeUtils is the package for you.
 
-## CodeTracking
+### CodeTracking
 
 [CodeTracking][CT] was designed to act as a simple, lightweight "query
 API" for retrieving data from [Revise][RV]. Essentially,
@@ -224,7 +226,7 @@ relies on Revise to populate its own internal variables.
 
 See [CodeTracking's README][CT] for more information.
 
-## Revise and Rebugger
+### Revise and Rebugger
 
 Thanks to a rewrite based on JuliaInterpreter, Revise and Rebugger are
 better (in some cases, much better) at their core tasks. In
@@ -246,7 +248,7 @@ abilities, like handling methods defined at the REPL.  In the longer
 term, the deep analysis of code permitted by JuliaInterpreter and
 LoweredCodeUtils may support features that were formerly out of reach.
 
-# Summary
+## Summary
 
 This has been only a high-level overview. Some of the individual packages
 have extensive documentation, and interested readers are encouraged to

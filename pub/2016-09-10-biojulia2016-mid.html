@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>BioJulia 2016 - online sequence search, sequence demultiplexing, new readers and much more!</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 10 September 2016 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Kenta Sato </span> 
   </h3>
 
@@ -73,9 +75,9 @@
 </li>
 </ul>
 <p>And many other miscellaneous performance and usability improvements&#33;  Tutorial notebooks are available at <a href="https://github.com/BioJulia/BioTutorials">https://github.com/BioJulia/BioTutorials</a>.  Here I briefly introduce you to these new features one by one.</p>
-<h2><a id="online_sequence_search_algorithms" href="#online_sequence_search_algorithms">Online sequence search algorithms</a></h2> Sequence search is an indispensable tool in sequence analysis.  Since the last post, I have added exact, approximate and regex search algorithms.  The search interface of Bio.jl mimics that of Julia&#39;s standard library.</p>
-<pre><code class="language-julia">
-julia&gt; using Bio.Seq
+<h2 id="online_sequence_search_algorithms"><a href="/pub/2016-09-10-biojulia2016-mid.html#online_sequence_search_algorithms">Online sequence search algorithms</a></h2>
+<p>Sequence search is an indispensable tool in sequence analysis.  Since the last post, I have added exact, approximate and regex search algorithms.  The search interface of Bio.jl mimics that of Julia&#39;s standard library.</p>
+<pre><code class="language-julia">julia&gt; using Bio.Seq
 
 julia&gt; seq &#61; dna&quot;ACAGCGTAGCT&quot;
 11nt DNA Sequence:
@@ -91,11 +93,10 @@ julia&gt; approxsearch&#40;seq, dna&quot;AGGG&quot;, 1&#41;
 
 # Regular expression search.
 julia&gt; search&#40;seq, biore&quot;AGN*?G&quot;d&#41;
-3:6
-</code></pre>
-<h2><a id="sequence_data_structure_for_reference_genomes" href="#sequence_data_structure_for_reference_genomes">Sequence data structure for reference genomes</a></h2> In Bio.jl DNA sequences are encoded using 4 bits per base by default in order to store ambiguous nucleotides and this encoding does well in most cases. However, some biological sequences such as chromosomal sequences are so long especially for eukaryotic organisms and the default DNA sequences may result in a waste of memory space. <code>ReferenceSequence</code> is a new type introduced in Bio.jl that compresses positions of ambiguous nucleotides using a sparse bit vector. This type can achieve almost 2-bit encoding in common reference sequences because most of the ambiguous nucleotides are clustered in a sequence and the number of them is small compared to other unambiguous nucleotides.</p>
-<pre><code class="language-julia">
-# Converting a DNASequence object to ReferenceSequence.
+3:6</code></pre>
+<h2 id="sequence_data_structure_for_reference_genomes"><a href="/pub/2016-09-10-biojulia2016-mid.html#sequence_data_structure_for_reference_genomes">Sequence data structure for reference genomes</a></h2>
+<p>In Bio.jl DNA sequences are encoded using 4 bits per base by default in order to store ambiguous nucleotides and this encoding does well in most cases. However, some biological sequences such as chromosomal sequences are so long especially for eukaryotic organisms and the default DNA sequences may result in a waste of memory space. <code>ReferenceSequence</code> is a new type introduced in Bio.jl that compresses positions of ambiguous nucleotides using a sparse bit vector. This type can achieve almost 2-bit encoding in common reference sequences because most of the ambiguous nucleotides are clustered in a sequence and the number of them is small compared to other unambiguous nucleotides.</p>
+<pre><code class="language-julia"># Converting a DNASequence object to ReferenceSequence.
 julia&gt; ReferenceSequence&#40;dna&quot;ACGT&quot;^10000&#41;
 40000nt Reference Sequence:
 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACG…CGTACGTACGTACGTACGTACGTACGTACGTACGTACGT
@@ -109,11 +110,10 @@ Bio.Seq.SeqRecord&#123;Bio.Seq.ReferenceSequence,Bio.Seq.FASTAMetadata&#125;:
 
 julia&gt; sequence&#40;ans&#41;
 248956422nt Reference Sequence:
-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN…NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-</code></pre>
-<h2><a id="data_reader_and_writer_for_the_2bit_file_format" href="#data_reader_and_writer_for_the_2bit_file_format">Data reader and writer for the 2bit file format</a></h2> 2bit is a binary file format to store reference sequences. This is a kind of binary counterpart of <a href="https://en.wikipedia.org/wiki/FASTA_format">FASTA</a> but specialized for DNA reference sequences to enable smaller file size and faster loading. Reference sequences of various organisms are distributed from <a href="http://hgdownload.soe.ucsc.edu/downloads.html">the download page of UCSC</a> in this file format. An important advantage of 2bit is that sequences are indexed by its name and can be accessed immediately.</p>
-<pre><code class="language-julia">
-# Opening a sequence file of yeast &#40;S.cerevisiae&#41;.
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN…NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</code></pre>
+<h2 id="data_reader_and_writer_for_the_2bit_file_format"><a href="/pub/2016-09-10-biojulia2016-mid.html#data_reader_and_writer_for_the_2bit_file_format">Data reader and writer for the 2bit file format</a></h2>
+<p>2bit is a binary file format to store reference sequences. This is a kind of binary counterpart of <a href="https://en.wikipedia.org/wiki/FASTA_format">FASTA</a> but specialized for DNA reference sequences to enable smaller file size and faster loading. Reference sequences of various organisms are distributed from <a href="http://hgdownload.soe.ucsc.edu/downloads.html">the download page of UCSC</a> in this file format. An important advantage of 2bit is that sequences are indexed by its name and can be accessed immediately.</p>
+<pre><code class="language-julia"># Opening a sequence file of yeast &#40;S.cerevisiae&#41;.
 julia&gt; reader &#61; open&#40;TwoBitReader, &quot;sacCer3.2bit&quot;&#41;;
 
 # Loading a chromosome VI using random access index.
@@ -121,12 +121,11 @@ julia&gt; reader&#91;&quot;chrVI&quot;&#93;
 Bio.Seq.SeqRecord&#123;Bio.Seq.ReferenceSequence,Array&#123;UnitRange&#123;Int64&#125;,1&#125;&#125;:
   name: chrVI
   sequence: GATCTCGCAAGTGCATTCCTAGACTTAATTCATATCTGC…GTGTGGTGTGTGGGTGTGGTGTGTGGGTGTGGTGTGTGG
-  metadata: UnitRange&#123;Int64&#125;&#91;&#93;
-</code></pre>
-<h2><a id="data_reader_and_writer_for_the_sam_and_bam_file_formats" href="#data_reader_and_writer_for_the_sam_and_bam_file_formats">Data reader and writer for the SAM and BAM file formats</a></h2> The SAM and BAM file formats are designed for storing sequences aligned to reference sequences. SAM is a line-oriented text file format and easy to handle with UNIX command line tools. BAM is a compressed binary version of SAM and suitable for storing data in disks and processing with purpose-built softwares like <a href="https://samtools.github.io/">samtools</a>. The BAM data reader is carefully tuned so that users can use it in real analysis with large files. It is also feasible to read a <a href="http://www.ebi.ac.uk/ena/software/cram-toolkit">CRAM</a> file combining the BAM reader and <code>samtools view</code> command.</p>
+  metadata: UnitRange&#123;Int64&#125;&#91;&#93;</code></pre>
+<h2 id="data_reader_and_writer_for_the_sam_and_bam_file_formats"><a href="/pub/2016-09-10-biojulia2016-mid.html#data_reader_and_writer_for_the_sam_and_bam_file_formats">Data reader and writer for the SAM and BAM file formats</a></h2>
+<p>The SAM and BAM file formats are designed for storing sequences aligned to reference sequences. SAM is a line-oriented text file format and easy to handle with UNIX command line tools. BAM is a compressed binary version of SAM and suitable for storing data in disks and processing with purpose-built softwares like <a href="https://samtools.github.io/">samtools</a>. The BAM data reader is carefully tuned so that users can use it in real analysis with large files. It is also feasible to read a <a href="http://www.ebi.ac.uk/ena/software/cram-toolkit">CRAM</a> file combining the BAM reader and <code>samtools view</code> command.</p>
 <p>An experimental feature is parallel processing using multiple threads. Multi-threading support is introduced in Julia 0.5 and we use it to parallelize decompression of BAM files. Here is a simple benchmark script to show how much reading speed can be improved with multiple threads:</p>
-<pre><code class="language-julia">
-using Bio.Align
+<pre><code class="language-julia">using Bio.Align
 
 # Count the number of mapped records.
 function countmapped&#40;reader&#41;
@@ -142,33 +141,29 @@ function countmapped&#40;reader&#41;
     return ret
 end
 
-println&#40;open&#40;countmapped, BAMReader, ARGS&#91;1&#93;&#41;&#41;
-</code></pre>
+println&#40;open&#40;countmapped, BAMReader, ARGS&#91;1&#93;&#41;&#41;</code></pre>
 <code>JULIA_NUM_THREADS</code> environment variable controls the number of worker threads. The result below shows that the elapsed time is almost halved using two threads:</p>
-<pre><code class="language-julia">
-~/.j/v/Bio &#36; time julia countmapped.jl SRR1238088.sort.bam
+<pre><code class="language-julia">~/.j/v/Bio &#36; time julia countmapped.jl SRR1238088.sort.bam
 28040186
        29.27 real        28.64 user         0.66 sys
 ~/.j/v/Bio &#36; env JULIA_NUM_THREADS&#61;2 time julia countmapped.jl SRR1238088.sort.bam
 28040186
-       17.40 real        32.31 user         0.63 sys
-</code></pre>
-<h2><a id="package_to_handle_bgzf_files" href="#package_to_handle_bgzf_files">Package to handle BGZF files</a></h2> BGZF &#40;Blocked GZip Format&#41; is a gzip-compliant file format commonly used in bioinformatics. BGZF can be read using standard gzip tools but files in the format are compressed block by block and special metadata are added to index the compressed files for random access. BAM files are compressed in this file format and sequence alignments in a specific genomic region can be retrieved efficiently.  BGZFStreams.jl is a new package to handle BGZF files like usual I/O streams and it is built on top of our <a href="https://github.com/BioJulia/Libz.jl">Libz.jl</a> package. Parallel decompression mentioned above is implemented in this package layer.</p>
-<pre><code class="language-julia">
-julia&gt; using BGZFStreams
+       17.40 real        32.31 user         0.63 sys</code></pre>
+<h2 id="package_to_handle_bgzf_files"><a href="/pub/2016-09-10-biojulia2016-mid.html#package_to_handle_bgzf_files">Package to handle BGZF files</a></h2>
+<p>BGZF &#40;Blocked GZip Format&#41; is a gzip-compliant file format commonly used in bioinformatics. BGZF can be read using standard gzip tools but files in the format are compressed block by block and special metadata are added to index the compressed files for random access. BAM files are compressed in this file format and sequence alignments in a specific genomic region can be retrieved efficiently.  BGZFStreams.jl is a new package to handle BGZF files like usual I/O streams and it is built on top of our <a href="https://github.com/BioJulia/Libz.jl">Libz.jl</a> package. Parallel decompression mentioned above is implemented in this package layer.</p>
+<pre><code class="language-julia">julia&gt; using BGZFStreams
 
 julia&gt; stream &#61; BGZFStream&#40;&quot;/Users/kenta/.julia/v0.5/BGZFStreams/test/bar.bgz&quot;&#41;
 BGZFStreams.BGZFStream&#123;IOStream&#125;&#40;&lt;mode&#61;read&gt;&#41;
 
 julia&gt; readstring&#40;stream&#41;
-&quot;bar&quot;
-</code></pre>
+&quot;bar&quot;</code></pre>
 
 <https://github.com/BioJulia/BGZFStreams.jl>
 
-<h2><a id="sequence_demultiplexing_tool" href="#sequence_demultiplexing_tool">Sequence demultiplexing tool</a></h2> Sequence demultiplexing is a technique to distinguish the origin of a sequence using its artificially-attached &quot;barcode&quot; sequence. This is often used at a preprocessing phase after <a href="http://www.illumina.com/technology/next-generation-sequencing/multiplexing-sequencing-assay.html">multiplexed sequencing</a>, a common technique to sequence multiple samples simultaneously.  A barcode sequence, however, may be corrupted due to sequencing error, and we need to find the best matching barcode from a barcode set.  The demultiplexer algorithm implemented in Bio.jl is based on a trie-like data structure, and efficiently finds the optimal barcode from the prefix of a given DNA sequence.</p>
-<pre><code class="language-julia">
-# Set DNA barcode pool.
+<h2 id="sequence_demultiplexing_tool"><a href="/pub/2016-09-10-biojulia2016-mid.html#sequence_demultiplexing_tool">Sequence demultiplexing tool</a></h2>
+<p>Sequence demultiplexing is a technique to distinguish the origin of a sequence using its artificially-attached &quot;barcode&quot; sequence. This is often used at a preprocessing phase after <a href="http://www.illumina.com/technology/next-generation-sequencing/multiplexing-sequencing-assay.html">multiplexed sequencing</a>, a common technique to sequence multiple samples simultaneously.  A barcode sequence, however, may be corrupted due to sequencing error, and we need to find the best matching barcode from a barcode set.  The demultiplexer algorithm implemented in Bio.jl is based on a trie-like data structure, and efficiently finds the optimal barcode from the prefix of a given DNA sequence.</p>
+<pre><code class="language-julia"># Set DNA barcode pool.
 julia&gt; barcodes &#61; DNASequence&#91;&quot;ATGG&quot;, &quot;CAGA&quot;, &quot;GGAA&quot;, &quot;TACG&quot;&#93;;
 
 # Create a sequence demultiplexer that allows one errors at most.
@@ -183,9 +178,9 @@ julia&gt; demultiplex&#40;dplxr, dna&quot;ATGGCGNT&quot;&#41;  # 1st barcode wit
 &#40;1,0&#41;
 
 julia&gt; demultiplex&#40;dplxr, dna&quot;CAGGCGNT&quot;&#41;  # 2nd barcode with one error
-&#40;2,1&#41;
-</code></pre>
-<h2><a id="next_step" href="#next_step">Next step</a></h2> This is still the first half of my project this year. The next term will come with:</p>
+&#40;2,1&#41;</code></pre>
+<h2 id="next_step"><a href="/pub/2016-09-10-biojulia2016-mid.html#next_step">Next step</a></h2>
+<p>This is still the first half of my project this year. The next term will come with:</p>
 <ul>
 <li><p>Supporting more file formats including GFF3, VCF and BCF.</p>
 </li>
@@ -195,7 +190,8 @@ julia&gt; demultiplex&#40;dplxr, dna&quot;CAGGCGNT&quot;&#41;  # 2nd barcode wit
 </li>
 </ul>
 <p>And, of course, improving existing features of Bio.jl and other packages. We welcome any contributions and feature requests from you all.  <a href="https://gitter.im/BioJulia/Bio.jl">Gitter chat channel</a> is the best place to communicate with developers and other users. If you love Julia and/or biology, any reason not to join us?</p>
-<h2><a id="acknowledgements" href="#acknowledgements">Acknowledgements</a></h2> I gratefully acknowledge the Moore Foundation and the Julia project for supporting the BioJulia project. I also would like to thank <a href="https://github.com/Ward9250">Ben J. Ward</a> and <a href="https://github.com/kdmurray91">Kevin Murray</a> for comments on my program code and other contributions.</p>
+<h2 id="acknowledgements"><a href="/pub/2016-09-10-biojulia2016-mid.html#acknowledgements">Acknowledgements</a></h2>
+<p>I gratefully acknowledge the Moore Foundation and the Julia project for supporting the BioJulia project. I also would like to thank <a href="https://github.com/Ward9250">Ben J. Ward</a> and <a href="https://github.com/kdmurray91">Kevin Murray</a> for comments on my program code and other contributions.</p>
 
 <div class="page-foot">
   <div class="copyright">

@@ -3,6 +3,8 @@
 @def authors = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""
 @def hascode = true
 
+\toc
+
 Translations: ~~~ <a href="https://julialang.org/blog/2019/04/fluxdiffeq-zh_tw">Traditional Chinese</a>~~~
 
 In this blog post we will show you how to easily, efficiently, and
@@ -176,35 +178,31 @@ $$y^\prime = -\delta y + \gamma x y$$
 
 and encoded in Julia like:
 
-```julia
-using DifferentialEquations
-function lotka_volterra(du,u,p,t)
-  x, y = u
-  α, β, δ, γ = p
-  du[1] = dx = α*x - β*x*y
-  du[2] = dy = -δ*y + γ*x*y
-end
-u0 = [1.0,1.0]
-tspan = (0.0,10.0)
-p = [1.5,1.0,3.0,1.0]
-prob = ODEProblem(lotka_volterra,u0,tspan,p)
-```
+    using DifferentialEquations
+    function lotka_volterra(du,u,p,t)
+      x, y = u
+      α, β, δ, γ = p
+      du[1] = dx = α*x - β*x*y
+      du[2] = dy = -δ*y + γ*x*y
+    end
+    u0 = [1.0,1.0]
+    tspan = (0.0,10.0)
+    p = [1.5,1.0,3.0,1.0]
+    prob = ODEProblem(lotka_volterra,u0,tspan,p)
 
 Then to solve the differential equations, you can simply call `solve` on the
 `prob`:
 
-```julia
-sol = solve(prob)
-using Plots
-plot(sol)
-```
+    sol = solve(prob)
+    using Plots
+    plot(sol)
 
 ![LV Solution Plot](https://user-images.githubusercontent.com/1814174/51388169-9a07f300-1af6-11e9-8c6c-83c41e81d11c.png)
 
 One last thing to note is that we can make our initial condition (`u0`) and time spans (`tspans`)
 to be functions of the parameters (the elements of `p`). For example, we can define the `ODEProblem`:
 
-```julia
+```
 u0_f(p,t0) = [p[2],p[4]]
 tspan_f(p) = (0.0,10*p[4])
 p = [1.5,1.0,3.0,1.0]
@@ -249,7 +247,7 @@ A = sol[1,:] # length 101 vector
 
 Let's plot `(t,A)` over the ODE's solution to see what we got:
 
-```julia
+```
 plot(sol)
 t = 0:0.1:10.0
 scatter!(t,A)

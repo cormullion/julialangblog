@@ -1,6 +1,7 @@
 @def published = "13 August 2018"
 @def title = "GSoC 2018: Adding Newer Features and Speeding up Convolutions in Flux"
 @def authors = """<a href="http://github.com/avik-pal/">Avik Pal</a>"""
+@def hascode = true
 
 Over the summer I have been working at improving the Computer Vision capabilities of Flux. My specific line of work was to __add newer models to the Flux model-zoo__, __implement some new features__ and also __improve the speed of the previous layers__. Specifically, I achieved a __18-fold__ speed up for the __Convolutions__ and around __3-fold__ for __BatchNorm__.
 
@@ -70,7 +71,7 @@ Some models like GoogleNet and Resnet were added to Metalhead recently (special 
 
 ### Improve the accuracy of Metalhead models
 
-The accuracy of the existing loaded models into Flux was pretty bad. We had already tried out a variety of preprocessing steps but mostly of no use. After some trial and errors, we were able to figure out the primary reason. We were using the weights for __Cross Correlation Operation__ in place of a __Convulution Operation__. For now, this is fixed by manually flipping the weights before loading them. As a long-term solution, we are exposing the parameter to choose between __convolution__ and __cross-correlation__ in `NNlib` and eventually in `Flux`.
+The accuracy of the existing loaded models into Flux was pretty bad. We had already tried out a variety of preprocessing steps but mostly of no use. After some trial and errors, we were able to figure out the primary reason. We were using the weights for __Cross Correlation Operation__ in place of a __Convolution Operation__. For now, this is fixed by manually flipping the weights before loading them. As a long-term solution, we are exposing the parameter to choose between __convolution__ and __cross-correlation__ in `NNlib` and eventually in `Flux`.
 
 ### Add bleeding edge Computer Vision models in Metalhead
 

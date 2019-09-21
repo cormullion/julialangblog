@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>JSoC 2015 project: Interactive Visualizations in Julia with GLVisualize.jl</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 22 October 2015 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;"><a href="https://github.com/SimonDanisch">Simon Danisch</a> </span> 
   </h3>
 
@@ -61,7 +63,8 @@
 <p>One of the most interesting parts of <strong>GLVisualize</strong> is, that it&#39;s combining GUIs and visualizations, instead of relying on a 3rd party library like <strong>QT</strong> for GUIs. This has many advantages and disadvantages. The main advantage is, that interactive visualization share a lot of infrastructure with GUI libraries. By combining these two, new features are possible, e.g. text editing of labels in 3D space, or making elements of a visualization work like a button. These features should end up being pretty snappy, since <strong>GLVisualize</strong> was created with <a href="http://randomfantasies.com/2015/05/glvisualize-benchmark/">high performance</a> in mind.</p>
 <p>Obviously, the biggest downside is, that it is really hard to reach the maturity and feature completeness from e.g. <strong>QT</strong>.</p>
 <p>So to really get the best of both worlds a lot of work is needed.</p>
-<h2><a id="current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc" href="#current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc">Current status of GLVisualize, and what I&#39;ve been doing during <strong>JSoC</strong></a></h2> A surprisingly large amount of time went into improving <strong>FileIO</strong> together with <a href="https://github.com/timholy">Tim Holy</a>. The selling point of <strong>FileIO</strong> is, that one can just load a file into <strong>FileIO</strong> and it will recognize the format and load the respective IO library. This makes it a lot easier to start working with files in Julia, since no prior knowledge about formats and loading files in Julia is needed. This is perfect for a visualization library, since most visualization start from data, that comes in some format, which might even be unknown initially.</p>
+<h2 id="current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc"><a href="/pub/2015-10-22-glvisualize.html#current_status_of_glvisualize_and_what_ive_been_doing_during_jsoc">Current status of GLVisualize, and what I&#39;ve been doing during <strong>JSoC</strong></a></h2>
+<p>A surprisingly large amount of time went into improving <strong>FileIO</strong> together with <a href="https://github.com/timholy">Tim Holy</a>. The selling point of <strong>FileIO</strong> is, that one can just load a file into <strong>FileIO</strong> and it will recognize the format and load the respective IO library. This makes it a lot easier to start working with files in Julia, since no prior knowledge about formats and loading files in Julia is needed. This is perfect for a visualization library, since most visualization start from data, that comes in some format, which might even be unknown initially.</p>
 <p>Since all files are loaded with the same function, it becomes much easier to implement functionality like drag and drop of any file supported by FileIO. To give you an example, the implementation of the drag and drop feature in <strong>GLVisualize</strong> only needs a <a href="https://gist.github.com/SimonDanisch/e0a8a2cbc3106ce6c123#file-dragndrop-jl">few lines of code</a> thanks to FileIO:</p>
 <p><a href=" https://gist.github.com/SimonDanisch/e0a8a2cbc3106ce6c123#file-dragndrop-jl "><img src="https://github.com/SimonDanisch/Blog/blob/master/10-22-15-jsoc/dragndrop2.gif?raw&#61;true" alt="drag and drop" /></a></p>
 <p>Another feature I&#39;ve been working on is better 2D support. I&#39;ve implemented different anti-aliased marker, text rendering and line types. Apart from the image markers, they all use the <a href="http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf">distance field technique</a>, to achieve view independent anti-aliasing. Here are a few examples:</p>

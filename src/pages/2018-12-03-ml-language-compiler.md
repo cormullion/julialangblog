@@ -1,14 +1,16 @@
 @def published = "3 December 2018"
 @def title = "Building a Language and Compiler for Machine Learning"
 @def authors = "Mike Innes, James Bradbury, Keno Fischer, Dhairya Gandhi, Neethu Mariya Joy, Tejan Karmali, Matt Kelley, Avik Pal, Marco Concetto Rudilosso, Elliot Saba, Viral Shah, Deniz Yuret"
-
-
+@def hascode = true
 
 Since we [originally proposed](https://julialang.org/blog/2017/12/ml&pl) the need for a first-class language, compiler and ecosystem for machine learning (ML), there have been plenty of interesting developments in the field. Not only have the tradeoffs in existing systems, such as TensorFlow and PyTorch, not been resolved, but they are clearer than ever now that both frameworks contain distinct [“static graph”](https://pytorch.org/docs/master/jit.html) and [“eager execution”](https://www.tensorflow.org/guide/eager) interfaces. Meanwhile, the idea of ML models fundamentally being differentiable algorithms – often called [differentiable programming](https://www.facebook.com/yann.lecun/posts/10155003011462143) – has caught on.
 
 Where current frameworks fall short, several exciting new projects have sprung up that dispense with graphs entirely, to bring differentiable programming to the mainstream. [Myia](https://github.com/mila-udem/myia), by the Theano team, differentiates and compiles a subset of Python to high-performance GPU code. [Swift for TensorFlow](https://github.com/tensorflow/swift) extends Swift so that compatible functions can be compiled to TensorFlow graphs. And finally, the [Flux](https://github.com/FluxML/Flux.jl) ecosystem is extending Julia’s compiler with a number of ML-focused tools, including first-class gradients, just-in-time CUDA kernel compilation, automatic batching and support for new hardware such as TPUs.
 
 All of these projects have enormous potential, but we think Julia has an edge. This post, based on our [paper to be presented at NeurIPS MLSys](https://arxiv.org/abs/1811.01457), will explore how we have used Julia to re-think ML tooling from the ground up, and provides some insight into the work that modern ML tools need to do.
+
+\toc
+
 
 ## Enter Flux
 
@@ -34,13 +36,11 @@ GPU programming is an essential part of modern ML. But the GPU is often treated 
 
 A simple vector addition kernel looks similar to the CUDA C equivalent.
 
-```julia
-function kernel_vadd(a, b, c)
-    i = (blockIdx().x-1) * blockDim().x + threadIdx().x
-    c[i] = a[i] + b[i]
-    return
-end
-```
+    function kernel_vadd(a, b, c)
+        i = (blockIdx().x-1) * blockDim().x + threadIdx().x
+        c[i] = a[i] + b[i]
+        return
+    end
 
 However, Julia's type specialization enables a powerful set of additional abstractions on the GPU. For example, the code above is not restricted to dense arrays of floats, and could instead be given sparse arrays of complex numbers; Julia's normal specialization mechanisms would generate a new set of PTX instructions on the fly. We can even abstract this code further into a “higher-order kernel” that accepts the `+` function (or `*`, or arbitrary user-defined `f`) and thus create a whole family of functions `map(f, x, y)` in [four lines of code](http://mikeinnes.github.io/2017/08/24/cudanative.html).
 

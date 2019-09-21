@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Beyond machine learning pipelines with MLJ</title>  
 </head>
@@ -50,6 +50,8 @@
        <span style="font-weight: lighter;"> 2 May 2019 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Anthony Blaom, Diego Arenas, Franz Kiraly, Yiannis Simillides, Sebastian Vollmer </span> 
   </h3>
 
@@ -69,7 +71,9 @@
   <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png"/>
 </p>
 
-<h2><a id="introduction" href="#introduction">Introduction</a></h2> <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> is an open-source machine learning toolbox written in pure Julia. It provides a uniform interface for interacting with supervised and unsupervised learning models currently scattered in different Julia packages.</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#mlj_features">MLJ features</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#learning_networks">Learning networks</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#building_a_simple_network">Building a simple network</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></li></ol></ol></div>
+<h2 id="introduction"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></h2>
+<p><a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> is an open-source machine learning toolbox written in pure Julia. It provides a uniform interface for interacting with supervised and unsupervised learning models currently scattered in different Julia packages.</p>
 <p>Building on a earlier proof-of-concept, development began in earnest at <a href="https://www.turing.ac.uk">The Alan Turing Institute</a> in December 2018. In a short time interest grew and the project is now the Institute&#39;s most starred software repository.</p>
 <p>After outlining MLJ&#39;s current functionality, this post introduces MLJ <strong>learning networks</strong>, a super-charged pipelining feature for model composition.</p>
 <p><strong>Quick links:</strong></p>
@@ -85,7 +89,8 @@
 &#9758; How to <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/CONTRIBUTE.md">contribute</a></p>
 &#9758; Julia <a href="http://julialang.slack.com">Slack</a> channel: #mlj.</p>
 &#9758; Star&#39;ing us to show support for <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> would be greatly appreciated&#33;</p>
-<h2><a id="mlj_features" href="#mlj_features">MLJ features</a></h2> MLJ already has substantial functionality:</p>
+<h2 id="mlj_features"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#mlj_features">MLJ features</a></h2>
+<p>MLJ already has substantial functionality:</p>
 <ul>
 <li><p><strong>Learning networks.</strong> Flexible model composition beyond traditional pipelines &#40;more on this below&#41;.</p>
 </li>
@@ -106,9 +111,11 @@
 </ul>
 <p>Enhancements planned for the near future include integration of Flux.jl <strong>deep learning</strong> models, and <strong>gradient descent tuning</strong> of continuous hyperparameters using automatic differentiation.</p>
 <p>While a relatively small number of machine learning models currently implement the MLJ interface, work in progress aims to wrap models supported by the popular python framework, scikit-learn, as a temporary expedient. For a comparison of the MLJ&#39;s design with the Julia wrap <a href="https://github.com/cstjean/ScikitLearn.jl">ScikitLearn.jl</a>, see this <a href="https://github.com/alan-turing-institute/MLJ.jl/blob/master/docs/src/frequently_asked_questions.md">FAQ</a>.</p>
-<h2><a id="learning_networks" href="#learning_networks">Learning networks</a></h2> MLJ&#39;s model composition interface is flexible enough to implement, for example, the <a href="https://www.kdnuggets.com/2017/02/stacking-models-imropved-predictions.html">model stacks</a> popular in data science competitions. To treat examples of this kind, the interface design must account for the fact that information flow in prediction and training modes is different. This can be seen from the following schematic of a simple two-model stack, viewed as a network:</p>
+<h2 id="learning_networks"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#learning_networks">Learning networks</a></h2>
+<p>MLJ&#39;s model composition interface is flexible enough to implement, for example, the <a href="https://www.kdnuggets.com/2017/02/stacking-models-imropved-predictions.html">model stacks</a> popular in data science competitions. To treat examples of this kind, the interface design must account for the fact that information flow in prediction and training modes is different. This can be seen from the following schematic of a simple two-model stack, viewed as a network:</p>
 <p><img src="/assets/images/blog/2019-05-02-MLJ/two_model_stack.png" alt="" /></p>
-<h2><a id="building_a_simple_network" href="#building_a_simple_network">Building a simple network</a></h2> In MLJ, networks of models are built using a declarative syntax already familiar from basic use of the package. For example, the ordinary syntax for training a decision tree in MLJ, after one-hot encoding the categorical features, looks like this:</p>
+<h2 id="building_a_simple_network"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#building_a_simple_network">Building a simple network</a></h2>
+<p>In MLJ, networks of models are built using a declarative syntax already familiar from basic use of the package. For example, the ordinary syntax for training a decision tree in MLJ, after one-hot encoding the categorical features, looks like this:</p>
 <pre><code class="language-julia">using MLJ
 @load DecisionTreeRegressor
 
@@ -163,7 +170,8 @@ yhat(Xnew)           # to predict on new data
  320142.85714285733
  ...
 </code></pre>
-<h2><a id="exporting_and_retraining" href="#exporting_and_retraining">Exporting and retraining</a></h2> Once a pipeline like this has been built and tested on sample data, it can be exported as a stand-alone model, ready to be trained on any dataset. For details, see the MLJ <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/learning_networks/">documentation</a>. In the future, Julia macros will allow common architectures &#40;e.g., linear pipelines&#41; to be built in a couple of lines.</p>
+<h2 id="exporting_and_retraining"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></h2>
+<p>Once a pipeline like this has been built and tested on sample data, it can be exported as a stand-alone model, ready to be trained on any dataset. For details, see the MLJ <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/learning_networks/">documentation</a>. In the future, Julia macros will allow common architectures &#40;e.g., linear pipelines&#41; to be built in a couple of lines.</p>
 <p>Finally, we mention that MLJ learning networks, and their exported counterparts, are &quot;smart&quot; in the sense that changing a hyperparameter does not trigger retraining of component models upstream of the change:</p>
 <pre><code class="language-julia">tree_model.max_depth = 4
 fit!(yhat, rows=1:1300)
@@ -171,11 +179,12 @@ fit!(yhat, rows=1:1300)
  [ Info: Updating NodalMachine @ 1…17.
  Node @ 1…79 = predict(1…17, transform(1…51, 1…07))
 </code></pre>
-<h2><a id="just_quotwrite_the_mathquot" href="#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></h2> Because of Julia&#39;s generic programming features, any kind of operation you would normally apply to data &#40;arithmetic, row selection, column concatenation, etc&#41; can be overloaded to work with nodes. In this way, MLJ&#39;s network-building syntax is economical, intuitive and easy to read. In this respect we have been inspired by <a href="https://julialang.org/blog/2017/12/ml&amp;pl">On Machine Learning and Programming Languages</a>.</p>
-<h2><a id="invitation_to_the_community" href="#invitation_to_the_community">Invitation to the community</a></h2>We now invite the community to try out our newly registered <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> package and provide any feedback or suggestions you may have going forward. We are also particularly interested in hearing how you would use our package, and what features it may be lacking.
+<h2 id="just_quotwrite_the_mathquot"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></h2>
+<p>Because of Julia&#39;s generic programming features, any kind of operation you would normally apply to data &#40;arithmetic, row selection, column concatenation, etc&#41; can be overloaded to work with nodes. In this way, MLJ&#39;s network-building syntax is economical, intuitive and easy to read. In this respect we have been inspired by <a href="https://julialang.org/blog/2017/12/ml&amp;pl">On Machine Learning and Programming Languages</a>.</p>
+<h2 id="invitation_to_the_community"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></h2>  We now invite the community to try out our newly registered <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> package and provide any feedback or suggestions you may have going forward. We are also particularly interested in hearing how you would use our package, and what features it may be lacking.
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 

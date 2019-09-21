@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Efficient Aggregates in Julia</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 5 March 2013 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;"><a href="https://github.com/JeffBezanson">Jeff Bezanson</a> </span> 
   </h3>
 
@@ -114,7 +116,8 @@ end
 <p>Since field values at construction time are final, their types are too, so we learn everything about the type of an immutable object when it is constructed.</p>
 <p>There are many potential optimizations here, and we have not implemented all of them yet. But having this feature in place provides another lever to help us improve performance over time.</p>
 <p>For now though, we at least have a much simpler implementation of complex numbers, and will be able to take advantage of efficient rational matrices and other similar niceties.</p>
-<h2><a id="addendum_under_the_hood" href="#addendum_under_the_hood">Addendum: Under the hood</a></h2> For purposes of calling C and writing reflective code, it helps to know a bit about how immutable types are implemented. Before this change, we had types <code>AbstractKind</code>, <code>BitsKind</code>, and <code>CompositeKind</code>, for separating which types are abstract, which are represented by immutable bit strings, and which are mutable aggregates. It was sometimes convenient that the type system reflected these differences, but also a bit unwarranted since all these types participate in the same hierarchy and follow the same subtyping rules.</p>
+<h2 id="addendum_under_the_hood"><a href="/pub/2013-03-05-efficient-aggregates.html#addendum_under_the_hood">Addendum: Under the hood</a></h2>
+<p>For purposes of calling C and writing reflective code, it helps to know a bit about how immutable types are implemented. Before this change, we had types <code>AbstractKind</code>, <code>BitsKind</code>, and <code>CompositeKind</code>, for separating which types are abstract, which are represented by immutable bit strings, and which are mutable aggregates. It was sometimes convenient that the type system reflected these differences, but also a bit unwarranted since all these types participate in the same hierarchy and follow the same subtyping rules.</p>
 <p>Now, the type landscape is both simpler and more complex. The three Kinds have been merged into a single kind called <code>DataType</code>. The type of every value in Julia is now either a <code>DataType</code>, or else a tuple type &#40;union types still exist, but of course are always abstract&#41;. To find out the details of a <code>DataType</code>&#39;s physical representation, you must query its properties. <code>DataType</code>s have three boolean properties <code>abstract</code>, <code>mutable</code>, and <code>pointerfree</code>, and an integer property <code>size</code>. The <code>CompositeKind</code> properties <code>names</code> and <code>types</code> are still there to describe fields.</p>
 <p>The <code>abstract</code> property indicates that the type was declared with the <code>abstract</code> keyword and has no direct instances. <code>mutable</code> indicates, for concrete types, whether instances are mutable. <code>pointerfree</code> means that instances contain &quot;just data&quot; and no references to other Julia values. <code>size</code> gives the size of an instance in bytes.</p>
 <p>What used to be <code>BitsKind</code>s are now <code>DataType</code>s that are immutable, concrete, have no fields, and have non-zero size. The former <code>CompositeKind</code>s are mutable and concrete, and either have fields or are zero size if they have zero fields. Clearly, new combinations are now possible. We have already mentioned immutable types with fields. We could have the equivalent of mutable <code>BitsKind</code>s, but this combination is not exposed in the language, since it is easily emulated using mutable fields. Another new combination is abstract types with fields, which would allow you to declare that all subtypes of some abstract type should have certain fields. That one is definitely useful, and we plan to provide syntax for it.</p>

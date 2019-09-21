@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Julia 0.5 Highlights</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 11 October 2016 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Stefan Karpinski </span> 
   </h3>
 
@@ -58,7 +60,8 @@
 <div class="jd-content">
 <p><em>To follow along with the examples in this blog post and run them live, you can go to <a href="https://juliabox.com/">JuliaBox</a>, create a free login, and open the &quot;Julia 0.5 Highlights&quot; notebook under &quot;What&#39;s New in 0.5&quot;. The notebook can also be downloaded from <a href="https://raw.githubusercontent.com/JuliaLang/www.julialang.org/master/blog/_posts/Julia-0.5-highlights-notebook/Julia&#37;200.5&#37;20Highlights.ipynb">here</a>.</em></p>
 <p><a href="/blog/2016/10/julia-0.5-release">Julia 0.5</a> is a pivotal release. It introduces more transformative features than any release since the first official version. Moreover, several of these features set the stage for even more to come in the <a href="https://www.youtube.com/watch?v&#61;5gXMpbY1kJY">lead up to Julia 1.0</a>. In this post, we&#39;ll go through some of the major changes in 0.5, including improvements to functional programming, comprehensions, generators, arrays, strings, and more.</p>
-<h2><a id="functions" href="#functions">Functions</a></h2> Julia has always supported functional programming features:</p>
+<h2 id="functions"><a href="/pub/2016-10-11-julia-0.5-highlights.html#functions">Functions</a></h2>
+<p>Julia has always supported functional programming features:</p>
 <ul>
 <li><p>anonymous functions &#40;<a href="https://en.wikipedia.org/wiki/Anonymous_function">lambdas</a>&#41;,</p>
 </li>
@@ -94,11 +97,10 @@ julia> mean([@elapsed(double_it_map(v)) for _=1:100])
 0.023871925960000002
 </code></pre>
 <p>The version using <code>map</code> is as fast as the vectorized one in 0.5. In this case, writing <code>2v</code> happens to be more convenient than writing <code>map&#40;x-&gt;2x, v&#41;</code>, so we may choose not to use <code>map</code> here, but there are many cases where functional constructs are clearer, more general, and more convenient. Now, they are also fast.</p>
-<h3><a id="ambiguous_methods" href="#ambiguous_methods">Ambiguous methods</a></h3> One design decision that any multiple dispatch language must make is how to handle dispatch ambiguities: cases where none of the methods applicable to a given set of arguments is more specific than the rest. Suppose, for example, that a generic function, <code>f</code>, has the following methods:</p>
-<pre><code class="language-julia">
-f&#40;a::Int, b::Real&#41; &#61; 1
-f&#40;a::Real, b::Int&#41; &#61; 2
-</code></pre>
+<h3 id="ambiguous_methods"><a href="/pub/2016-10-11-julia-0.5-highlights.html#ambiguous_methods">Ambiguous methods</a></h3>
+<p>One design decision that any multiple dispatch language must make is how to handle dispatch ambiguities: cases where none of the methods applicable to a given set of arguments is more specific than the rest. Suppose, for example, that a generic function, <code>f</code>, has the following methods:</p>
+<pre><code class="language-julia">f&#40;a::Int, b::Real&#41; &#61; 1
+f&#40;a::Real, b::Int&#41; &#61; 2</code></pre>
 <p>In Julia 0.4 and earlier, the second method definition causes an ambiguity warning:</p>
 <pre><code class="language-julia">WARNING: New definition
     f(Real, Int64) at none:1
@@ -120,7 +122,8 @@ ERROR: MethodError: f(::Int64, ::Int64) is ambiguous. Candidates:
  in (::Base.REPL.##1#2{Base.REPL.REPLBackend})() at ./event.jl:46
 </code></pre>
 <p>This improves the experience of using the Julia package ecosystem considerably, while also making Julia safer and more reliable. No more torrent of insignificant ambiguity warnings. No more playing ambiguity whack-a-mole when someone else refactors their code and accidentally introduces ambiguities in yours. No more risk that a method call could be silently broken because of warnings that we&#39;ve all learned to ignore.</p>
-<h3><a id="return_type_annotations" href="#return_type_annotations">Return type annotations</a></h3> A long-requested feature has been the ability to annotate method definitions with an explicit return type. This aids the clarity of code, serves as self-documentation, helps the compiler reason about code, and ensures that return types are what programmers intend them to be. In 0.5, you can annotate method definitions with a return type like so:</p>
+<h3 id="return_type_annotations"><a href="/pub/2016-10-11-julia-0.5-highlights.html#return_type_annotations">Return type annotations</a></h3>
+<p>A long-requested feature has been the ability to annotate method definitions with an explicit return type. This aids the clarity of code, serves as self-documentation, helps the compiler reason about code, and ensures that return types are what programmers intend them to be. In 0.5, you can annotate method definitions with a return type like so:</p>
 <pre><code class="language-julia">function clip{T<:Real}(x::T, lo::Real, hi::Real)::T
     if x < lo
         return lo
@@ -162,7 +165,8 @@ julia> clip2(2.5, 1, 13//5)
 2.5
 </code></pre>
 <p>Return type annotations are a fairly simple syntactic transformation, but they make it easier to write methods with consistent and predictable return types. If different branches of your code can lead to slightly different types, the fix is now as simple as putting a single type annotation on the entire method.</p>
-<h3><a id="vectorized_function_calls" href="#vectorized_function_calls">Vectorized function calls</a></h3> Julia 0.5 introduces the syntax <code>f.&#40;A1, A2, ...&#41;</code> for vectorized function calls. This syntax translates to <code>broadcast&#40;f, A1, A2, ...&#41;</code>, where <code>broadcast</code> is a higher-order function &#40;introduced in 0.2&#41;, which generically implements the kind of broadcasting behavior found in Julia&#39;s &quot;dotted operators&quot; such as <code>.&#43;</code>, <code>.-</code>, <code>.*</code>, and <code>./</code>. Since higher-order functions are now efficient, writing <code>broadcast&#40;f,v,w&#41;</code> and <code>f.&#40;v,w&#41;</code> are both about as fast as loops specialized for the operation <code>f</code> and the shapes of <code>v</code> and <code>w</code>. This syntax lets you vectorize your scalar functions the way built-in vectorized functions like <code>log</code>, <code>exp</code>, and <code>atan2</code> work. In fact, in the future, this syntax will likely replace the pre-vectorized methods of functions like <code>exp</code> and <code>log</code>, so that users will write <code>exp.&#40;v&#41;</code> to exponentiate a vector of values. This may seem a little bit uglier, but it&#39;s more consistent than choosing an essentially arbitrarily set of functions to pre-vectorize, and as I&#39;ll explain below, this approach can also have significant performance benefits.</p>
+<h3 id="vectorized_function_calls"><a href="/pub/2016-10-11-julia-0.5-highlights.html#vectorized_function_calls">Vectorized function calls</a></h3>
+<p>Julia 0.5 introduces the syntax <code>f.&#40;A1, A2, ...&#41;</code> for vectorized function calls. This syntax translates to <code>broadcast&#40;f, A1, A2, ...&#41;</code>, where <code>broadcast</code> is a higher-order function &#40;introduced in 0.2&#41;, which generically implements the kind of broadcasting behavior found in Julia&#39;s &quot;dotted operators&quot; such as <code>.&#43;</code>, <code>.-</code>, <code>.*</code>, and <code>./</code>. Since higher-order functions are now efficient, writing <code>broadcast&#40;f,v,w&#41;</code> and <code>f.&#40;v,w&#41;</code> are both about as fast as loops specialized for the operation <code>f</code> and the shapes of <code>v</code> and <code>w</code>. This syntax lets you vectorize your scalar functions the way built-in vectorized functions like <code>log</code>, <code>exp</code>, and <code>atan2</code> work. In fact, in the future, this syntax will likely replace the pre-vectorized methods of functions like <code>exp</code> and <code>log</code>, so that users will write <code>exp.&#40;v&#41;</code> to exponentiate a vector of values. This may seem a little bit uglier, but it&#39;s more consistent than choosing an essentially arbitrarily set of functions to pre-vectorize, and as I&#39;ll explain below, this approach can also have significant performance benefits.</p>
 <p>To give a more concrete sense of what this syntax can be used for, consider the <code>clip</code> function defined above for real arguments. This scalar function can be applied to vectors using vectorized call syntax without any further method definitions:</p>
 <pre><code class="language-julia">julia> v = randn(10)
 10-element Array{Float64,1}:
@@ -287,7 +291,8 @@ BenchmarkTools.Trial:
 <pre><code class="language-julia">broadcast((x, y)->exp(log(x) + log(y)), X, Y)
 </code></pre>
 <p>This change will complete the transition to a generalized approach to vectorized function application &#40;including syntax-level loop fusion&#41;, which will make Julia&#39;s story for writing allocation-free array code much stronger.</p>
-<h2><a id="comprehensions" href="#comprehensions">Comprehensions</a></h2> Julia&#39;s array comprehensions have always supported some advanced features such as iterating with several variables to produce multidimensional arrays. This release rounds out the functionality of comprehensions with two additional features: nested generation with multiple <code>for</code> clauses, and filtering with a trailing <code>if</code> clause. To demonstrate these features, consider making a dollar &#40;100¢&#41; using quarters &#40;25¢&#41;, dimes &#40;10¢&#41;, nickels &#40;5¢&#41; and pennies &#40;1¢&#41;. We can generate an array of tuples of total values in each kind of coin by using a comprehension with nested <code>for</code> clauses:</p>
+<h2 id="comprehensions"><a href="/pub/2016-10-11-julia-0.5-highlights.html#comprehensions">Comprehensions</a></h2>
+<p>Julia&#39;s array comprehensions have always supported some advanced features such as iterating with several variables to produce multidimensional arrays. This release rounds out the functionality of comprehensions with two additional features: nested generation with multiple <code>for</code> clauses, and filtering with a trailing <code>if</code> clause. To demonstrate these features, consider making a dollar &#40;100¢&#41; using quarters &#40;25¢&#41;, dimes &#40;10¢&#41;, nickels &#40;5¢&#41; and pennies &#40;1¢&#41;. We can generate an array of tuples of total values in each kind of coin by using a comprehension with nested <code>for</code> clauses:</p>
 <pre><code class="language-julia">julia> change = [(q,d,n,p) for q=0:25:100 for d=0:10:100-q for n=0:5:100-q-d for p=100-q-d-n]
 242-element Array{NTuple{4,Int64},1}:
  (0,0,0,100)
@@ -327,7 +332,8 @@ BenchmarkTools.Trial:
 </code></pre>
 <p>The only difference here is the <code>if p &lt; n &lt; d &lt; q</code> clause at the end of the comprehension, which has the effect that the result only contains cases where this predicate holds true. There are exactly four ways to make a dollar with strictly increasing value from pennies to nickels to dimes to quarters.</p>
 <p>Nested and filtered comprehensions aren&#39;t earth-shattering features – everything you can do with them can be done in a variety of other ways – but they are expressive and convenient, found in other languages, and they allow you to try more things with your data quickly and easily, with less pointless refactoring.</p>
-<h2><a id="generators" href="#generators">Generators</a></h2> In the previous section we used an array comprehension to take the sum of each tuple, save the sums as an array, and then pass that array of sums to the <code>extrema</code> function to find the largest and smallest sum &#40;they&#39;re all 100&#41;:</p>
+<h2 id="generators"><a href="/pub/2016-10-11-julia-0.5-highlights.html#generators">Generators</a></h2>
+<p>In the previous section we used an array comprehension to take the sum of each tuple, save the sums as an array, and then pass that array of sums to the <code>extrema</code> function to find the largest and smallest sum &#40;they&#39;re all 100&#41;:</p>
 <pre><code class="language-julia">julia> @time extrema([sum(t) for t in change])
   0.000072 seconds (8 allocations: 2.203 KB)
 (100,100)
@@ -338,7 +344,8 @@ BenchmarkTools.Trial:
 (100,100)
 </code></pre>
 <p>This avoids allocating a temporary array of sums entirely, instead computing the next tuple&#39;s sum only when the <code>extrema</code> function is ready to accept a new value. Using a generator reduces the memory overhead to 208 bytes – the size of the the return value. More importantly, the memory usage doesn&#39;t depend on the size of the <code>change</code> array anymore – it will always be just 208 bytes, even if <code>change</code> holds a trillion tuples. It&#39;s not hard to imagine situations where such a reduction in asymptotic memory usage is crucial. The similar syntax between array comprehensions and generator expressions makes it trivial to move back and forth between the two styles of computation as needed.</p>
-<h3><a id="initializing_collections" href="#initializing_collections">Initializing collections</a></h3> The new generator syntax dovetails particularly nicely with Julia&#39;s convention for constructing collections – to make a new collection, you call the constructor with a single iterable argument, which yields the values you want in the new collection. In its simplest form, this looks something like:</p>
+<h3 id="initializing_collections"><a href="/pub/2016-10-11-julia-0.5-highlights.html#initializing_collections">Initializing collections</a></h3>
+<p>The new generator syntax dovetails particularly nicely with Julia&#39;s convention for constructing collections – to make a new collection, you call the constructor with a single iterable argument, which yields the values you want in the new collection. In its simplest form, this looks something like:</p>
 <pre><code class="language-julia">julia> IntSet([1, 4, 9, 16, 25, 36, 49, 64])
 IntSet([1, 4, 9, 16, 25, 36, 49, 64])
 </code></pre>
@@ -371,7 +378,8 @@ BenchmarkTools.Trial:
   maximum time:     4.82 μs (93.20% GC)
 </code></pre>
 <p>As you can see from this benchmark, the version with an array comprehension uses twice as much memory and is 50&#37; slower than constructing the same <code>IntSet</code> using a generator expression.</p>
-<h4><a id="constructing_dictionaries" href="#constructing_dictionaries">Constructing dictionaries</a></h4> Generators can be used to construct dictionaries too, and this use case deserves some special attention since it completes a multi-release process of putting user-defined dictionary types on an equal footing with the built-in <code>Dict</code> type. In Julia 0.3, the <code>&#61;&gt;</code> operator only existed as part of syntax for constructing <code>Dict</code> objects: <code>&#91;k₁ &#61;&gt; v₁, k₂ &#61;&gt; v₂&#93;₂&#93;</code> and <code>&#91;k&#40;i&#41; &#61;&gt; v&#40;i&#41; for i &#61; c&#93;</code>. This design was based on other dynamic languages where dictionaries are among a small set of built-in types with special syntax that are deeply integrated into the language. As Julia&#39;s ecosystem has matured, however, it has become apparent that Julia is actually more like Java or C&#43;&#43; in this respect than it is like Python or Lua: the <code>Dict</code> type isn&#39;t that special – it happens to be defined in the standard library, but is otherwise quite ordinary. Many programs use other dictionary implementations: for example, the tree-based <code>SortedDict</code> type, which sorts values by key, or <code>OrderedDict</code>, which maintains keys in the order they are inserted. Having special syntax only for <code>Dict</code> makes using other dictionary implementations problematic. In 0.3, there was no good syntax for constructing values of these dictionaries – the best one could do was to invoke a constructor with an array of two-tuples:</p>
+<h4 id="constructing_dictionaries"><a href="/pub/2016-10-11-julia-0.5-highlights.html#constructing_dictionaries">Constructing dictionaries</a></h4>
+<p>Generators can be used to construct dictionaries too, and this use case deserves some special attention since it completes a multi-release process of putting user-defined dictionary types on an equal footing with the built-in <code>Dict</code> type. In Julia 0.3, the <code>&#61;&gt;</code> operator only existed as part of syntax for constructing <code>Dict</code> objects: <code>&#91;k₁ &#61;&gt; v₁, k₂ &#61;&gt; v₂&#93;₂&#93;</code> and <code>&#91;k&#40;i&#41; &#61;&gt; v&#40;i&#41; for i &#61; c&#93;</code>. This design was based on other dynamic languages where dictionaries are among a small set of built-in types with special syntax that are deeply integrated into the language. As Julia&#39;s ecosystem has matured, however, it has become apparent that Julia is actually more like Java or C&#43;&#43; in this respect than it is like Python or Lua: the <code>Dict</code> type isn&#39;t that special – it happens to be defined in the standard library, but is otherwise quite ordinary. Many programs use other dictionary implementations: for example, the tree-based <code>SortedDict</code> type, which sorts values by key, or <code>OrderedDict</code>, which maintains keys in the order they are inserted. Having special syntax only for <code>Dict</code> makes using other dictionary implementations problematic. In 0.3, there was no good syntax for constructing values of these dictionaries – the best one could do was to invoke a constructor with an array of two-tuples:</p>
 <pre><code class="language-julia">SortedDict([(k₁, v₁), (k₂, v₂)])        # fixed-size dictionaries
 SortedDict([(k(i), v(i)) for i in c])   # dictionary comprehensions
 </code></pre>
@@ -406,7 +414,8 @@ Dict{String,Int64} with 10 entries:
   "******"     => 6
 </code></pre>
 <p>This generalization makes the syntax for constructing a <code>Dict</code> slightly longer, but we feel that the increased consistency, ability to change dictionary implementations with a simple search-and-replace, and putting user-defined dictionary-like types on the same level as the built-in <code>Dict</code> type make this change well worthwhile.</p>
-<h2><a id="arrays" href="#arrays">Arrays</a></h2> The 0.5 release was originally intended to include a large number of disruptive array changes, collectively dubbed &quot;Arraymageddon&quot;. After much discussion, experimentation and benchmarking, this set of breaking changes was significantly reduced for a variety of reasons:</p>
+<h2 id="arrays"><a href="/pub/2016-10-11-julia-0.5-highlights.html#arrays">Arrays</a></h2>
+<p>The 0.5 release was originally intended to include a large number of disruptive array changes, collectively dubbed &quot;Arraymageddon&quot;. After much discussion, experimentation and benchmarking, this set of breaking changes was significantly reduced for a variety of reasons:</p>
 <ul>
 <li><p>Some changes were deemed not to be good ideas after all;</p>
 </li>
@@ -416,7 +425,8 @@ Dict{String,Int64} with 10 entries:
 </li>
 </ul>
 <p>Although not many breaking changes happened in 0.5, this was a major release for Julia&#39;s array infrastructure. The code to implement various complex polymorphic indexing operations for generic arrays and array-like structures was majorly refactored, and in the process it shrank by 40&#37; while becoming more complete, more general, and faster. You can read more about the very cool things you can now do with array-like types in an excellent pair of blog posts published here earlier in the year: <a href="/blog/2016/02/iteration"><em>Multidimensional algorithms and iteration</em></a> and <a href="/blog/2016/03/arrays-iteration"><em>Generalizing AbstractArrays</em></a>. In the next two subsections, I&#39;ll go over some of the array changes that did happen in 0.5.</p>
-<h3><a id="dimension_sum_slices" href="#dimension_sum_slices">Dimension sum slices</a></h3> The most significant breaking change in the 0.5 cycle affects multidimensional array slicing. To explain it we&#39;ll need a little terminology. A <em>singleton dimension</em> of a multidimensional array is a dimension whose size is 1. For example, a 5x1 matrix has a trailing singleton dimension and may be called a &quot;column matrix&quot;, and a 1x5 matrix has a leading singleton dimension and may be called a &quot;row matrix&quot;. A <em>scalar slice</em> refers to a dimension in a multidimensional slice expression where the index is a scalar integer &#40;considered to be zero-dimensional&#41;, rather than a 1-dimensional range or vector, or some higher-dimensional collection of indices. For example, in <code>A&#91;1,:&#93;</code> the first slice is scalar, the second is not; in <code>A&#91;:,2&#93;</code> the second slice is scalar, the first is not; in <code>A&#91;3,4&#93;</code> both slices are scalar.</p>
+<h3 id="dimension_sum_slices"><a href="/pub/2016-10-11-julia-0.5-highlights.html#dimension_sum_slices">Dimension sum slices</a></h3>
+<p>The most significant breaking change in the 0.5 cycle affects multidimensional array slicing. To explain it we&#39;ll need a little terminology. A <em>singleton dimension</em> of a multidimensional array is a dimension whose size is 1. For example, a 5x1 matrix has a trailing singleton dimension and may be called a &quot;column matrix&quot;, and a 1x5 matrix has a leading singleton dimension and may be called a &quot;row matrix&quot;. A <em>scalar slice</em> refers to a dimension in a multidimensional slice expression where the index is a scalar integer &#40;considered to be zero-dimensional&#41;, rather than a 1-dimensional range or vector, or some higher-dimensional collection of indices. For example, in <code>A&#91;1,:&#93;</code> the first slice is scalar, the second is not; in <code>A&#91;:,2&#93;</code> the second slice is scalar, the first is not; in <code>A&#91;3,4&#93;</code> both slices are scalar.</p>
 <p>All previous versions of Julia have dropped trailing scalar slices when performing multidimensional array slicing. That is, when an array was sliced with multiple indices, the resulting array had the number of dimensions of the original array minus the number of trailing scalar slices. So when you sliced a column out of a matrix the result was a 1-dimensional vector, but when you sliced a row the result was a 2-dimensional row matrix:</p>
 <pre><code class="language-julia">julia> VERSION
 v"0.4.7"
@@ -540,7 +550,8 @@ julia> M[I,J]
  0.950951  0.713032  0.0835119  0.897018
 </code></pre>
 <p>Since integer range construction can be eliminated by Julia&#39;s compiler, writing this is free but has the effect of keeping a dimension which would otherwise be dropped under the new rules. Unfortunately, there&#39;s no way to make this change without breaking some code – we apologize in advance for the inconvenience, and we hope you find the improvement to be worthwhile.</p>
-<h3><a id="array_views" href="#array_views">Array views</a></h3> One of the major news items of 0.5 is a non-change: array slices still create copies of array data. There was a lot of discussion about changing the default behavior to creating views, but we ended up deciding against this change and keeping the old behavior. The motivation for views by default was to improve performance drastically in a variety of slow cases, but after a lot of discussion, experiments, and benchmarks, it was decided not to make this change. The conversation about this decision is long, so I&#39;ll summarize the major points:</p>
+<h3 id="array_views"><a href="/pub/2016-10-11-julia-0.5-highlights.html#array_views">Array views</a></h3>
+<p>One of the major news items of 0.5 is a non-change: array slices still create copies of array data. There was a lot of discussion about changing the default behavior to creating views, but we ended up deciding against this change and keeping the old behavior. The motivation for views by default was to improve performance drastically in a variety of slow cases, but after a lot of discussion, experiments, and benchmarks, it was decided not to make this change. The conversation about this decision is long, so I&#39;ll summarize the major points:</p>
 <ul>
 <li><p>Slicing should either consistently produce views or copies. Unpredictably doing one or the other depending on types – or worse still, on runtime values – would be a disaster for writing reliable, generic code.</p>
 </li>
@@ -568,7 +579,8 @@ julia> M[I,J]
 </li>
 </ul>
 <p>Since views are an such important tool for both performance and for expressing complex mutating operations on arrays &#40;especially with higher order functions&#41;, we may introduce a special syntax for view slices in the future. In particular, the syntax <code>A@&#91;I...&#93;</code> had a fair amount of popular support. Stay tuned&#33;</p>
-<h2><a id="and_more" href="#and_more">And more...</a></h2> This is far from the full extent of the improvements introduced in Julia 0.5, but this blog post is already getting quite long, so I&#39;ll just summarize a few of the other big ticket items:</p>
+<h2 id="and_more"><a href="/pub/2016-10-11-julia-0.5-highlights.html#and_more">And more...</a></h2>
+<p>This is far from the full extent of the improvements introduced in Julia 0.5, but this blog post is already getting quite long, so I&#39;ll just summarize a few of the other big ticket items:</p>
 <ul>
 <li><p>The set of string types and operations has been significantly simplified and streamlined.</p>
 <p>The <code>ASCIIString</code> and <code>UTF8String</code> types have been merged into a single <code>String</code> type, and the <code>UTF16String</code> and <code>UTF32String</code> and related functions have been moved into the <a href="https://github.com/JuliaArchive/LegacyStrings.jl"><code>LegacyStrings</code></a> package, which keeps the same implementations as 0.4.</p>

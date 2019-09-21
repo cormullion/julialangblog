@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Some fun with &pi; in Julia</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 14 March 2017 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Simon Byrne, Luis Benet and David Sanders </span> 
   </h3>
 
@@ -80,7 +82,8 @@ linebreaks: { automatic: true }
 
 <p><img src="/assets/images/blog/2017-03-14-piday/pi.png" alt="pi" /> <a href="#footnote-credit" class="footnote">[credit]</a></p>
 <p><em>This post is available as a Jupyter notebook <a href="https://github.com/simonbyrne/Pi.jl/blob/master/pi.ipynb">here</a></em></p>
-<h2><a id="pi_in_julia" href="#pi_in_julia">&pi; in Julia</a></h2> by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
+<h2 id="pi_in_julia"><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></h2>
+<p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Like most technical languages, Julia provides a variable constant for &pi;. However Julia&#39;s handling is a bit special.</p>
 <pre><code class="language-julia">pi
 
@@ -131,7 +134,8 @@ end
 
 true
 </code></pre>
-<h2><a id="pi_via_inline_assembly_instructions" href="#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></h2> by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
+<h2 id="pi_via_inline_assembly_instructions"><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></h2>
+<p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Julia provides a very low-level <code>llvmcall</code> interface, which allows the user to directly write <a href="http://llvm.org/docs/LangRef.html">LLVM intermediate representation</a>, including the use of inline assembly. The following snippet calls the <code>fldpi</code> instruction &#40;&quot;<strong>f</strong>loating point <strong>l</strong>oa<strong>d</strong> <strong>pi</strong>&quot;&#41; which loads the constant &pi; onto the floating point register stack &#40;this works only on x86 and x86_64 architectures&#41;</p>
 <pre><code class="language-julia">function asm_pi()
     Base.llvmcall(
@@ -185,11 +189,13 @@ asm_pi (generic function with 1 method)
 <li><p><code>popq</code> and <code>retq</code> pops the call stack frame.</p>
 </li>
 </ol>
-<h2><a id="pi_using_a_taylor_series_expansions" href="#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a></h2> by <a href="https://github.com/lbenet">Luis Benet</a>, Instituto de Ciencias Físicas, Universidad Nacional Autónoma de México &#40;UNAM&#41;&#41;</p>
+<h2 id="pi_using_a_taylor_series_expansions"><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a></h2>
+<p>by <a href="https://github.com/lbenet">Luis Benet</a>, Instituto de Ciencias Físicas, Universidad Nacional Autónoma de México &#40;UNAM&#41;&#41;</p>
 <p>This will demonstrate how to evaluate &pi; using various Taylor series expansions via the <a href="https://github.com/JuliaDiff/TaylorSeries.jl">TaylorSeries.jl</a> package.</p>
 <pre><code class="language-julia">using TaylorSeries
 </code></pre>
-<h3><a id="madhavas_formula" href="#madhavas_formula">Madhava&#39;s formula</a></h3> One of the standard trigonmetric identities is</p>
+<h3 id="madhavas_formula"><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></h3>
+<p>One of the standard trigonmetric identities is</p>
 \[ \tan\left( \frac{\pi}{6} \right) = \frac{1}{\sqrt{3}}. \]
 <p>Therefore, by taking the Taylor expansion of \( 6 \arctan(x) \) around 0 we may obtain the value of \(\pi\), by evaluating it at \(1/\sqrt{3}\), a value which is within the radius of convergence.</p>
 <p>We obtain the Taylor series of order 37th, using <code>BigFloat</code>s:</p>
@@ -226,7 +232,8 @@ pi_approx2 = evaluate(series2, 1/sqrt(BigInt(3)))
 \pi = 6 \sum_{n=0}^{\infty} (-1)^n \frac{(1/\sqrt{3})^{2n+1}}{2n+1}.
 \end{equation}
 \]
-<h3><a id="machins_approach" href="#machins_approach">Machin&#39;s approach</a></h3> Following the same idea, <a href="https://en.wikipedia.org/wiki/John_Machin#Formula">John Machin</a> derived an algorithm which converges much faster, using the identity</p>
+<h3 id="machins_approach"><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></h3>
+<p>Following the same idea, <a href="https://en.wikipedia.org/wiki/John_Machin#Formula">John Machin</a> derived an algorithm which converges much faster, using the identity</p>
 \[
 \begin{equation}
 \frac{\pi}{4} = 4 \arctan\left(\frac{1}{5}\right) - \arctan\left(\frac{1}{239}\right).
@@ -240,8 +247,10 @@ pi_approx3 = 4*( 4*evaluate(ser, 1/big(5)) - evaluate(ser, 1/big(239)) )
 <pre><code class="language-julia">abs(pi - pi_approx3)
 2.17274540445425262256957586097740078761957212248936631045983596428448951876822e-28
 </code></pre>
-<h2><a id="finding_guaranteed_bounds_on_pi" href="#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a></h2> by <a href="http://sistemas.fciencias.unam.mx/~dsanders/">David P. Sanders</a>,  Department of Physics, Faculty of Sciences, National University of Mexico &#40;UNAM&#41;</p>
-<h3><a id="using_standard_floating-point_arithmetic" href="#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></h3> We will calculate <em>guaranteed</em> &#40;i.e., <em>validated</em>, or mathematically rigorous&#41; bounds on \(\pi\) using just floating-point arithmetic. This requires &quot;directed rounding&quot;, i.e. the ability to control in which direction floating-point operations are rounded.</p>
+<h2 id="finding_guaranteed_bounds_on_pi"><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a></h2>
+<p>by <a href="http://sistemas.fciencias.unam.mx/~dsanders/">David P. Sanders</a>,  Department of Physics, Faculty of Sciences, National University of Mexico &#40;UNAM&#41;</p>
+<h3 id="using_standard_floating-point_arithmetic"><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></h3>
+<p>We will calculate <em>guaranteed</em> &#40;i.e., <em>validated</em>, or mathematically rigorous&#41; bounds on \(\pi\) using just floating-point arithmetic. This requires &quot;directed rounding&quot;, i.e. the ability to control in which direction floating-point operations are rounded.</p>
 <p>This is based on the book <a href="http://press.princeton.edu/titles/9488.html"><em>Validated Numerics</em></a> &#40;Princeton, 2011&#41; by <a href="http://www2.math.uu.se/~warwick/CAPA/warwick/warwick.html">Warwick Tucker</a>.</p>
 <p>Consider the infinite series</p>
 \[ S := \sum_{n=1}^\infty \frac{1}{n^2},\]
@@ -345,7 +354,8 @@ lower_π < pi < upper_π
 true
 </code></pre>
 <p>In principle, we could attain arbitrarily good precision with higher-precision <code>BigFloat</code>s, but the result is hampered by the slow convergence of the series.</p>
-<h2><a id="summing_a_series_using_interval_arithmetic" href="#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></h2> We repeat the calculation using <em>interval arithmetic</em>, provided by the <a href="https://github.com/dpsanders/ValidatedNumerics.jl">ValidatedNumerics.jl</a> package.</p>
+<h2 id="summing_a_series_using_interval_arithmetic"><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></h2>
+<p>We repeat the calculation using <em>interval arithmetic</em>, provided by the <a href="https://github.com/dpsanders/ValidatedNumerics.jl">ValidatedNumerics.jl</a> package.</p>
 <pre><code class="language-julia">using ValidatedNumerics
 </code></pre>
 <pre><code class="language-julia">setdisplay(:standard)  # abbreviated display of intervals
@@ -386,7 +396,8 @@ true
 
 true
 </code></pre>
-<h2><a id="calculating_an_area" href="#calculating_an_area">Calculating an area</a></h2> Although the calculation above is simple, the derivation of the series itself is not. In this section, we will use a more natural way to calculate \(\pi\), namely that the area of a circle of radius \(r\) is \(A(r) = \pi r^2\). We will calculate the area of one quadrant of a circle of radius \(r=2\), which is equal to \(\pi\):</p>
+<h2 id="calculating_an_area"><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></h2>
+<p>Although the calculation above is simple, the derivation of the series itself is not. In this section, we will use a more natural way to calculate \(\pi\), namely that the area of a circle of radius \(r\) is \(A(r) = \pi r^2\). We will calculate the area of one quadrant of a circle of radius \(r=2\), which is equal to \(\pi\):</p>
 <pre><code class="language-julia">using Plots; gr();
 </code></pre>
 <pre><code class="language-julia">f(x) = √(4 - x^2)

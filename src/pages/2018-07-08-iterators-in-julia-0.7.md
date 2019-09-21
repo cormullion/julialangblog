@@ -1,6 +1,7 @@
 @def published = "8 July 2018"
 @def title = "Writing Iterators in Julia 0.7"
 @def authors =""" <a href="https://github.com/iamed2">Eric Davies</a>"""
+@def hascode = true
 
 ### With the upcoming 0.7 release, Julia has simplified its iteration interface.
 

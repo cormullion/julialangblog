@@ -3,7 +3,6 @@
 @def authors ="Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit, 譯者：杜岳華（Yueh-Hua Tu）Dboy Liao (Yin-Chen Liao)"
 @def hascode = true
 
-
 在這篇文章中，我們將會展示在 Julia 中使用微分方程解算器（DiffEq solver）搭配神經網路有多麼簡單、有效而且穩定。
 
 <!-- In this blog post we will show you how to easily, efficiently, and
@@ -86,6 +85,8 @@ student, we have [Google Summer of Code projects available in this area](https:/
 [pays quite well over the summer](https://developers.google.com/open-source/gsoc/help/student-stipends).
 Please join the [Julia Slack](https://slackinvite.julialang.org/) and the #jsoc channel to discuss in more detail.) -->
 
+
+\toc
 
 ## 微分方程究竟與神經網絡有何關聯？
 

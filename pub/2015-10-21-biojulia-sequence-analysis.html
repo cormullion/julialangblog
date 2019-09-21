@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>JSoC 2015 project: Efficient data structures and algorithms for sequence analysis in BioJulia</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 21 October 2015 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;">Kenta Sato </span> 
   </h3>
 
@@ -66,7 +68,8 @@
 <p>Recent development of high-throughput DNA sequencers has enabled to sequence massive numbers of DNA fragments &#40;known as reads&#41; from biological samples within a day.  The first step of sequence analysis is locating positions of these fragments in other long reference sequence, then we can detect genetic variants or gene expressions based on the result.  This step is called sequence mapping or aligning, and because reference sequences are most commonly genome-scale &#40;about 3.2 billions length for human&#41;, a full-text search index is used to speed up this alignment process.  This kind of full-text search index is implemented in many bioinformatics tools, most notably <a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">bowtie2</a> and <a href="http://bio-bwa.sourceforge.net/">BWA</a>, whose papers are cited thousands of times.</p>
 <p><img src="/assets/images/blog/2015-10-03-sequence-analysis/mapping.png" alt="Mapping" /></p>
 <p>The main focus of my project was creating a full-text search index in Julia that is easy to use and efficient in practical applications.  In the course towards this destination, I&#39;ve created several packages that are useful as a building block for other data structures.  I&#39;m going to introduce you these packages in this post.</p>
-<h2><a id="intarraysjl" href="#intarraysjl">IntArrays.jl</a></h2> <a href="https://github.com/bicycle1885/IntArrays.jl">IntArrays.jl</a> is a package for arrays of unsigned integer. So, is it useful? Yes, it is&#33; This is because the <code>IntArray</code> type implemented in this package can store integers as small space as possible. The <code>IntArray</code> type has a type parameter <code>w</code> that represents the number of bits required to encode elements in an array. For example, if each element is an integer between 0 and 3, you only need to use two bits to encode it and <code>w</code> can be set to 2 or greater. These 2-bit integers are packed into a buffer and therefore the array consumes only one fourth of the space compared to the usual array. The following is a case of a byte sequence of <code>&#91;0x01, 0x03, 0x02, 0x00&#93;</code>:</p>
+<h2 id="intarraysjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#intarraysjl">IntArrays.jl</a></h2>
+<p><a href="https://github.com/bicycle1885/IntArrays.jl">IntArrays.jl</a> is a package for arrays of unsigned integer. So, is it useful? Yes, it is&#33; This is because the <code>IntArray</code> type implemented in this package can store integers as small space as possible. The <code>IntArray</code> type has a type parameter <code>w</code> that represents the number of bits required to encode elements in an array. For example, if each element is an integer between 0 and 3, you only need to use two bits to encode it and <code>w</code> can be set to 2 or greater. These 2-bit integers are packed into a buffer and therefore the array consumes only one fourth of the space compared to the usual array. The following is a case of a byte sequence of <code>&#91;0x01, 0x03, 0x02, 0x00&#93;</code>:</p>
 
 <pre>
     index:                           1          2          3          4
@@ -132,7 +135,8 @@ julia> sort(iarray); @time sort(iarray);
   2.290878 seconds (18 allocations: 4.001 MB)
 </code></pre>
 <p>If you have a great idea to improve the performance, please let me know&#33;</p>
-<h2><a id="indexablebitvectorsjl" href="#indexablebitvectorsjl">IndexableBitVectors.jl</a></h2> The next package is <a href="https://github.com/BioJulia/IndexableBitVectors.jl">IndexableBitVectors.jl</a>. You must be familiar with the <code>BitVector</code> type in the standard library; types defined in my package is a static but indexable version of it. Here &quot;indexable&quot; means that a query to ask the number of bits between an arbitrary range can be answered <strong>in constant time</strong>. If you are already familiar with <a href="https://en.wikipedia.org/wiki/Succinct_data_structure">succinct data structures</a>, you may know this is an important building block of other succinct data structures like wavelet trees, LOUDS, etcetera.</p>
+<h2 id="indexablebitvectorsjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#indexablebitvectorsjl">IndexableBitVectors.jl</a></h2>
+<p>The next package is <a href="https://github.com/BioJulia/IndexableBitVectors.jl">IndexableBitVectors.jl</a>. You must be familiar with the <code>BitVector</code> type in the standard library; types defined in my package is a static but indexable version of it. Here &quot;indexable&quot; means that a query to ask the number of bits between an arbitrary range can be answered <strong>in constant time</strong>. If you are already familiar with <a href="https://en.wikipedia.org/wiki/Succinct_data_structure">succinct data structures</a>, you may know this is an important building block of other succinct data structures like wavelet trees, LOUDS, etcetera.</p>
 <p>The package exports two variants of such bit vectors: <code>SucVector</code> and <code>RRR</code>. <code>SucVector</code> is simpler and faster than <code>RRR</code>, but <code>RRR</code> is compressible and will be smaller if 0/1 bits are localized in a bit vector. Both types split a bit vector into blocks and cache the number of bits up to the position. In <code>SucVector</code>, the extra space is about 1/4 bits per bit, so it will become ~25&#37; larger than the original bit vector.</p>
 <p>The most important query operation over these data structures would be the <code>rank1&#40;bv, i&#41;</code> query, which counts the number of 1 bits within <code>bv&#91;1:i&#93;</code>. Owing to the cached bit counts, we can finish the rank operation in constant time:</p>
 <pre><code class="language-julia">julia> using IndexableBitVectors
@@ -183,7 +187,8 @@ end
 <p><img src="/assets/images/blog/2015-10-03-sequence-analysis/sucvector.png" alt="Block" /></p>
 <p>Since the bit count of the first small block is always zero, we can exploit this space to extend the cache of the large block &#40;red frame&#41;.  When running the <code>rank1&#40;bv, i&#41;</code> query, it first picks a large and small block pair that the <code>i</code>-th bit belongs to and then adds their cached bit counts, finally counts remaining 1 bits in a chunk on the fly.</p>
 <p>As I mentioned, this data structure can be used as a building block of various data structures. The next package I&#39;m going to introduce is one of them.</p>
-<h2><a id="waveletmatricesjl" href="#waveletmatricesjl">WaveletMatrices.jl</a></h2> You may already know about the <a href="https://en.wikipedia.org/wiki/Wavelet_Tree">wavelet tree</a>, which supports the <em>rank</em> and <em>select</em> queries like <code>SucVector</code> and <code>RRR</code>, but elements are not restricted to 0/1 bits.  In fact, the <em>rank</em> and <em>select</em> queries are available on arbitrary unsigned integers. The wavelet tree can be thought as a generalization of indexable bit vectors in this respect.  What I&#39;ve implemented is not the well-known wavelet tree, a variant of it called &quot;wavelet matrix&quot;. You can find an implementation and a link to a paper at <a href="https://github.com/BioJulia/WaveletMatrices.jl">WaveletMatrices.jl</a>. According to the authors of the paper, the wavelet matrix is &quot;simpler to build, simpler to query, and faster in practice than the levelwise wavelet tree&quot;.</p>
+<h2 id="waveletmatricesjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#waveletmatricesjl">WaveletMatrices.jl</a></h2>
+<p>You may already know about the <a href="https://en.wikipedia.org/wiki/Wavelet_Tree">wavelet tree</a>, which supports the <em>rank</em> and <em>select</em> queries like <code>SucVector</code> and <code>RRR</code>, but elements are not restricted to 0/1 bits.  In fact, the <em>rank</em> and <em>select</em> queries are available on arbitrary unsigned integers. The wavelet tree can be thought as a generalization of indexable bit vectors in this respect.  What I&#39;ve implemented is not the well-known wavelet tree, a variant of it called &quot;wavelet matrix&quot;. You can find an implementation and a link to a paper at <a href="https://github.com/BioJulia/WaveletMatrices.jl">WaveletMatrices.jl</a>. According to the authors of the paper, the wavelet matrix is &quot;simpler to build, simpler to query, and faster in practice than the levelwise wavelet tree&quot;.</p>
 <p>The <code>WaveletMatrix</code> type takes three type parameters: <code>w</code>, <code>T</code>, and <code>B</code>.  <code>w</code> and <code>T</code> are analogous to those of <code>IntArray&#123;w,T,n&#125;</code>, and <code>B</code> is a type of indexable bit vector.</p>
 <pre><code class="language-julia">julia> using WaveletMatrices
 
@@ -214,7 +219,8 @@ julia> rank(0x03, wm, 2^15)
 8171
 </code></pre>
 <p>The details of the data structure and algorithms are relatively simple but beyond the scope of this post. For people who are interested in this data structure, the paper I mentioned above and my implementation would be helpful. There are more operations that the wavelet matrix can run efficiently and those operations will be added in the future.</p>
-<h2><a id="fmindexesjl" href="#fmindexesjl">FMIndexes.jl</a></h2> 80&#37; of sequence analysis in bioinformatics is about sequence search, which includes pattern search, homologous gene search, genome comparison, short-read mapping, and so on.  The <a href="https://en.wikipedia.org/wiki/FM-index">FM-Index</a> is often regarded as one of the most efficient indices for full-text search, and I&#39;ve implemented it in the <a href="https://github.com/BioJulia/FMIndexes.jl">FMIndexes.jl</a> package.  Thanks to the packages I&#39;ve introduced so far, the code of it looks really simple.  For example, counting the number of occurrences of a given pattern in a text can be written as follows &#40;slightly simplified for explanatory purpose&#41;:</p>
+<h2 id="fmindexesjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#fmindexesjl">FMIndexes.jl</a></h2>
+<p>80&#37; of sequence analysis in bioinformatics is about sequence search, which includes pattern search, homologous gene search, genome comparison, short-read mapping, and so on.  The <a href="https://en.wikipedia.org/wiki/FM-index">FM-Index</a> is often regarded as one of the most efficient indices for full-text search, and I&#39;ve implemented it in the <a href="https://github.com/BioJulia/FMIndexes.jl">FMIndexes.jl</a> package.  Thanks to the packages I&#39;ve introduced so far, the code of it looks really simple.  For example, counting the number of occurrences of a given pattern in a text can be written as follows &#40;slightly simplified for explanatory purpose&#41;:</p>
 <pre><code class="language-julia">function count(query, index::FMIndex)
     sp, ep = 1, length(index)
     # backward search
@@ -286,12 +292,10 @@ open(string(filepath, ".index"), "w+") do io
 end
 </code></pre>
 <p>OK, then create an index for chromosome 22 of human &#40;you can download it from <a href="http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/">here</a>&#41;:</p>
-<pre><code class="language-julia">
-&#36; julia4 index.jl chr22.fa
+<pre><code class="language-julia">&#36; julia4 index.jl chr22.fa
 chr22: 50818468bp
 &#36; ls -lh chr22.fa.index
--rw-r--r--&#43; 1 kenta  staff    74M  9 26 06:30 chr22.fa.index
-</code></pre>
+-rw-r--r--&#43; 1 kenta  staff    74M  9 26 06:30 chr22.fa.index</code></pre>
 <p>After construction finished &#40;this will take several minutes&#41;, read the index in REPL:</p>
 <pre><code class="language-julia">julia> using FMIndexes
 
@@ -323,7 +327,8 @@ julia> @time locate(dna"GACTTTCACTTTCCC", fmindex);  # this can be located in 32
   0.000032 seconds (5 allocations: 192 bytes)
 </code></pre>
 <p>This locus, <a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db&#61;hg38&amp;position&#61;chr22&#37;3A36253071-36253120&amp;hgsid&#61;446220019_CeC0woSUOd5ov3GLph7a6fs5Uryo">chr22:36253071</a>, is the starting position of the <em>APOL1</em> gene.</p>
-<h2><a id="applications" href="#applications">Applications</a></h2> My aim of having created these packages was to prove that it is practicable to implement high-performance data structures for bioinformatics in Julia.  I&#39;m pretty sure that it is true, but it may be skeptical to others.  So, I&#39;m going to prove it by writing useful and performant applications using these packages. Now I&#39;m working on <a href="https://github.com/bicycle1885/FMM.jl">FMM.jl</a>, which aligns massive amounts of DNA fragments to a genome sequence using the FM-Index and other algorithms.  This is still a work in progress, there would be many bugs and unusual cases I should care about, but its performance is not so bad compared to other implementations.</p>
+<h2 id="applications"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#applications">Applications</a></h2>
+<p>My aim of having created these packages was to prove that it is practicable to implement high-performance data structures for bioinformatics in Julia.  I&#39;m pretty sure that it is true, but it may be skeptical to others.  So, I&#39;m going to prove it by writing useful and performant applications using these packages. Now I&#39;m working on <a href="https://github.com/bicycle1885/FMM.jl">FMM.jl</a>, which aligns massive amounts of DNA fragments to a genome sequence using the FM-Index and other algorithms.  This is still a work in progress, there would be many bugs and unusual cases I should care about, but its performance is not so bad compared to other implementations.</p>
 <p>The <a href="https://github.com/BioJulia">BioJulia</a> project is also under active development.  The packages I made are intended to work with the <a href="https://github.com/BioJulia/Bio.jl">Bio.jl</a> package.  If you are interested in the BioJulia project, we really welcome your contributions&#33;
 <div class="page-foot">
   <div class="copyright">

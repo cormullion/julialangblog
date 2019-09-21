@@ -18,7 +18,7 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-p code {
+code {
     color: #e83e8c;
     font-size: 90%;
 }

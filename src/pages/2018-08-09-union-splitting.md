@@ -1,6 +1,7 @@
 @def published = "9 August 2018"
 @def title = "Union-splitting: what it is, and why you should care"
 @def authors = """<a href="https://github.com/timholy">Tim Holy</a>"""
+@def hascode = true
 
 Among those who follow Julia's development closely, one of the (many) new features causing great excitement is something called "Union-splitting."
 Here at JuliaCon 2018 I've found myself explaining this feature repeatedly, so I thought I'd write this blog post to help disseminate this important information more widely.

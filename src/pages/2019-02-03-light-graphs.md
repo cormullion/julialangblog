@@ -15,26 +15,21 @@ The benchmarks were conducted on a 64-bit linux machine using 4 cores.
 
 ~~~
 <style>
-
 table{
     border-collapse: collapse;
     border-spacing: 0;
     border:2px solid #ff0000;
 }
-
 th{
     border:2px solid #000000;
 }
-
 td{
     border:1px solid #000000;
 }
 </style>
 ~~~
 
-~~~<br/>~~~
-
-**Benchmark Graph Datasets:**
+### Benchmark Graph Datasets
 
 No. | Graph | Vertices | Edges
 :---: | :---------: | :------------: | :-----------------:
@@ -44,9 +39,8 @@ No. | Graph | Vertices | Edges
 
 The graphs were obtained from the [SNAPDatasets](https://github.com/JuliaGraphs/SNAPDatasets.jl) repository.
 
-~~~<br/>~~~
 
-**Speed-up on parallelization with 4 cores:**
+### Speed-up on parallelization with 4 cores
 
 Algorithm | Twitter | Astro-Physics | Facebook
 ---------: | :------------: | :-----------------: | :-------:
@@ -60,9 +54,7 @@ Betweenness Centrality | - | - | 1.96
 Closeness Centrality | - | - | 2.17
 Stress Centrality | - | - | 1.66
 
-~~~<br/>~~~
-
-**Speed-up on sequential optimization:**
+### Speed-up on sequential optimization
 
 Algorithm | Twitter | Astro-Physics | Facebook
 ---------: | :------------: | :-----------------: | :-------:
@@ -71,18 +63,15 @@ Dijkstra SSSP | 2.80 | 2.10 | 1.68
 Prim MST | 7.65 | 4.25 | 4.05
 Kruskal MST | 7.70 | 3.37 | 2.80
 
-~~~<br/>~~~
-
-**Absolute runtime (in ms) of Bread-First Search:**
+### Absolute runtime (in ms) of Bread-First Search
 
 Algorithm | Twitter | Astro-Physics | Facebook
 ---------: | :------------: | :-----------------: | :-------:
 Parallel | 7.07 | 1.20 | 0.26
 Sequential | 13.63 | 3.11 | 0.41
 
-~~~<br/>~~~
 
-# Get the code
+## Get the code
 
 This section lists the functionality implemented and a link to the corresponding branch in my [cloned LightGraphs repository](https://github.com/SohamTamba/LightGraphs.jl).
 

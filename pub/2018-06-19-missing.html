@@ -18,12 +18,14 @@
    <!-- Un-minified script so that can play a bit -->
 <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>First-Class Statistical Missing Values Support in Julia 0.7</title>  
 </head>
@@ -48,6 +50,8 @@
        <span style="font-weight: lighter;"> 19 June 2018 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;"> <a href="http://bouchet-valat.site.ined.fr">Milan Bouchet-Valat</a> </span> 
   </h3>
 
@@ -69,7 +73,8 @@
 </li>
 </ol>
 <p>The post first presents the behavior of the new <code>missing</code> object, and then details its implementation, in particular showing how it provides blazing performance while still being fully generic. Finally, current limitations and future improvements are discussed.</p>
-<h2><a id="the_missing_object_safe_and_generic_missing_values" href="#the_missing_object_safe_and_generic_missing_values">The &#39;missing&#39; object: safe and generic missing values</a></h2> One of Julia&#39;s strengths is that user-defined types are as powerful and fast as built-in types. To fully take advantage of this, missing values had to support not only standard types like <code>Int</code>, <code>Float64</code> and <code>String</code>, but also any custom type. For this reason, Julia cannot use the so-called <em>sentinel</em> approach like R and Pandas to represent missingness, that is reserving special values within a type&#39;s domain. For example, R represents missing values in integer and boolean vectors using the smallest representable 32-bit integer &#40;<code>-2,147,483,648</code>&#41;, and missing values in floating point vectors using a specific <code>NaN</code> payload &#40;<code>1954</code>, which rumour says refers to Ross Ihaka&#39;s year of birth&#41;. Pandas only supports missing values in floating point vectors, and conflates them with <code>NaN</code> values.</p>
+<h2 id="the_missing_object_safe_and_generic_missing_values"><a href="/pub/2018-06-19-missing.html#the_missing_object_safe_and_generic_missing_values">The &#39;missing&#39; object: safe and generic missing values</a></h2>
+<p>One of Julia&#39;s strengths is that user-defined types are as powerful and fast as built-in types. To fully take advantage of this, missing values had to support not only standard types like <code>Int</code>, <code>Float64</code> and <code>String</code>, but also any custom type. For this reason, Julia cannot use the so-called <em>sentinel</em> approach like R and Pandas to represent missingness, that is reserving special values within a type&#39;s domain. For example, R represents missing values in integer and boolean vectors using the smallest representable 32-bit integer &#40;<code>-2,147,483,648</code>&#41;, and missing values in floating point vectors using a specific <code>NaN</code> payload &#40;<code>1954</code>, which rumour says refers to Ross Ihaka&#39;s year of birth&#41;. Pandas only supports missing values in floating point vectors, and conflates them with <code>NaN</code> values.</p>
 <p>In order to provide a consistent representation of missing values which can be combined with any type, Julia 0.7 will use <code>missing</code>, an object with no fields which is the only instance of the <code>Missing</code> singleton type. This is a normal Julia type for which a series of useful methods are implemented. Values which can be either of type <code>T</code> or missing can simply be declared as <code>Union&#123;Missing,T&#125;</code>. For example, a vector holding either integers or missing values is of type <code>Array&#123;Union&#123;Missing,Int&#125;,1&#125;</code>:</p>
 <pre><code class="language-julia">julia> [1, missing]
 2-element Array{Union{Missing, Int64},1}:
@@ -166,7 +171,8 @@ julia> coalesce.([1, missing, 2], [2, 3, missing])
 <p>Short-circuiting operators <code>&amp;&amp;</code> and <code>||</code>, just like <code>if</code> conditions, throw an error if they need to evaluate a missing value: whether or not code should be run cannot be determined in that case.</p>
 <p>Naturally, functions defined based on those listed above inherit their behavior. For example, <code>findall&#40;isequal&#40;1&#41;, &#91;1, missing, 2&#93;&#41;</code> returns <code>&#91;1&#93;</code>, but <code>findall&#40;&#61;&#61;&#40;1&#41;, &#91;1, missing, 2&#93;&#41;</code> throws an error when encountering a missing value.</p>
 <p>See the <a href="https://docs.julialang.org/en/latest/manual/missing/">manual</a> for more details and illustrations about these rules. As noted above, they are generally consistent with those implemented by SQL&#39;s <code>NULL</code> and R&#39;s <code>NA</code>.</p>
-<h2><a id="from_nullable_to_missing_and_nothing" href="#from_nullable_to_missing_and_nothing">From &#39;Nullable&#39; to &#39;missing&#39; and &#39;nothing&#39;</a></h2> While it is similar to the previous <code>NA</code> value, the new <code>missing</code> object also replaces the <code>Nullable</code> type introduced in Julia 0.4, which turned out not to be the best choice to represent missing values<a href="#footnote-jmw" class="footnote">[jmw]</a>. <code>Nullable</code> suffered from several issues:</p>
+<h2 id="from_nullable_to_missing_and_nothing"><a href="/pub/2018-06-19-missing.html#from_nullable_to_missing_and_nothing">From &#39;Nullable&#39; to &#39;missing&#39; and &#39;nothing&#39;</a></h2>
+<p>While it is similar to the previous <code>NA</code> value, the new <code>missing</code> object also replaces the <code>Nullable</code> type introduced in Julia 0.4, which turned out not to be the best choice to represent missing values<a href="#footnote-jmw" class="footnote">[jmw]</a>. <code>Nullable</code> suffered from several issues:</p>
 <ul>
 <li><p>It was used to represent two very different kinds of missingness, that we sometimes call respectively the &quot;software engineer&#39;s null&quot; and the &quot;data scientist&#39;s null&quot;. The former refers to what <code>Nullable</code> is generally used for in most languages, i.e. <code>null</code> denotes the absence of a value, and one of the advantages of the <code>Nullable</code> type is to force developers to handle explicitly the case when there is no value. The latter refers to statistical missing values, which generally <em>propagate</em> silently in specialized languages, which is essential for convenience. It has become increasingly clear that these two uses conflict &#40;even if specialized syntax could have helped mitigating this&#41;.</p>
 </li>
@@ -183,7 +189,8 @@ julia> coalesce.([1, missing, 2], [2, 3, missing])
 </li>
 </ul>
 <p>This blog post is centered on the first case, and hopefully the description of the behavior of <code>missing</code> above makes it clear why it is useful to distinguish it from <code>nothing</code>. Indeed, while <code>missing</code> generally propagates when passed to standard mathematical operators and functions, <code>nothing</code> does not implement any specific method and therefore generally gives a <code>MethodError</code>, forcing the caller to handle it explicitly. However, considerations regarding performance developed below apply equally to <code>missing</code> and <code>nothing</code> &#40;as well as to other custom types in equivalent situations&#41;.</p>
-<h2><a id="an_efficient_representation" href="#an_efficient_representation">An efficient representation</a></h2> Another of Julia&#39;s strengths is that one does not need to use tricks such as vectorized calls to make code fast. In this spirit, working with missing values had to be efficient without requiring special treatment. While the <code>Union&#123;Missing,T&#125;</code> approach would have been very inefficient in previous Julia versions, the situation has dramatically changed thanks to two improvements implemented in the compiler in Julia 0.7.</p>
+<h2 id="an_efficient_representation"><a href="/pub/2018-06-19-missing.html#an_efficient_representation">An efficient representation</a></h2>
+<p>Another of Julia&#39;s strengths is that one does not need to use tricks such as vectorized calls to make code fast. In this spirit, working with missing values had to be efficient without requiring special treatment. While the <code>Union&#123;Missing,T&#125;</code> approach would have been very inefficient in previous Julia versions, the situation has dramatically changed thanks to two improvements implemented in the compiler in Julia 0.7.</p>
 <p>The first improvement involves optimizations for small <code>Union</code> types. When type inference detects that a variable can hold values of multiple types but that these types are in limited number &#40;as is the case for <code>Union&#123;Missing,T&#125;</code>&#41;, the compiler will generate optimized code for each possible type in separate branches, and run the appropriate one after checking the actual type of the value<a href="#footnote-splitting" class="footnote">[splitting]</a>. This produces code which is very close to that typically used with the sentinel approach, in which one needs to check manually whether the processed value is equal to the sentinel. This optimization is of course only available when the type is inferred as a small <code>Union</code>: it is therefore essential to work with <code>Array&#123;Union&#123;Missing,T&#125;&#125;</code> rather than <code>Array&#123;Any&#125;</code> objects, to provide the compiler with the necessary type information.</p>
 <p>The second improvement consists in using a compact memory layout for <code>Array</code> object whose element type is a <code>Union</code> of bits types, i.e. immutable types which contain no references &#40;see the <a href="https://docs.julialang.org/en/latest/base/base/#Base.isbits"><code>isbits</code></a> function&#41;. This includes <code>Missing</code> and basic types such as <code>Int</code>, <code>Float64</code>, <code>Complex&#123;Float64&#125;</code> and <code>Date</code>. When <code>T</code> is a bits type, <code>Array&#123;Union&#123;Missing,T&#125;&#125;</code> objects are internally represented as a pair of arrays of the same size: an <code>Array&#123;T&#125;</code> holding non-missing values and uninitialized memory for missing values; and an <code>Array&#123;UInt8&#125;</code> storing a <em>type tag</em> indicating whether each entry is of type <code>Missing</code> or <code>T</code>.</p>
 <p>This layout consumes slightly more memory than the sentinel approach, as the type tag part occupies one byte for each entry. But this overhead is reasonable: for example, the memory usage of an <code>Array&#123;Union&#123;Missing,Float64&#125;&#125;</code> is only 12.5&#37; higher than that of an <code>Array&#123;Float64&#125;</code>. Compared with the sentinel approach, it has the advantage of being fully generic &#40;as we have seen above&#41;. Actually, this mechanism can be used in other situations, for example with <code>Union&#123;Nothing,Int&#125;</code> &#40;which is the element type of the array returned by <code>indexin</code> in Julia 0.7&#41;.</p>
@@ -219,7 +226,8 @@ julia> @btime sum_nonmissing(X3);
   3.214 ms (1 allocation: 16 bytes)
 </code></pre>
 <p>As a reference point, R&#39;s <code>sum&#40;x, na.rm&#61;TRUE&#41;</code> function, which is implemented in C, takes about 7 ms without missing values and 19 ms with missing values &#40;in R, <code>integer</code> arrays always allow for missing values&#41;.</p>
-<h2><a id="current_limitations_and_future_developments" href="#current_limitations_and_future_developments">Current limitations and future developments</a></h2> Everything is not perfect though, and some improvements are still needed. The good news is that the most difficult parts have already been implemented in Julia 0.7.</p>
+<h2 id="current_limitations_and_future_developments"><a href="/pub/2018-06-19-missing.html#current_limitations_and_future_developments">Current limitations and future developments</a></h2>
+<p>Everything is not perfect though, and some improvements are still needed. The good news is that the most difficult parts have already been implemented in Julia 0.7.</p>
 <p>A first series of limitations concerns performance. Even though the sum example above is arguably impressive, at the time of writing the compiler is not yet able to generate fast code like this in all situations. For example, missing values still have a significant performance impact for arrays of <code>Float64</code> elements, which are essential for numeric computing:</p>
 <pre><code class="language-julia">julia> Y1 = rand(10_000_000);
 
@@ -244,7 +252,8 @@ julia> @btime sum_nonmissing(Y3);
 <p>Despite these limitations, we believe that missing values support in Julia 0.7 will be one of the most complete even among specialized statistical languages, both in terms of features and in terms of performance.</p>
 <p><strong>Author</strong>: <a href="http://bouchet-valat.site.ined.fr">Milan Bouchet-Valat</a>, Sociologist, Research scientist at the French Institute for Demographic Studies &#40;Ined&#41;, Paris.</p>
 <p><strong>Acknowledgements</strong>: This framework is the result of collective efforts over several years. John Myles White led the reflection around missing values support in Julia until 2016. Jameson Nash and Keno Fischer implemented compiler optimizations, and Jacob Quinn implemented the efficient memory layout for arrays. Alex Arslan, Jeff Bezanson, Stefan Karpinski, Jameson Nash and Jacob Quinn have been the most central participants to this long and complex design work. Discussions have involved many other developers with sometimes dissenting views, among which David Anthoff deserves a special mention.</p>
-<h3><a id="footnotes" href="#footnotes">Footnotes</a></h3> <a href="#footnote-nullable" class="footnote">[nullable]</a>:</p>
+<h3 id="footnotes"><a href="/pub/2018-06-19-missing.html#footnotes">Footnotes</a></h3>
+<div class="footnote" id="footnote-nullable"><p class="footnote-title">nullable</p></div>
 <p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/nullable-types/using-nullable-types">C#</a>  &#40;with <code>null</code>&#41; and <a href="https://docs.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/data-types/nullable-value-types">VB.NET</a>  &#40;with <code>Nothing</code>&#41; are two partial exceptions to this rule, since they provide  <em>lifted</em> operators which operate on <code>Nullable</code> arguments and return <code>Nullable</code>s.</p>
 <div class="footnote" id="footnote-PDA"><p class="footnote-title">PDA</p></div>
 <p>The <code>PooledDataArray</code> type shipped in the same package can be replaced with  either <a href="https://github.com/JuliaData/CategoricalArrays.jl"><code>CategoricalArray</code></a> or  <a href="https://github.com/JuliaComputing/PooledArrays.jl"><code>PooledArray</code></a> depending on whether  the data is really categorical or simply contains a small number of distinct values.</p>
@@ -261,7 +270,7 @@ julia> @btime sum_nonmissing(Y3);
 
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
@@ -273,6 +282,10 @@ julia> @btime sum_nonmissing(Y3);
 <script>renderMathInElement(document.body)</script>
 
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

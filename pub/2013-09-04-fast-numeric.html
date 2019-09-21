@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.png">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Fast Numeric Computation in Julia</title>  
 </head>
@@ -48,6 +48,8 @@
        <span style="font-weight: lighter;"> 4 September 2013 </span>
       |
       
+       <span style="font-weight: bold;">THE AUTHOR </span> 
+      <!-- assumption that only one of the two is defined -->
        <span style="font-weight: bold;"><a href="http://dahua.me">Dahua Lin</a> </span> 
   </h3>
 
@@ -58,8 +60,10 @@
 <div class="jd-content">
 <p>Working on numerical problems daily, I have always dreamt of a language that provides an elegant interface while allowing me to write codes that run blazingly fast on large data sets. Julia is a language that turns this dream into a reality. With Julia, you can focus on your problem, keep your codes clean, and more importantly, write fast codes without diving into lower level languages such as C or Fortran even when performance is critical.</p>
 <p>However, you should not take this potential speed for granted. To get your codes fast, you should keep performance in mind and follow general best practice guidelines. Here, I would like to share with you my experience in writing efficient codes for numerical computation.</p>
-<h2><a id="first_make_it_correct" href="#first_make_it_correct">First, make it correct</a></h2> As in any language, the foremost goal when you implement your algorithm is to <em>make it correct</em>. An algorithm that doesn&#39;t work correctly is useless no matter how fast it runs. One can always optimize the codes afterwards when necessary. When there are different approaches to a problem, you should choose the one that is <em>asymptotically more efficient</em>. For example, an unoptimized quick-sort implementation can easily beat a carefully optimized bubble-sort when sorting even moderately large arrays. Given a particular choice of algorithm, however, implementing it carefully and observing common performance guidelines can still make a big difference in performance – I will focus on this in the remaining part.</p>
-<h2><a id="devectorize_expressions" href="#devectorize_expressions">Devectorize expressions</a></h2> Users of other high level languages such as MATLAB® or Python are often advised to <em>vectorize</em> their codes as much as possible to get performance, because loops are slow in those languages. In Julia, on the other hand, loops can run as fast as those written in C and you no longer have to count on vectorization for speed. Actually, turning vectorized expressions into loops, which we call <em>devectorization</em>, often results in even higher performance.</p>
+<h2 id="first_make_it_correct"><a href="/pub/2013-09-04-fast-numeric.html#first_make_it_correct">First, make it correct</a></h2>
+<p>As in any language, the foremost goal when you implement your algorithm is to <em>make it correct</em>. An algorithm that doesn&#39;t work correctly is useless no matter how fast it runs. One can always optimize the codes afterwards when necessary. When there are different approaches to a problem, you should choose the one that is <em>asymptotically more efficient</em>. For example, an unoptimized quick-sort implementation can easily beat a carefully optimized bubble-sort when sorting even moderately large arrays. Given a particular choice of algorithm, however, implementing it carefully and observing common performance guidelines can still make a big difference in performance – I will focus on this in the remaining part.</p>
+<h2 id="devectorize_expressions"><a href="/pub/2013-09-04-fast-numeric.html#devectorize_expressions">Devectorize expressions</a></h2>
+<p>Users of other high level languages such as MATLAB® or Python are often advised to <em>vectorize</em> their codes as much as possible to get performance, because loops are slow in those languages. In Julia, on the other hand, loops can run as fast as those written in C and you no longer have to count on vectorization for speed. Actually, turning vectorized expressions into loops, which we call <em>devectorization</em>, often results in even higher performance.</p>
 <p>Consider the following:</p>
 <pre><code class="language-julia">r = exp(-abs(x-y))
 </code></pre>
@@ -110,7 +114,8 @@ end
 <pre><code class="language-julia">r = [exp(-abs(x[i]-y[i])) for i = 1:length(x)]
 </code></pre>
 <p>Note that comprehension always creates new arrays to store the results. Hence, to write results to pre-allocated arrays, you still have to devectorize the computation manually or use the <code>@devec</code> macro.</p>
-<h2><a id="merge_computations_into_a_single_loop" href="#merge_computations_into_a_single_loop">Merge computations into a single loop</a></h2> Traversing arrays, especially large ones, may incur cache misses or even page faults, both of which can cause significant latency. Thus, it is desirable to minimize the number of round trips to memory as much as possible. For example, you may compute multiple maps with one loop:</p>
+<h2 id="merge_computations_into_a_single_loop"><a href="/pub/2013-09-04-fast-numeric.html#merge_computations_into_a_single_loop">Merge computations into a single loop</a></h2>
+<p>Traversing arrays, especially large ones, may incur cache misses or even page faults, both of which can cause significant latency. Thus, it is desirable to minimize the number of round trips to memory as much as possible. For example, you may compute multiple maps with one loop:</p>
 <pre><code class="language-julia">for i = 1:length(x)
     a[i] = x[i] + y[i]
     b[i] = x[i] - y[i]
@@ -130,7 +135,8 @@ for i = 2:n
     end
 end
 </code></pre>
-<h2><a id="write_cache-friendly_codes" href="#write_cache-friendly_codes">Write cache-friendly codes</a></h2> Modern computer systems have a complicated heterogeneous memory structure that combines registers, multiple levels of caches, and RAM. Data are accessed through the cache hierarchy – a smaller and much faster memory that stores copies of frequently used data.</p>
+<h2 id="write_cache-friendly_codes"><a href="/pub/2013-09-04-fast-numeric.html#write_cache-friendly_codes">Write cache-friendly codes</a></h2>
+<p>Modern computer systems have a complicated heterogeneous memory structure that combines registers, multiple levels of caches, and RAM. Data are accessed through the cache hierarchy – a smaller and much faster memory that stores copies of frequently used data.</p>
 <p>Most systems do not provide ways to directly control the cache system. However, you can take steps to make it much easier for the automated cache management system to help you if you write <em>cache-friendly</em> codes. In general, you don&#39;t have to understand every detail about how a cache system works. It is often sufficient to observe the simple rule below:</p>
 <blockquote>
 <p>Access data in a pattern similar to how the data resides in memory – don&#39;t jump around between non-contiguous locations in memory.</p>
@@ -159,7 +165,8 @@ for j = 2:n, i = 1:m
 end
 </code></pre>
 <p>Some benchmarking shows that this version can be <em>5-10 times</em> faster than the one above for large matrices.</p>
-<h2><a id="avoid_creating_arrays_in_loops" href="#avoid_creating_arrays_in_loops">Avoid creating arrays in loops</a></h2> Creating arrays requires memory allocation and adds to the workload of the garbage collector. Reusing the same array is a good way to reduce the cost of memory management.</p>
+<h2 id="avoid_creating_arrays_in_loops"><a href="/pub/2013-09-04-fast-numeric.html#avoid_creating_arrays_in_loops">Avoid creating arrays in loops</a></h2>
+<p>Creating arrays requires memory allocation and adds to the workload of the garbage collector. Reusing the same array is a good way to reduce the cost of memory management.</p>
 <p>It is not uncommon that you want to update arrays in an iterative algorithm. For example, in K-means, you may want to update both the cluster means and distances in each iteration. A straightforward way to do this might look like:</p>
 <pre><code class="language-julia">while !converged && t < maxiter
     means = compute_means(x, labels)
@@ -185,7 +192,8 @@ end
 </code></pre>
 <p>In this version, the functions invoked in the loop updates pre-allocated arrays in-place.</p>
 <p>If you are writing a package, it is recommended that you provide two versions for each function that outputs arrays: one that performs the update in-place, and another that returns a new array. The former can usually be implemented as a light-weight wrapper of the latter that copies the input array before modifying it. A good example is the <a href="https://github.com/JuliaStats/Distributions.jl"><em>Distributions.jl</em></a> package, which provides both <code>logpdf</code> and <code>logpdf&#33;</code>, so that one can write <code>lp &#61; logpdf&#40;d,x&#41;</code> when a new array is needed, or <code>logpdf&#33;&#40;lp,d,x&#41;</code> when <code>lp</code> has been pre-allocated.</p>
-<h2><a id="identify_opportunities_to_use_blas" href="#identify_opportunities_to_use_blas">Identify opportunities to use BLAS</a></h2> Julia wraps a large number of <a href="http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms">BLAS</a> routines for linear algebraic computation. These routines are the result of decades of research and optimization by many of the world&#39;s top experts in fast numerical computation. As a result, using them where possible can provide performance boosts that seem almost magical – BLAS routines are often orders of magnitude faster than the simple loop implementations they replace.</p>
+<h2 id="identify_opportunities_to_use_blas"><a href="/pub/2013-09-04-fast-numeric.html#identify_opportunities_to_use_blas">Identify opportunities to use BLAS</a></h2>
+<p>Julia wraps a large number of <a href="http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms">BLAS</a> routines for linear algebraic computation. These routines are the result of decades of research and optimization by many of the world&#39;s top experts in fast numerical computation. As a result, using them where possible can provide performance boosts that seem almost magical – BLAS routines are often orders of magnitude faster than the simple loop implementations they replace.</p>
 <p>For example, consider accumulating weighted versions of vectors as follows:</p>
 <pre><code class="language-julia">r = zeros(size(x,1))
 for j = 1:size(x,2)
@@ -241,7 +249,8 @@ end
 </code></pre>
 <p>This version is over <em>100 times</em> faster than our original implementation — the <code>gemm</code> function in BLAS has been optimized to the extreme by many talented developers and engineers over the past few decades.</p>
 <p>We should mention that you don&#39;t have to implement this yourself if you really want to compute pairwise distances: the <a href="https://github.com/lindahua/Distance.jl"><em>Distance.jl</em></a> package provides optimized implementations of a broad variety of distance metrics, including this one. We presented this optimization trick as an example to illustrate the substantial performance gains that can be achieved by writing code that uses BLAS routines wherever possible.</p>
-<h2><a id="explore_available_packages" href="#explore_available_packages">Explore available packages</a></h2> Julia has a very active open source ecosystem. A variety of packages have been developed that provide optimized algorithms for high performance computation. Look for a package that does what you need before you decide to roll your own – and if you don&#39;t find what you need, consider contributing it&#33; Here are a couple of packages that might be useful for those interested in high performance computation:</p>
+<h2 id="explore_available_packages"><a href="/pub/2013-09-04-fast-numeric.html#explore_available_packages">Explore available packages</a></h2>
+<p>Julia has a very active open source ecosystem. A variety of packages have been developed that provide optimized algorithms for high performance computation. Look for a package that does what you need before you decide to roll your own – and if you don&#39;t find what you need, consider contributing it&#33; Here are a couple of packages that might be useful for those interested in high performance computation:</p>
 <ul>
 <li><p><a href="https://github.com/lindahua/NumericExtensions.jl">NumericExtensions.jl</a> – extensions to Julia&#39;s base functionality for high-performance support for a variety of common computations &#40;many of these will gradually get moved into base Julia&#41;.</p>
 </li>
