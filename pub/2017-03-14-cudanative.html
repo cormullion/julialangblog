@@ -16,7 +16,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -59,18 +61,21 @@
 <p>After 2 years of slow but steady development, we would like to announce the first preview release of native GPU programming capabilities for Julia. You can now write your CUDA kernels in Julia, albeit with some restrictions, making it possible to use Julia&#39;s high-level language features to write high-performance GPU code.</p>
 <p>The programming support we&#39;re demonstrating here today consists of the low-level building blocks, sitting at the same abstraction level of CUDA C. You should be interested if you know &#40;or want to learn&#41; how to program a parallel accelerator like a GPU, while dealing with tricky performance characteristics and communication semantics.</p>
 <p>You can easily add GPU support to your Julia installation &#40;see below for detailed instructions&#41; by installing <a href="https://github.com/JuliaGPU/CUDAnative.jl">CUDAnative.jl</a>. This package is built on top of experimental interfaces to the Julia compiler, and the purpose-built <a href="https://github.com/maleadt/LLVM.jl">LLVM.jl</a> and <a href="https://github.com/JuliaGPU/CUDAdrv.jl">CUDAdrv.jl</a> packages to compile and execute code. All this functionality is brand-new and thoroughly untested, so we need your help and feedback in order to improve and finalize the interfaces before Julia 1.0.</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-03-14-cudanative.html#how_to_get_started">How to get started</a></li><li><a href="/pub/2017-03-14-cudanative.html#quothello_worldquot_vector_addition">&quot;Hello World&quot; Vector addition</a></li><ol><li><a href="/pub/2017-03-14-cudanative.html#how_does_it_work">How does it work?</a></li><li><a href="/pub/2017-03-14-cudanative.html#what_is_missing">What is missing?</a></li></ol><li><a href="/pub/2017-03-14-cudanative.html#another_example_parallel_reduction">Another example: parallel reduction</a></li><li><a href="/pub/2017-03-14-cudanative.html#try_it_out">Try it out&#33;</a></li><ol><li><a href="/pub/2017-03-14-cudanative.html#i_want_to_help">I want to help</a></li></ol><li><a href="/pub/2017-03-14-cudanative.html#thanks">Thanks</a></li></ol></ol></div>
 <h2 id="how_to_get_started"><a href="/pub/2017-03-14-cudanative.html#how_to_get_started">How to get started</a></h2>
 <p>CUDAnative.jl is tightly integrated with the Julia compiler and the underlying LLVM framework, which complicates version and platform compatibility. For this preview we only support Julia 0.6 built from source, on Linux or macOS. Luckily, installing Julia from source is well documented in the <a href="https://github.com/JuliaLang/julia/blob/master/README.md#source-download-and-compilation">main repository&#39;s README</a>. Most of the time it boils down to the following commands:</p>
-<pre><code class="language-julia">&#36; git clone https://github.com/JuliaLang/julia.git
-&#36; cd julia
-&#36; git checkout v0.6.0-pre.alpha  # or any later tag
-&#36; make                           # add -jN for N parallel jobs
-&#36; ./julia</code></pre>
+<pre><code class="language-bash">$ git clone https://github.com/JuliaLang/julia.git
+$ cd julia
+$ git checkout v0.6.0-pre.alpha  # or any later tag
+$ make                           # add -jN for N parallel jobs
+$ ./julia
+</code></pre>
 <p>From the Julia REPL, installing CUDAnative.jl and its dependencies is just a matter of using the package manager. Do note that you need to be using the NVIDIA binary driver, and have the CUDA toolkit installed.</p>
-<pre><code class="language-julia">&gt; Pkg.add&#40;&quot;CUDAnative&quot;&#41;
+<pre><code class="language-julia">Pkg.add("CUDAnative")
 
 # Optional: test the package
-&gt; Pkg.test&#40;&quot;CUDAnative&quot;&#41;</code></pre>
+Pkg.test("CUDAnative")
+</code></pre>
 <p>At this point, you can start writing kernels and execute them on the GPU using CUDAnative&#39;s <code>@cuda</code>&#33; Be sure to check out the <a href="https://github.com/JuliaGPU/CUDAnative.jl/tree/master/examples">examples</a>, or continue reading for a more textual introduction.</p>
 <h2 id="quothello_worldquot_vector_addition"><a href="/pub/2017-03-14-cudanative.html#quothello_worldquot_vector_addition">&quot;Hello World&quot; Vector addition</a></h2>
 <p>A typical small demo of GPU programming capabilities &#40;think of it as the <em>GPU Hello World</em>&#41; is to perform a vector addition. The snippet below does exactly that using Julia and CUDAnative.jl:</p>
@@ -185,13 +190,17 @@ ERROR: error compiling nope: emit_builtin_call for REPL&#91;1&#93;:1 requires th
 
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

@@ -1,29 +1,8 @@
 @def published = "28 August 2017"
 @def title = "GSoC 2017: Documentation Browser for Juno"
 @def authors ="Sebastian Pfitzner"
-
-
-~~~
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-~~~
+@def hasmath = true
+@def hascode = true
 
 The aim of this GSoC project is to provide a convenient way to access documentation in the
 Juno IDE. Any work on this has to be on the Julia side (for getting the necessary
@@ -37,6 +16,8 @@ delegates any front end requests to that package.
 The front end work is directly included in the Juno stack ([atom-julia-client#377](https://github.com/JunoLab/atom-julia-client/pull/377)
 and [atom-ink#148](https://github.com/JunoLab/atom-ink/pull/148), to be precise), since it's pretty
 fundamental IDE functionality.
+
+\toc
 
 ## Backend: DocSeeker.jl
 The two main challenges here are *collecting docstrings* and *filtering docstrings*, both in

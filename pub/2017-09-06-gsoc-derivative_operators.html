@@ -15,8 +15,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -56,30 +60,11 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-
 <p>This project is an attempt towards building a PDE solver for JuliaDiffEq using the <a href="https://en.wikipedia.org/wiki/Finite_difference_method">Finite Difference Method</a>&#40;FDM&#41; approach. We take up the FDM approach instead of <a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a> and <a href="https://en.wikipedia.org/wiki/Finite_volume_method">FVM</a> as there are many toolboxes which already exist for FEM and FVM but not for FDM. Also, there are many use cases where the geometry of the problem is simple enough to be solved by FDM methods which are much faster due to their being able to avoid the bottleneck step of matrix multiplication by using Linear transformations to mimic the effect of a matrix multiplication. Since matrix multiplication basically transforms a vector element to a weighted sum of the neighbouring elements, this can be easily acheived using a special function which acts on the vector in optimal \(\mathcal{O}(n)\) time.</p>
 <p>The result is a new package called <a href="https://github.com/JuliaDiffEq/DiffEqOperators.jl">DiffEqOperators.jl</a> which creates efficient discretizations of partial differential operators thereby converting PDEs to ODEs which can be solved efficiently by existing ODE solvers. The <code>DerivativeOperator</code> is based on central differencing schemes of approximating derivatives at a point whereas the <code>UpwindOperators</code> are based on one-sided differencing schemes where the solution is typically a wave moving in a particular direction. The package also supports a variety of boundary conditions like <a href="https://en.wikipedia.org/wiki/Dirichlet_boundary_condition">Dirichlet</a>, <a href="https://en.wikipedia.org/wiki/Neumann_boundary_condition">Neumann</a>, <a href="https://en.wikipedia.org/wiki/Periodic_boundary_conditions">Periodic</a> and the <a href="https://en.wikipedia.org/wiki/Robin_boundary_condition">Robin</a> <a href="https://en.wikipedia.org/wiki/Boundary_value_problem">boundary condition</a>.</p>
-<h2 id="motivation"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">MOTIVATION</a></h2>  The general idea of finite difference methods is to generate finite difference weights corresponding to a differential operator allowing a certain level of approximation. The time and space variable are divided to form a grid where \(h = \Delta x = \frac{1}{N+1}\) and \(x_i = ih\) for \(i = 0, 1,...,N+1\) and \(k = \Delta t = \frac{T}{M+1}\) and \(t_j = jk\) for \(j = 0, 1,...,M+1\). <br/> The discrete unknowns are scalars \(u_i^j\) for the above values of i and j, and it is hoped that \(u_i^j\) will be an approximation of \(u(x_i, t_j)\). The right-hand side of the equation is discretized by setting \(f_i^j = f(x_i, t_j)\). We also use the notation</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#solving_the_heat_equation_using_diffeqoperators">Solving the Heat equation using DiffEqOperators</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#where_do_central_derivatives_fail">Where do central derivatives fail?</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#future_work">Future Work</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#acknowledgments">Acknowledgments</a></li></ol></ol></div>
+<h2 id="motivation"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></h2>
+<p>The general idea of finite difference methods is to generate finite difference weights corresponding to a differential operator allowing a certain level of approximation. The time and space variable are divided to form a grid where \(h = \Delta x = \frac{1}{N+1}\) and \(x_i = ih\) for \(i = 0, 1,...,N+1\) and \(k = \Delta t = \frac{T}{M+1}\) and \(t_j = jk\) for \(j = 0, 1,...,M+1\). <br/> The discrete unknowns are scalars \(u_i^j\) for the above values of i and j, and it is hoped that \(u_i^j\) will be an approximation of \(u(x_i, t_j)\). The right-hand side of the equation is discretized by setting \(f_i^j = f(x_i, t_j)\). We also use the notation</p>
 \[ U^{j} = \begin{pmatrix}
 u_1^j\\
 u_2^j \\
@@ -94,12 +79,12 @@ u_N^j
 <p>In this particular case, we end up with the following scheme:</p>
 \[
 \left\{\begin{matrix}
-\frac{u_j^{j+1} - u_i^j}{k} - \frac{u_{i-1}^j - 2u_i^j + u_{i+1}^j}{h^2} = f_i^j \textit{ for } i = 1,...,N,j = 1,...,M \\
-u_i^0 = u_0(x_i) \textit{ for } i = 1,...,N\\
-u_0^j = u_{N+1}^j = 0 \textit{ for } j = 1,...,M+1\\
+\frac{u_j^{j+1} - u_i^j}{k} - \frac{u_{i-1}^j - 2u_i^j + u_{i+1}^j}{h^2} = f_i^j \quad\textit{ for }\quad i = 1,...,N,j = 1,...,M \\
+u_i^0 = u_0(x_i) \quad\textit{ for }\quad i = 1,...,N\\
+u_0^j = u_{N+1}^j = 0 \quad\textit{ for }\quad j = 1,...,M+1\\
 \end{matrix}\right.
 \]
-<p>This is the stencil rewritten as a recurrence. Writing it out in vector form, we get:- \(\frac{U^{j+1} - U^j}{k} + A_h U^j = F^j \textit{ for } j = 1,...,M\)
+<p>This is the stencil rewritten as a recurrence. Writing it out in vector form, we get:- \(\frac{U^{j+1} - U^j}{k} + A_h U^j = F^j \quad\textit{ for }\quad j = 1,...,M\)
 <p>When we want to apply this operator on the vector \(U\), the weight vector turns into a matrix called the transformation matrix \(A_h\)
 \[ A_h = \begin{pmatrix}
 2 & -1 & 0 &  \cdots  & 0\\
@@ -108,7 +93,7 @@ u_0^j = u_{N+1}^j = 0 \textit{ for } j = 1,...,M+1\\
 0 & \cdots & -1 & 2  & -1 \\
 0 & \cdots & 0 & -1 & 2 \\
 \end{pmatrix}
-\textit{such that }
+\quad\textit{such that }\quad
 \frac{\partial^2U^j}{\partial x^2} \approx A_h*U^j \]
 <p>But matrix multiplication is costly, therefore it would be preferable to have the linear operator of the double partial differential instead of the transformation matrix. It would look something like:- <pre><code class="language-julia">function double_partial&#40;x,dx&#41;
   for i in 2:length&#40;dx&#41;-1
@@ -201,16 +186,26 @@ julia> plot(x, [sol1(i) for i in 0:1:10])
 <p>We are also working on the Robin boundary conditions for <code>DerivativeOperators</code> which are currently not as accurate as they <a href="https://gist.github.com/shivin9/124ed1e5ea96792fc8666e0caf32715c">should</a> be.</p>
 <p>Another avenue for work is the lazy implementations of <code>expm</code> and  <code>expmv</code> for <code>DerivativeOperators</code>.   </p>
 <h2 id="acknowledgments"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#acknowledgments">Acknowledgments</a></h2>
-<p>I would like to thank my mentors Christopher Rackauckas and <a href="https://github.com/dextorious">@dextorious</a> for their immense support before and throughout the project.
+<p>I would like to thank my mentors Christopher Rackauckas and <a href="https://github.com/dextorious">@dextorious</a> for their immense support before and throughout the project.</p>
+
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

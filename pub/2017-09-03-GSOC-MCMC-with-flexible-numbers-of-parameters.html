@@ -15,7 +15,9 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
   
 
   <link rel="stylesheet" href="/css/judoc.css">
@@ -56,29 +58,9 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-
 <p>My <a href="https://docs.google.com/document/d/1yY5VhucSRW4IHSDurvPsoSBeGQQLaqoyKyYKgVW0J8Q/edit">original GSOC proposal</a> was to implement modify Mamba.jl to enable it to fit Crosscat, a general-purpose Bayesian model which fits tabular data using row-wise Dirichlet cluster models nested inside a column-wise Dirichlet cluster. This model is in itself broadly useful, but the real reason I chose this project was to work on something even more general: improving the tools for doing MCMC on models with a mix of discrete and continuous parameters.</p>
 <p>In the end, I was unable to complete the full original plan. However, I did implement a simple Dirichlet 1D Gaussian mixture model in Mamba. Though this model itself is extremely basic, it did require successfully reworking Mamba to enable variable numbers of parameters — a significant amount of work. Based on that work, more-sophisticated Dirichlet mixture models involving multiple dimensions and/or Dirichlet processes would be almost trivial, and even something more heavy-duty such as Crosscat &#40;or improved versions thereof&#41; would be far easier to implement in the future. I estimate that, while the practical usefulness of the demo model I&#39;m delivering is a small fraction of a full-blown Crosscat, the actual work I&#39;ve done is about 75&#37; of what it would take to get there.</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#project_motivation">Project motivation</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#hurdles">Hurdles</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#so_wheres_the_model">So, where&#39;s the model?</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#further_work">Further work</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#acknowledgements">Acknowledgements</a></li></ol></ol></div>
 <h2 id="project_motivation"><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#project_motivation">Project motivation</a></h2>
 <p>Bayesian MCMC is a powerful all-purpose tool in the toolkit of statistics, and thus of almost all science. It allows one to flexibly build models which capture the interplay of known dynamics and unknown parameters, of measurable data and uncertain noise, thus extracting meaning from data.</p>
 <p>The great power of this idea lies in its flexibility. If you can write a likelihood model, you can at least attempt to do MCMC. Of course, issues of computation and convergence might make things hard in practice, but at least in theory, the idea is straightforward enough to be susceptible to automation.</p>
@@ -104,7 +86,7 @@ linebreaks: { automatic: true }
 <p>Here&#39;s the model I used in that example:</p>
 \(y_i \stackrel{iid}{\sim} \mathcal{N}(\mu_{T_i},\sigma^2_{T_i})\) for \(i\in \{1..N\}\)
 \(T\sim DP(\alpha)\), a vector with dimension \(N\) of integers &#40;cluster indices&#41;.</p>
-\(\mu_t\stackrel{iid}{\sim} \mathcal{N}(\mu_0,\tau^2)\) for any \(t\) \(1/\sigma_t^2\stackrel{iid}{\sim} Gamma(\alpha,\beta)\) for any \(t\) \(\beta\stackrel{iid}{\sim} Gamma(\theta,\phi)\)
+\(\mu_t\stackrel{iid}{\sim} \mathcal{N}(\mu_0,\tau^2)\) for any \(t\) \(1/\sigma_t^2\stackrel{iid}{\sim} \Gamma(\alpha,\beta)\) for any \(t\) \(\beta\stackrel{iid}{\sim} \Gamma(\theta,\phi)\)
 \(\alpha = 0.1\) \(\mu_0 = \bar{y}\) \(\tau = 2s_y\) \(\theta=\phi=.1\)
 <p>Here are some results for 45 simulated data points in two clusters with SD 3 and mean ±5:</p>
 <p><img src="/assets/images/blog/2017-08-28-GSOC-MCMC-with-flexible-numbers-of-parameters/mu_results.svg" alt="mean traceplot" /></p>
@@ -120,15 +102,21 @@ linebreaks: { automatic: true }
 <p>Once that cleanup is done — a few days&#39; work - and the merge is complete, implementing the full Crosscat model as in the original plan should not be too difficult. Optimistically, I feel it would take 1-2 weeks... which means that realistically, probably 4-6 is more realistic. In any case, the new data structures I&#39;ve implemented would make this job primarily a matter of just implementing the statistical algorithms; the data and model infrastructure is all well in place.</p>
 <p>With a combination of NUTS and discrete capabilities, I believe that Mamba will begin to actually be superior to Stan for some tasks. It has a long way to go to catch up to Stan&#39;s maturity, but in solving the &quot;two language problem&quot;, it gives a strong incentive for me and others to continue on this work.</p>
 <h2 id="acknowledgements"><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#acknowledgements">Acknowledgements</a></h2>
-<p>I want to thank my GSoC mentor Benjamin Deonovic for his help and understanding in what has been a difficult but fun project.
+<p>I want to thank my GSoC mentor Benjamin Deonovic for his help and understanding in what has been a difficult but fun project.</p>
+
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
     
     
   </body>

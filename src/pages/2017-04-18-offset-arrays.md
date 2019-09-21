@@ -1,12 +1,8 @@
 @def published = "18 April 2017"
 @def title = "Knowing where you are: custom array indices in Julia"
 @def authors = """<a href="http://holylab.wustl.edu">Tim Holy</a>"""
-
-~~~
-<script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-~~~
+@def hasmath = true
+@def hascode = true
 
 Arrays are a crucial component of any programming language,
 particularly for a data-oriented language like Julia.  Arrays store

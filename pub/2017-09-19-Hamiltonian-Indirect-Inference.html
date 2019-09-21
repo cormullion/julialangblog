@@ -15,8 +15,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -56,29 +60,8 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
- 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-
-<h2 id="bayesian_examplesjl"><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#bayesian_examplesjl">Bayesian_Examples.jl</a></h2>
-<p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017.</p>
+<p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017. See also <a href="https://github.com/DoriszAlbrecht/Bayesian_Examples.jl">Bayesian_Examples.jl</a>.</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#parametric_bayesian_indirect_likelihood_for_the_full_data">Parametric Bayesian Indirect Likelihood for the Full Data</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#first_stage_of_my_project">First stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#second_stage_of_my_project">Second stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#stochastic_volatility_model">Stochastic Volatility model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#problems_that_i_have_faced_during_gsoc">Problems that I have faced during GSOC</a></li><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#1_difficult_auxiliary_model">1 Difficult auxiliary model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#2_type-stability_issues">2 Type-stability issues</a></li></ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#future_work">Future work</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#references">References</a></li></ol></ol></div>
 <h2 id="gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood"><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></h2>
 <p>This summer I have had the opportunity to participate in the Google Summer of Code program. My project was in the Julia language and the main goal was to implement Indirect Inference &#40;A. A. Smith 1993; A. Smith 2008&#41; to overcome the typically arising issues &#40;such as intractable or costly to compute likelihoods&#41; when estimating models using likelihood-based methods. Hamiltonian Monte Carlo was expected to result in a more efficient sampling process.</p>
 <p>Under the mentorship of Tamás K. Papp, I completed a major revision of Bayesian estimation methods using Indirect Inference &#40;II&#41; and Hamiltonian Monte Carlo. I also got familiar with using git, opening issues, creating a repository among others.</p>
@@ -93,7 +76,7 @@ linebreaks: { automatic: true }
 <li><p>Then we compute the MLE of the auxiliary likelihood under <strong>x</strong> to get the parameters denoted by \(\phi\).</p>
 </li>
 </ul>
-\[\phi(x^{\star}) = argmax_{\phi} (x^{\star}|\phi)\]
+\[\phi(x^{\star}) = \argmax_{\phi} (x^{\star}|\phi)\]
 <ul>
 <li><p>Under these parameters \(\phi\), we can now compute the likelihood of \(\ell_{A}(y|\phi)\). It is desirable to have the auxiliary likelihood as close to the true likelihood as possible, in the sense of capturing relevant aspects of the model and the generated data.</p>
 </li>
@@ -106,9 +89,9 @@ linebreaks: { automatic: true }
 <p>After the second stage, I coded economic models for the <a href="https://github.com/tpapp/DynamicHMC.jl">DynamicHMC.jl</a>. The Stochastic Volatility model is one of them. In the following section, I will go through the set up.</p>
 <p>The continuous-time version of the Ornstein-Ulenbeck Stochastic - volatiltiy model describes how the return at time t has mean zero and its volatility is governed by a continuous-time Ornstein-Ulenbeck process of its variance. The big fluctuation of the value of a financial product imply a varying volatility process. That is why we need stochastic elements in the model. As we can access data only in discrete time, it is natural to take the discretization of the model.</p>
 <p>The discrete-time version of the Ornstein-Ulenbeck Stochastic - volatility model:</p>
-\[y_{t} = x_{t} + \epsilon_{t} where \epsilon_{t} ∼ \Chi^{2}(1)\]
-\[x_{t} = \rho * x_{t-1} + \sigma * \nu_{t}  where \nu_{t} ∼ N(0, 1)\]
-<p>The discrete-time version was used as the data-generating process. Where yₜ denotes the logarithm of return, \(x_{t}\) is the logarithm of variance, while \(\epsilon_{t}\) and \(\nu_{t}\) are unobserved noise terms.</p>
+\[y_{t} = x_{t} + \epsilon_{t} \quad \text{where}\quad \epsilon_{t} ∼ \Chi^{2}(1)\]
+\[x_{t} = \rho * x_{t-1} + \sigma * \nu_{t}  \quad \text{where}\quad \nu_{t} ∼ \mathcal N(0, 1)\]
+<p>The discrete-time version was used as the data-generating process. Where \(y_t\) denotes the logarithm of return, \(x_{t}\) is the logarithm of variance, while \(\epsilon_{t}\) and \(\nu_{t}\) are unobserved noise terms.</p>
 <p>For the auxiliary model, we used two regressions. The first regression was an AR&#40;2&#41; process on the first differences, the second was also an AR&#40;2&#41; process on the original variables in order to capture the levels.</p>
 <pre><code class="language-julia">"""
     lag_matrix(xs, ns, K = maximum(ns))
@@ -283,13 +266,22 @@ end
 
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

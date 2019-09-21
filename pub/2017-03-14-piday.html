@@ -15,8 +15,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -56,30 +60,9 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
-<!-- MathJax configuration -->
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-<!-- End of mathjax configuration -->
-
 <p><img src="/assets/images/blog/2017-03-14-piday/pi.png" alt="pi" /> <a href="#footnote-credit" class="footnote">[credit]</a></p>
 <p><em>This post is available as a Jupyter notebook <a href="https://github.com/simonbyrne/Pi.jl/blob/master/pi.ipynb">here</a></em></p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></li><li><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></li><li><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a></li><ol><li><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></li><li><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></li></ol><li><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a></li><ol><li><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></li></ol><li><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></li><li><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></li></ol></ol></div>
 <h2 id="pi_in_julia"><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></h2>
 <p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Like most technical languages, Julia provides a variable constant for &pi;. However Julia&#39;s handling is a bit special.</p>
@@ -225,18 +208,10 @@ pi_approx2 = evaluate(series2, 1/sqrt(BigInt(3)))
 3.600735064706950697553577253102547384977198233137361734413175534929622111373249e-26
 </code></pre>
 <p>This formulation is one of the <a href="https://en.wikipedia.org/wiki/Madhava_series#Another_formula_for_the_circumference_of_a_circle"><em>Madhava</em> or <em>Gregory–Leibniz series</em></a>:</p>
-\[
-\begin{equation}
-\pi = 6 \sum_{n=0}^{\infty} (-1)^n \frac{(1/\sqrt{3})^{2n+1}}{2n+1}.
-\end{equation}
-\]
+\[\pi = 6 \sum_{n=0}^{\infty} (-1)^n \frac{(1/\sqrt{3})^{2n+1}}{2n+1}.\]
 <h3 id="machins_approach"><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></h3>
 <p>Following the same idea, <a href="https://en.wikipedia.org/wiki/John_Machin#Formula">John Machin</a> derived an algorithm which converges much faster, using the identity</p>
-\[
-\begin{equation}
-\frac{\pi}{4} = 4 \arctan\left(\frac{1}{5}\right) - \arctan\left(\frac{1}{239}\right).
-\end{equation}
-\]
+\[\frac{\pi}{4} = 4 \arctan\left(\frac{1}{5}\right) - \arctan\left(\frac{1}{239}\right).\]
 <p>Following what we did above, using again a 37th Taylor expansion:</p>
 <pre><code class="language-julia">ser = atan( Taylor1(BigFloat, 37) )
 pi_approx3 = 4*( 4*evaluate(ser, 1/big(5)) - evaluate(ser, 1/big(239)) )
@@ -1100,16 +1075,26 @@ N 	 area interval 	 	 diameter
 950 	 [3.1394, 3.1437] 	 0.004210526316076102
 1000 	 [3.1395, 3.1436] 	 0.004000000000294435
 </code></pre>
-<p>&#91;credit&#93; Image courtesy of <a href="https://github.com/cormullion">Cormullion</a>, code <a href="https://gist.github.com/cormullion/e979d819e478da73280faaeb67490888">here</a>.
+<p>&#91;credit&#93; Image courtesy of <a href="https://github.com/cormullion">Cormullion</a>, code <a href="https://gist.github.com/cormullion/e979d819e478da73280faaeb67490888">here</a>.</p>
+
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

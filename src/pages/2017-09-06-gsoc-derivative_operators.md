@@ -1,34 +1,17 @@
 @def published = "6 September 2017"
 @def title = "GSoC 2017: Efficient Discretizations of PDE Operators"
 @def authors = """Shivin Srivastava, Christopher Rackauckas"""
-
-~~~
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-~~~
+@def hasmath = true
+@def hascode = true
 
 This project is an attempt towards building a PDE solver for JuliaDiffEq using the [Finite Difference Method](https://en.wikipedia.org/wiki/Finite_difference_method)(FDM) approach. We take up the FDM approach instead of [FEM](https://en.wikipedia.org/wiki/Finite_element_method) and [FVM](https://en.wikipedia.org/wiki/Finite_volume_method) as there are many toolboxes which already exist for FEM and FVM but not for FDM. Also, there are many use cases where the geometry of the problem is simple enough to be solved by FDM methods which are much faster due to their being able to avoid the bottleneck step of matrix multiplication by using Linear transformations to mimic the effect of a matrix multiplication. Since matrix multiplication basically transforms a vector element to a weighted sum of the neighbouring elements, this can be easily acheived using a special function which acts on the vector in optimal $\mathcal{O}(n)$ time.
 
 The result is a new package called [DiffEqOperators.jl](https://github.com/JuliaDiffEq/DiffEqOperators.jl) which creates efficient discretizations of partial differential operators thereby converting PDEs to ODEs which can be solved efficiently by existing ODE solvers. The `DerivativeOperator` is based on central differencing schemes of approximating derivatives at a point whereas the `UpwindOperators` are based on one-sided differencing schemes where the solution is typically a wave moving in a particular direction. The package also supports a variety of boundary conditions like [Dirichlet](https://en.wikipedia.org/wiki/Dirichlet_boundary_condition), [Neumann](https://en.wikipedia.org/wiki/Neumann_boundary_condition), [Periodic](https://en.wikipedia.org/wiki/Periodic_boundary_conditions) and the [Robin](https://en.wikipedia.org/wiki/Robin_boundary_condition) [boundary condition](https://en.wikipedia.org/wiki/Boundary_value_problem).
 
-## MOTIVATION
+\toc
+
+## Motivation
+
 The general idea of finite difference methods is to generate finite difference weights corresponding to a differential operator allowing a certain level of approximation. The time and space variable are divided to form a grid where
 $h = \Delta x = \frac{1}{N+1}$ and $x_i = ih$ for $i = 0, 1,...,N+1$ and
 $k = \Delta t = \frac{T}{M+1}$ and $t_j = jk$ for $j = 0, 1,...,M+1$. \\
@@ -55,14 +38,14 @@ In this particular case, we end up with the following scheme:
 
 $$
 \left\{\begin{matrix}
-\frac{u_j^{j+1} - u_i^j}{k} - \frac{u_{i-1}^j - 2u_i^j + u_{i+1}^j}{h^2} = f_i^j \textit{ for } i = 1,...,N,j = 1,...,M \\
-u_i^0 = u_0(x_i) \textit{ for } i = 1,...,N\\
-u_0^j = u_{N+1}^j = 0 \textit{ for } j = 1,...,M+1\\
+\frac{u_j^{j+1} - u_i^j}{k} - \frac{u_{i-1}^j - 2u_i^j + u_{i+1}^j}{h^2} = f_i^j \quad\textit{ for }\quad i = 1,...,N,j = 1,...,M \\
+u_i^0 = u_0(x_i) \quad\textit{ for }\quad i = 1,...,N\\
+u_0^j = u_{N+1}^j = 0 \quad\textit{ for }\quad j = 1,...,M+1\\
 \end{matrix}\right.
 $$
 
 This is the stencil rewritten as a recurrence. Writing it out in vector form, we get:-
-$\frac{U^{j+1} - U^j}{k} + A_h U^j = F^j \textit{ for } j = 1,...,M$
+$\frac{U^{j+1} - U^j}{k} + A_h U^j = F^j \quad\textit{ for }\quad j = 1,...,M$
 
 When we want to apply this operator on the vector $U$, the weight vector turns into a matrix called the transformation matrix $A_h$
 
@@ -73,7 +56,7 @@ $$ A_h = \begin{pmatrix}
 0 & \cdots & -1 & 2  & -1 \\
 0 & \cdots & 0 & -1 & 2 \\
 \end{pmatrix}
-\textit{such that }
+\quad\textit{such that }\quad
 \frac{\partial^2U^j}{\partial x^2} \approx A_h*U^j $$
 
 But matrix multiplication is costly, therefore it would be preferable to have the linear operator of the double partial differential instead of the transformation matrix.

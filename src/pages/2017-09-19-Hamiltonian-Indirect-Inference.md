@@ -1,36 +1,14 @@
 @def published = "19 September 2017"
 @def title ="GSoC 2017 Project: Hamiltonian Indirect Inference"
 @def authors ="Dorisz Albrecht"
-
-
-~~~
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-~~~
-~~~
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-~~~
-
-## Bayesian_Examples.jl
+@def hasmath = true
+@def hascode = true
 
 This is a writeup of my project for the Google Summer of Code 2017. The
 associated repository contains examples of estimating various models. In
-addition to this repository, I have collaborated in [HamiltonianABC](https://github.com/tpapp/HamiltonianABC.jl/) and its branches as part of the GSOC 2017.
+addition to this repository, I have collaborated in [HamiltonianABC](https://github.com/tpapp/HamiltonianABC.jl/) and its branches as part of the GSOC 2017. See also [Bayesian_Examples.jl](https://github.com/DoriszAlbrecht/Bayesian_Examples.jl).
+
+\toc
 
 ## GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood
 
@@ -50,7 +28,7 @@ To summarize the method, first we have the parameter vector $\theta$ and the obs
 * First we have to generate points, denote with ~~~<strong>x*</strong>~~~ from the data generating process with the previously proposed parameters $\theta$.
 * Then we compute the MLE of the auxiliary likelihood under **x** to get the parameters denoted by $\phi$.
 
-$$\phi(x^{\star}) = argmax_{\phi} (x^{\star}|\phi)$$
+$$\phi(x^{\star}) = \argmax_{\phi} (x^{\star}|\phi)$$
 
 * Under these parameters $\phi$, we can now compute the likelihood of $\ell_{A}(y|\phi)$. It is desirable to have the auxiliary likelihood as close to the true likelihood as possible, in the sense of capturing relevant aspects of the model and the generated data.
 
@@ -73,11 +51,11 @@ The continuous-time version of the Ornstein-Ulenbeck Stochastic - volatiltiy mod
 
 The discrete-time version of the Ornstein-Ulenbeck Stochastic - volatility model:
 
-$$y_{t} = x_{t} + \epsilon_{t} where \epsilon_{t} ∼ \Chi^{2}(1)$$
+$$y_{t} = x_{t} + \epsilon_{t} \quad \text{where}\quad \epsilon_{t} ∼ \Chi^{2}(1)$$
 
-$$x_{t} = \rho * x_{t-1} + \sigma * \nu_{t}  where \nu_{t} ∼ N(0, 1)$$
+$$x_{t} = \rho * x_{t-1} + \sigma * \nu_{t}  \quad \text{where}\quad \nu_{t} ∼ \mathcal N(0, 1)$$
 
-The discrete-time version was used as the data-generating process. Where yₜ denotes the logarithm of return, $x_{t}$ is the logarithm of variance, while $\epsilon_{t}$ and $\nu_{t}$ are unobserved noise terms.
+The discrete-time version was used as the data-generating process. Where $y_t$ denotes the logarithm of return, $x_{t}$ is the logarithm of variance, while $\epsilon_{t}$ and $\nu_{t}$ are unobserved noise terms.
 
 
 For the auxiliary model, we used two regressions. The first regression was an AR(2) process on the first differences, the second was also an AR(2) process on the original variables in order to capture the levels.

@@ -1,6 +1,7 @@
 @def published = "14 March 2017"
 @def title =  "Technical preview: Native GPU programming with CUDAnative.jl"
 @def authors = """<a href="https://github.com/maleadt">Tim Besard</a>"""
+@def hascode = true
 
 <!--
 could use JuDoc's commands to allow this as variable?
@@ -26,6 +27,7 @@ purpose-built [LLVM.jl](https://github.com/maleadt/LLVM.jl) and
 All this functionality is brand-new and thoroughly untested, so we need your help and
 feedback in order to improve and finalize the interfaces before Julia 1.0.
 
+\toc
 
 
 ## How to get started
@@ -37,7 +39,7 @@ source is well documented in the [main repository's
 README](https://github.com/JuliaLang/julia/blob/master/README.md#source-download-and-compilation).
 Most of the time it boils down to the following commands:
 
-```
+```bash
 $ git clone https://github.com/JuliaLang/julia.git
 $ cd julia
 $ git checkout v0.6.0-pre.alpha  # or any later tag
@@ -49,11 +51,11 @@ From the Julia REPL, installing CUDAnative.jl and its dependencies is just a mat
 the package manager. Do note that you need to be using the NVIDIA binary driver, and have
 the CUDA toolkit installed.
 
-```
-> Pkg.add("CUDAnative")
+```julia
+Pkg.add("CUDAnative")
 
 # Optional: test the package
-> Pkg.test("CUDAnative")
+Pkg.test("CUDAnative")
 ```
 
 At this point, you can start writing kernels and execute them on the GPU using CUDAnative's

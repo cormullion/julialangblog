@@ -1,31 +1,12 @@
 @def published = "23 August 2017"
 @def title = "GSoC 2017: Implementing iterative solvers for numerical linear algebra"
 @def authors = "Harmen Stoppels, Andreas Noack"
-
-
-~~~
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-~~~
+@def hasmath = true
+@def hascode =true
 
 The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in [JacobiDavidson.jl](https://github.com/haampie/JacobiDavidson.jl). This method computes a few approximate solutions of the eigenvalue problem $Ax = \lambda Bx$ for large and sparse matrices $A$ and $B$. As it uses iterative solvers internally, much time has gone into improving [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl) in general. Lastly, as iterative solvers are typically used with preconditioners, I have implemented the incomplete LU factorization for sparse matrices as well in [ILU.jl](https://github.com/haampie/ILU.jl).
+
+\toc
 
 ## JacobiDavidson.jl
 The [Jacobi-Davidson implementation](https://github.com/haampie/JacobiDavidson.jl) is ready for use and can be applied to solving the (generalized) eigenvalue problem for non-Hermitian matrices. It's similar to the `eigs` method already available in Julia: it gives you a couple eigenvalues near a specified target in the complex plane.

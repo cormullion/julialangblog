@@ -15,8 +15,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  
+   <!-- Un-minified script so that can play a bit -->
+<link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -56,28 +60,8 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-
 <p>The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in <a href="https://github.com/haampie/JacobiDavidson.jl">JacobiDavidson.jl</a>. This method computes a few approximate solutions of the eigenvalue problem \(Ax = \lambda Bx\) for large and sparse matrices \(A\) and \(B\). As it uses iterative solvers internally, much time has gone into improving <a href="https://github.com/JuliaMath/IterativeSolvers.jl">IterativeSolvers.jl</a> in general. Lastly, as iterative solvers are typically used with preconditioners, I have implemented the incomplete LU factorization for sparse matrices as well in <a href="https://github.com/haampie/ILU.jl">ILU.jl</a>.</p>
+<div class="jd-toc"><ol><ol><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#jacobidavidsonjl">JacobiDavidson.jl</a></li><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#iterativesolversjl">IterativeSolvers.jl</a></li><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#ilujl">ILU.jl</a></li><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#examples">Examples</a></li><ol><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#jacobi-davidson">Jacobi-Davidson</a></li><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#ilu_example">ILU example</a></li></ol><li><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#acknowledgements">Acknowledgements</a></li></ol></ol></div>
 <h2 id="jacobidavidsonjl"><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#jacobidavidsonjl">JacobiDavidson.jl</a></h2>  The <a href="https://github.com/haampie/JacobiDavidson.jl">Jacobi-Davidson implementation</a> is ready for use and can be applied to solving the &#40;generalized&#41; eigenvalue problem for non-Hermitian matrices. It&#39;s similar to the <code>eigs</code> method already available in Julia: it gives you a couple eigenvalues near a specified target in the complex plane.</p>
 <p>At this point no official release has been tagged yet, as there is still some work to be done: hopefully the functions for the generalized and ordinary eigenvalue problem can largely be merged as they are very similar. Also, some optimizations for Hermitian problems should yet be implemented; lastly the methods do not yet support generic vectors and numbers.</p>
 <h2 id="iterativesolversjl"><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#iterativesolversjl">IterativeSolvers.jl</a></h2>  We have been preparing a new release of <a href="https://github.com/JuliaMath/IterativeSolvers.jl">IterativeSolvers.jl</a> that improves speed and memory usage of solvers like GMRES, CG, Chebyshev iteration, stationary methods and the Power Method. Also two new methods MINRES and BiCGStab&#40;l&#41; are available, together with efficient implementations of stationary methods for Julia&#39;s <code>SparseMatrixCSC</code> matrix type.</p>
@@ -185,16 +169,26 @@ b = A * x
 </code></pre>
 <p>So all in all the problem is solved about 36&#37; faster. However, if we have multiple right-hand sides for the same matrix, we can construct the preconditioner only once and use it multiple times. Even when the matrix changes slightly you could reuse the ILU factorization. The latter is exactly what happens in Jacobi-Davidson.</p>
 <h2 id="acknowledgements"><a href="/pub/2017-08-23-native-julia-implementations-of-iterative-solvers-for-numerical-linear-algebra.html#acknowledgements">Acknowledgements</a></h2>
-<p>I would really want to thank my GSoC mentor Andreas Noack for the many discussions we had in chat and video calls. Also I would like to thank the Julia community in general for giving me a warm welcome, both online and at JuliaCon 2017.
+<p>I would really want to thank my GSoC mentor Andreas Noack for the many discussions we had in chat and video calls. Also I would like to thank the Julia community in general for giving me a warm welcome, both online and at JuliaCon 2017.</p>
+
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>
