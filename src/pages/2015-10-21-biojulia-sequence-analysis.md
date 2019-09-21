@@ -1,6 +1,7 @@
 @def published = "21 October 2015"
 @def title = "JSoC 2015 project: Efficient data structures and algorithms for sequence analysis in BioJulia"
 @def authors = "Kenta Sato"
+@def hascode = true
 
 * Participant: Kenta Sato ([@bicycle1885](https://github.com/bicycle1885))
 * Mentor: Daniel C. Jones ([@dcjones](https://github.com/dcjones))

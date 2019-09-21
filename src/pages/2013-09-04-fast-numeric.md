@@ -1,7 +1,7 @@
 @def published = "4 September 2013"
 @def title = "Fast Numeric Computation in Julia"
 @def authors = """<a href="http://dahua.me">Dahua Lin</a>"""
-
+@def hascode = true
 Working on numerical problems daily, I have always dreamt of a language that provides an elegant interface while allowing me to write codes that run blazingly fast on large data sets. Julia is a language that turns this dream into a reality.
 With Julia, you can focus on your problem, keep your codes clean, and more importantly, write fast codes without diving into lower level languages such as C or Fortran even when performance is critical.
 

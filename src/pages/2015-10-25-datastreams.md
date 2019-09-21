@@ -1,6 +1,7 @@
 @def published = "25 October 2015"
 @def title = "JSoC 2015 project: DataStreams.jl"
 @def authors =""" <a href="https://github.com/quinnj">Jacob Quinn</a>"""
+@def hascode = true
 
 Data processing got ya down? Good news! The [DataStreams.jl](https://github.com/JuliaDB/DataStreams.jl) package, er, framework, has arrived!
 

@@ -16,7 +16,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -60,20 +62,13 @@
 <p>   </p>
 <p>Spawning a pipeline of connected programs via an intermediate shell — a.k.a. &quot;shelling out&quot; — is a really convenient and effective way to get things done. It&#39;s so handy that some &quot;<a href="http://en.wikipedia.org/wiki/Glue_language">glue languages</a>,&quot; like <a href="http://www.perl.org/">Perl</a> and <a href="http://www.ruby-lang.org/">Ruby</a>, even have special syntax for it &#40;backticks&#41;. However, shelling out is also a common source of bugs, security holes, unnecessary overhead, and silent failures. Here are the three reasons why shelling out is problematic:</p>
 <ol>
-<li><p><em><a href="#metacharacter_brittleness">Metacharacter brittleness.</a></em></p>
+<li><p><em><a href="#metacharacter_brittleness">Metacharacter brittleness.</a></em> When commands are constructed programmatically, the resulting code is almost always brittle: if a variable used to construct the command contains any shell metacharacters, including spaces, the command will likely break and do something very different than what was intended — potentially something quite dangerous.</p>
+</li>
+<li><p><em><a href="#indirection_and_inefficiency">Indirection and inefficiency.</a></em> When shelling out, the main program forks and execs a shell process just so that the shell can in turn fork and exec a series of commands with their inputs and outputs appropriately connected. Not only is starting a shell an unnecessary step, but since the main program is not the parent of the pipeline commands, it cannot be notified when they terminate — it can only wait for the pipeline to finish and hope the shell indicates what happened.</p>
+</li>
+<li><p><em><a href="#silent_failures_by_default">Silent failures by default.</a></em> Errors in shelled out commands don&#39;t automatically become exceptions in most languages. This default leniency leads to code that fails silently when shelled out commands don&#39;t work. Worse still, because of the indirection problem, there are many cases where the failure of a process in a spawned pipeline <em>cannot</em> be detected by the parent process, even if errors are fastidiously checked for.</p>
 </li>
 </ol>
-<p>When commands are constructed programmatically, the resulting code is almost always brittle: if a variable used to construct the command contains any shell metacharacters, including spaces, the command will likely break and do something very different than what was intended — potentially something quite dangerous.</p>
-<ol start="2">
-<li><p><em><a href="#indirection_and_inefficiency">Indirection and inefficiency.</a></em></p>
-</li>
-</ol>
-<p>When shelling out, the main program forks and execs a shell process just so that the shell can in turn fork and exec a series of commands with their inputs and outputs appropriately connected. Not only is starting a shell an unnecessary step, but since the main program is not the parent of the pipeline commands, it cannot be notified when they terminate — it can only wait for the pipeline to finish and hope the shell indicates what happened.</p>
-<ol start="3">
-<li><p><em><a href="#silent_failures_by_default">Silent failures by default.</a></em></p>
-</li>
-</ol>
-<p>Errors in shelled out commands don&#39;t automatically become exceptions in most languages. This default leniency leads to code that fails silently when shelled out commands don&#39;t work. Worse still, because of the indirection problem, there are many cases where the failure of a process in a spawned pipeline <em>cannot</em> be detected by the parent process, even if errors are fastidiously checked for.</p>
 <p>In the rest of this post, I&#39;ll go over examples demonstrating each of these problems. At <a href="#Summary&#43;and&#43;Remedy">the end</a>, I&#39;ll talk about better alternatives to shelling out, and in a <a href="http://julialang.org/blog/2013/04/put-this-in-your-pipe">followup post</a>. I&#39;ll demonstrate how Julia makes these better alternatives dead simple to use. Examples below are given in Ruby which shells out to <a href="http://www.gnu.org/software/bash/">Bash</a>, but the same problems exist no matter what language one shells out from: it&#39;s the technique of using an intermediate shell process to spawn external commands that&#39;s at fault, not the language.</p>
 <h2 id="metacharacter_brittleness"><a href="/pub/2012-03-11-shelling-out-sucks.html#metacharacter_brittleness">Metacharacter Brittleness</a></h2>
 <p>Let&#39;s start with a simple example of shelling out from Ruby. Suppose you want to count the number of lines containing the string &quot;foo&quot; in all the files under a directory given as an argument. One option is to write Ruby code that reads the contents of the given directory, finds all the files, opens them and iterates through them looking for the string &quot;foo&quot;. However, that&#39;s a lot of work and it&#39;s going to be much slower than using a pipeline of standard UNIX commands, which are written in C and heavily optimized. The most natural and convenient thing to do in Ruby is to shell out, using backticks to capture output:</p>
@@ -209,13 +204,17 @@ from :0</code></pre>
 
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

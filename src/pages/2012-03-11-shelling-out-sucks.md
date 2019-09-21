@@ -1,6 +1,8 @@
 @def published = "11 March 2012"
 @def title = "Shelling Out Sucks"
 @def authors = """ <a href="http://karpinski.org/">Stefan Karpinski</a>"""
+@def hascode = true
+
 
 [followup post](/pub/pages/2013-04-08-put-this-in-your-pipe.html)
 
@@ -14,21 +16,11 @@ It's so handy that some "[glue languages](http://en.wikipedia.org/wiki/Glue_lang
 However, shelling out is also a common source of bugs, security holes, unnecessary overhead, and silent failures.
 Here are the three reasons why shelling out is problematic:
 
-1. *[Metacharacter brittleness.](#metacharacter_brittleness)*
+1. *[Metacharacter brittleness.](#metacharacter_brittleness)* When commands are constructed programmatically, the resulting code is almost always brittle: if a variable used to construct the command contains any shell metacharacters, including spaces, the command will likely break and do something very different than what was intended — potentially something quite dangerous.
 
-When commands are constructed programmatically, the resulting code is almost always brittle:
-if a variable used to construct the command contains any shell metacharacters, including spaces, the command will likely break and do something very different than what was intended — potentially something quite dangerous.
+2. *[Indirection and inefficiency.](#indirection_and_inefficiency)* When shelling out, the main program forks and execs a shell process just so that the shell can in turn fork and exec a series of commands with their inputs and outputs appropriately connected. Not only is starting a shell an unnecessary step, but since the main program is not the parent of the pipeline commands, it cannot be notified when they terminate — it can only wait for the pipeline to finish and hope the shell indicates what happened.
 
-2. *[Indirection and inefficiency.](#indirection_and_inefficiency)*
-
-When shelling out, the main program forks and execs a shell process just so that the shell can in turn fork and exec a series of commands with their inputs and outputs appropriately connected.
-Not only is starting a shell an unnecessary step, but since the main program is not the parent of the pipeline commands, it cannot be notified when they terminate — it can only wait for the pipeline to finish and hope the shell indicates what happened.
-
-3. *[Silent failures by default.](#silent_failures_by_default)*
-
-Errors in shelled out commands don't automatically become exceptions in most languages.
-This default leniency leads to code that fails silently when shelled out commands don't work.
-Worse still, because of the indirection problem, there are many cases where the failure of a process in a spawned pipeline *cannot* be detected by the parent process, even if errors are fastidiously checked for.
+3. *[Silent failures by default.](#silent_failures_by_default)* Errors in shelled out commands don't automatically become exceptions in most languages. This default leniency leads to code that fails silently when shelled out commands don't work. Worse still, because of the indirection problem, there are many cases where the failure of a process in a spawned pipeline *cannot* be detected by the parent process, even if errors are fastidiously checked for.
 
 In the rest of this post, I'll go over examples demonstrating each of these problems.
 At [the end](#Summary+and+Remedy), I'll talk about better alternatives to shelling out, and in a [followup post](http://julialang.org/blog/2013/04/put-this-in-your-pipe). I'll demonstrate how Julia makes these better alternatives dead simple to use.

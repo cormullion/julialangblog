@@ -1,7 +1,7 @@
 @def published = "5 March 2013"
 @def title = "Efficient Aggregates in Julia"
 @def authors = """<a href="https://github.com/JeffBezanson">Jeff Bezanson</a>"""
-
+@def hascode = true
 We recently introduced an exciting feature that has been in planning for some
 time: immutable aggregate types. In fact, we have been planning to do this
 for so long that this feature is the subject of our issue #13 on GitHub,
