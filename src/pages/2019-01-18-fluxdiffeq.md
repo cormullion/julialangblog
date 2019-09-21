@@ -2,8 +2,7 @@
 @def title = "DiffEqFlux.jl – A Julia Library for Neural Differential Equations"
 @def authors = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""
 @def hascode = true
-
-\toc
+@def hasmath = true
 
 Translations: ~~~ <a href="https://julialang.org/blog/2019/04/fluxdiffeq-zh_tw">Traditional Chinese</a>~~~
 
@@ -53,6 +52,9 @@ researchers to better explore the problem domain.
 student, we have [Google Summer of Code projects available in this area](https://julialang.org/soc/ideas-page). This
 [pays quite well over the summer](https://developers.google.com/open-source/gsoc/help/student-stipends).
 Please join the [Julia Slack](https://slackinvite.julialang.org/) and the #jsoc channel to discuss in more detail.)
+
+\toc
+
 
 ## What do differential equations have to do with machine learning?
 

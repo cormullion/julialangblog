@@ -15,10 +15,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-   <!-- Un-minified script so that can play a bit -->
-<link rel="stylesheet" href="/libs/katex/katex.min.css">
-     
   
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -58,27 +58,6 @@
 <!-- Content appended here -->
 
 <div class="jd-content">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-processEscapes: true,
-processEnvironments: true
-},
-// Center justify equations in code and markdown cells. Elsewhere
-// we use CSS to left justify single line equations in code cells.
-displayAlign: 'center',
-"HTML-CSS": {
-styles: {'.MathJax_Display': {"margin": 0}},
-linebreaks: { automatic: true }
-}
-});
-</script>
-
 <p>My original GSoC project was about implementing native Julia solvers for solving boundary value problems &#40;BVPs&#41; that were determined from second order ordinary differential equations &#40;ODEs&#41;. I started down the BVP path, built a shooting method to solve BVPs from initial value problems &#40;IVPs&#41;, and then built the beginning of the mono-implicit Runge-Kutta &#40;MIRK&#41; method. Those solvers are in the <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl">BoundaryValueDiffEq.jl</a> repository. Instead of trying to jump directly to the end point, and talk about how to do every detail in MIRK, I went to explore how those details naturally arise in second order ODEs. I implemented many solvers for dynamical IVPs. Although I didn’t fully complete my original goal by the end of GSoC, I am almost there.</p>
 <h2 id="symplecticity"><a href="/pub/2017-11-01-gsoc-ode.html#symplecticity">Symplecticity</a></h2>
 <p>First, there the idea of symplecticity, because the Labatto &#40;Lobatto IIIA-IIIB&#41; MIRK tableaux are actually symplectic. Basically, symplecticity is another way to say that first integrals &#40;energy, angular momentum and etc.&#41; are conserved, so symplectic integrators are specialized for solving second order ODEs that are raised from dynamic systems which require energy conservation. It is easier to see what symplecticity actually entails on dynamical IVPs. For instance, the Hamiltonian \(\mathcal{H}\) and the angular momentum \(L\) for the Kepler problem are</p>
@@ -175,21 +154,21 @@ sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/bvp.svg" alt="bvp" /></p>
 <p>More details can be found in <a href="http://docs.juliadiffeq.org/latest/tutorials/bvp_example.html">here</a>.</p>
 <h2 id="acknowledgements"><a href="/pub/2017-11-01-gsoc-ode.html#acknowledgements">Acknowledgements</a></h2>
-<p>I would like to thank all my mentors Chris Rackauckas, Jiahao Chen and Christoph Ortner for their responsiveness and kind guidance. Especially my mentor Rackauckas, he can answer my questions in five minutes after I asked on Slack. I would also like to thank Julia community for managing GSoC project and JuliaCon 2017.
+<p>I would like to thank all my mentors Chris Rackauckas, Jiahao Chen and Christoph Ortner for their responsiveness and kind guidance. Especially my mentor Rackauckas, he can answer my questions in five minutes after I asked on Slack. I would also like to thank Julia community for managing GSoC project and JuliaCon 2017.</p>
+
 <div class="page-foot">
   <div class="copyright">
-    &copy; Last modified: September 15, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
-        <script src="/libs/katex/katex.min.js"></script>
-<script src="/libs/katex/auto-render.min.js"></script>
-<script>renderMathInElement(document.body)</script>
-
     
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

@@ -13,3 +13,4 @@ For instance:
 \newcommand{\scal}[1]{\langle #1 \rangle}
 
 @def author =  "" <!-- defined individually on blog pages -->
+@def hasmath = false

@@ -1,8 +1,6 @@
 @def published = "8 August 2018"
- layout: post
- title: "Julia 1.0 (Simplified Chinese)"
- snippet: "Julia 1.0正式发布"
-
+@def title = "Julia 1.0 正式發佈 (Simplified Chinese)"
+@def authors = "the Julia developers"
 
 
 备受期待的[Julia语言](https://julialang.org)的1.0版本积累了富有野心的程序员们的十年心血。
