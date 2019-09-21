@@ -1,6 +1,7 @@
 @def published = "1 February 2016"
 @def title = "Multidimensional algorithms and iteration"
 @def authors = """ <a href="http://holylab.wustl.edu">Tim Holy</a>"""
+@def hascode = true
 
 **Note: updated December 2018 for Julia 1.1**
 

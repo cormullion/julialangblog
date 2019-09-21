@@ -1,6 +1,7 @@
 @def published = "27 March 2016"
 @def title = "Generalizing AbstractArrays: opportunities and challenges"
 @def authors = """ <a href="http://holylab.wustl.edu">Tim Holy</a>"""
+@def hascode = true
 
 # Introduction: generic algorithms with AbstractArrays
 

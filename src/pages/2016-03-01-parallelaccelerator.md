@@ -1,6 +1,7 @@
 @def published = "1 March 2016"
 @def title = "An introduction to ParallelAccelerator.jl"
 @def authors = """<a href="https://www.cs.indiana.edu/~lkuper/">Lindsey Kuper</a>"""
+@def hascode=true
 
 The High Performance Scripting team at Intel Labs recently released
 [ParallelAccelerator.jl](https://github.com/IntelLabs/ParallelAccelerator.jl),

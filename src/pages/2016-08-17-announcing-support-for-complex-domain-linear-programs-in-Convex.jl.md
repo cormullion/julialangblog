@@ -1,7 +1,7 @@
 @def published = "17 August 2016"
 @def title = "Announcing support for complex-domain linear programs in Convex.jl"
 @def authors = "Ayush Pandey"
-
+@def hascode = true
 
 
 I am pleased to announce the support for complex-domain linear programs (LPs) in Convex.jl. As one of the *Google Summer of Code* students under *The Julia Language*, I had proposed to implement the support for complex semidefinite programming. In the first phase of project, I started by tackling the problem of complex-domain LPs where in first subphase, I had announced the support for complex coefficients during [JuliaCon'16](https://www.youtube.com/watch?v=fHG4uEOlMbY) and now I take this opportunity to announce the support for complex variables in LPs.
