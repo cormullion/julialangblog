@@ -42,19 +42,19 @@ And this is where the speech recognition system is sitting right now. The networ
 
 **Textual transcription**
 
-```plain
+```plaintext
 The reasons for this dive seemed foolish now.
 ```
 
 **Target sequence of phones**
 
-```plain
+```plaintext
 h# dh ix r iy z ax n z f axr dh ih s dcl d ay v s iy m dcl d f uw l ix sh epi n aw h#
 ```
 
 **Predicted sequence of phones**
 
-```plain
+```plaintext
 h# pau w iy bcl r iy ux z bcl b iy bcl b uw z ay n pcl p z iy n dcl d v w iy er h#
 ```
 

@@ -29,7 +29,7 @@ We can state the algorithm as
 
 1. Choose starting point $( x $).
 2. For $(i = 1,\ldots,n$), evaluate $(f_i(x) $) and update corresponding model $( m_i $).
-3. Let the next candidate $( x $) be the minimizer of $( \sum_{i=1}&#94;n m_i(x) $).
+3. Let the next candidate $( x $) be the minimizer of $( \sum_{i=1}^n m_i(x) $).
 4. If not converged, goto step 2.
 
 If it is costly to evaluate $( f_i(x) $), then the algorithm is naturally
@@ -218,7 +218,7 @@ We'll first run on a large multicore server. The
 `runals.jl` (asynchronous L-shaped) file contains the algorithm we'll use. Its
 usage is
 
-```bash-script
+```bash
 julia runals.jl [data source] [num subproblems] [async param] [block size]
 ```
 
@@ -233,7 +233,7 @@ To run multiple Julia processes on a shared-memory machine, we pass the `-p N`
 option to the `julia` executable, which will start up `N` system processes.
 To execute the asynchronous version with 10 workers, we run
 
-```bash-script
+```bash
 julia -p 12 runals.jl Data/storm 4000 0.6 30
 ```
 
