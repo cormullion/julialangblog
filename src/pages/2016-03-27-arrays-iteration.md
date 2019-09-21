@@ -188,7 +188,7 @@ writing `B[ii,jj]*v[j]`.  `jj` (whatever that is) and `j` need to be
 in-sync, but they don't necessarily need to both be integers. Using
 this kind of strategy, matrix-vector multiplication
 
-```jl
+```julia
 for j = 1:size(B, 2)
     vj = v[j]
     for i = 1:size(B, 1)
@@ -199,7 +199,7 @@ end
 
 might be written in a more performant manner like this:
 
-```jl
+```julia
 for (jj, vj) in zip(eachindex(B, Dimension{2}), v)
     for (i, ii) in zip(eachindex(dest), eachindex(B, (:, jj)))
         dest[i] += B[ii,jj]*vj
@@ -246,7 +246,7 @@ given two linear indexes `i` and `j` for the same array, the offset in
 memory is proportional to `i-j`.  For row-major arrays, this
 notion is not viable, because otherwise a loop
 
-```jl
+```julia
 function copy!(dest, src)
     for i = 1:length(src)
         dest[i] = src[i]  # trouble if `i` means "memory offset"
@@ -270,7 +270,7 @@ slower to access elements of an array in anything other than
 [storage-order](http://julialang.org/blog/2013/09/fast-numeric).  Some
 reasonably fast ways to write matrix-vector multiplication are
 
-```jl
+```julia
 for j = 1:size(B, 2)
     vj = v[j]
     for i = 1:size(B, 1)
@@ -280,7 +280,7 @@ end
 ```
 for a column-major matrix `B`, and
 
-```jl
+```julia
 for i = 1:size(B, 1)
     for j = 1:size(B, 2)
         dest[i] += B[i,j] * v[j]
@@ -315,7 +315,7 @@ But our triumph is short-lived. Let's return to the example of
 different array types, and therefore might be most-efficiently indexed
 with different iterator types.  We're tempted to write this as
 
-```jl
+```julia
 function copy!(dest, src)
     for (idest, isrc) in zip(eachindex(dest), eachindex(src))
         dest[idest] = src[isrc]
