@@ -179,10 +179,10 @@ fmindex = FMIndex(encode(record.seq))
 open(string(filepath, <span class=hljs-string >".index"</span>), <span class=hljs-string >"w+"</span>) <span class=hljs-keyword >do</span> io
     serialize(io, fmindex)
 <span class=hljs-keyword >end</span>
-</code></pre> <p>OK, then create an index for chromosome 22 of human &#40;you can download it from <a href="http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/">here</a>&#41;:</p> <pre><code class="julia hljs">&amp;<span class=hljs-comment >#36; julia4 index.jl chr22.fa</span>
+</code></pre> <p>OK, then create an index for chromosome 22 of human &#40;you can download it from <a href="http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/">here</a>&#41;:</p> <pre><code class="julia hljs">$ julia4 index.jl chr22.fa
 chr22: <span class=hljs-number >50818468</span>bp
-&amp;<span class=hljs-comment >#36; ls -lh chr22.fa.index</span>
--rw-r--r--&amp;<span class=hljs-comment >#43; 1 kenta  staff    74M  9 26 06:30 chr22.fa.index</span></code></pre> <p>After construction finished &#40;this will take several minutes&#41;, read the index in REPL:</p> <pre><code class="julia hljs">julia&gt; <span class=hljs-keyword >using</span> FMIndexes
+$ ls -lh chr22.fa.index
+-rw-r--r--+ <span class=hljs-number >1</span> kenta  staff    <span class=hljs-number >74</span>M  <span class=hljs-number >9</span> <span class=hljs-number >26</span> <span class=hljs-number >06</span>:<span class=hljs-number >30</span> chr22.fa.index</code></pre> <p>After construction finished &#40;this will take several minutes&#41;, read the index in REPL:</p> <pre><code class="julia hljs">julia&gt; <span class=hljs-keyword >using</span> FMIndexes
 
 julia&gt; fmindex = open(deserialize, <span class=hljs-string >"chr22.fa.index"</span>);
 </code></pre> <p>Now that you can execute queries to search a DNA fragment:</p> <pre><code class="julia hljs">julia&gt; <span class=hljs-keyword >using</span> Bio.Seq

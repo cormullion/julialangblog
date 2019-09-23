@@ -150,6 +150,29 @@ html {
 .jd-content .eqref a  { color: green; }
 .jd-content .bibref a { color: green; }
 
+.jd-content sup {
+    font-size: 70%;
+    vertical-align: super;
+    line-height: 0; }
+
+.jd-content table.fndef  {
+    margin: 0;
+    margin-bottom: 10px;}
+.jd-content .fndef tr, td {
+    padding: 0;
+    border: 0;
+    text-align: left;}
+.jd-content .fndef tr {
+    border-left: 2px solid lightgray;
+    }
+.jd-content .fndef td.fndef-backref {
+    vertical-align: top;
+    font-size: 70%;
+    padding-left: 5px;}
+.jd-content .fndef td.fndef-content {
+    font-size: 80%;
+    padding-left: 10px;}
+
 /* ==================================================================
     IMAGES in CONTENT
 ================================================================== */
