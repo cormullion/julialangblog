@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2017, 3, 18)
+@def rss = """ Paper in SIAM Review: Julia - A Fresh Approach to Numerical Computing | Our paper, Julia: A Fresh Approach to Numerical Computing (http://julialang.org/research/julia-fresh-approach-BEKS.pdf), was published in the prestigious SIAM Review (http://dx.doi.org/10.1137/141000671) in February 2017. While drafts of this paper have always been available on Arxiv (http://arxiv... """
+@def rss_author = "Jeff Bezanson, Alan Edelman, Stefan Karpinski, Viral B. Shah"
 @def published = "18 March 2017"
 @def title = "Paper in SIAM Review: Julia - A Fresh Approach to Numerical Computing"
-@def authors = "Jeff Bezanson, Alan Edelman, Stefan Karpinski, Viral B. Shah"
+@def authors = "Jeff Bezanson, Alan Edelman, Stefan Karpinski, Viral B. Shah"  
 
 
 

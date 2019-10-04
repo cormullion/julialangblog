@@ -13,7 +13,7 @@ The Julia blog discusses issues of numerical, technical, distributed and paralle
 
 Blogs from the broader Julia community can be found at [Julia Bloggers.](http://www.juliabloggers.com/).
 
-This is a mirror of the official Julia blog, a playground useful when developing with  with [JuDoc](https://github.com/tlienart/JuDoc.jl).
+This is a mirror of the official Julia blog, a playground useful when developing with  [JuDoc](https://github.com/tlienart/JuDoc.jl). The JuDoc source for this is [here](https://github.com/cormullion/julialangblog).
 
 ~~~
 <style>

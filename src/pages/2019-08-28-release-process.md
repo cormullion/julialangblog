@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2019, 8, 28)
+@def rss = """ Julia’s Release Process | People involved in the day-to-day development of a project tend to become so familiar with its rhythm and process that they internalize it and it feels like everyone must just _know_ how each stage unfolds. Of course, from the outside looking in it's not so obvious. So I thought it might be helpful t... """
+@def rss_author = "Stefan Karpinski (Julia Computing)"
 @def published = "28 August 2019"
 @def title = "Julia’s Release Process"
-@def authors = "Stefan Karpinski (Julia Computing)"
+@def authors = "Stefan Karpinski (Julia Computing)"  
 
 People involved in the day-to-day development of a project tend to become so familiar with its rhythm and process that they internalize it and it feels like everyone must just _know_ how each stage unfolds. Of course, from the outside looking in it's not so obvious. So I thought it might be helpful to the broader Julia community—and maybe even for other programming language communities—to actually write down Julia's release process, including the details of:
 

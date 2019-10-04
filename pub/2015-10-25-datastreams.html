@@ -1,29 +1,138 @@
-<!doctype html> <html lang=en > <meta charset=UTF-8 > <base href="/pub/"> <link rel=stylesheet  href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel=stylesheet > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/libs/highlight/github.min.css"> <link rel=stylesheet  href="/css/judoc.css"> <link rel=stylesheet  href="/css/basic.css"> <link rel=stylesheet  href="/css/julialangblog.css"> <link rel=icon  href="/assets/infra/favicon.ico"> <title>JSoC 2015 project: DataStreams.jl</title> <header> <div class=blog-name >The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div> <nav> <ul> <li><a href="/">Home</a> </ul> <img src="/assets/infra/hamburger.svg" id=menu-icon > </nav> </header> <div class=jd-content > <h1>JSoC 2015 project: DataStreams.jl</h1> <h3> <span style="font-weight: lighter;"> 25 October 2015 </span> | <span style="font-weight: bold;"> </span> <span style="font-weight: bold;"> <a href="https://github.com/quinnj">Jacob Quinn</a> </span> </h3> </div> <div class=jd-content > <p>Data processing got ya down? Good news&#33; The <a href="https://github.com/JuliaDB/DataStreams.jl">DataStreams.jl</a> package, er, framework, has arrived&#33;</p> <p>The DataStreams processing framework provides a consistent interface for working with data, from source to sink and eventually every step in-between. It&#39;s really about putting forth an interface &#40;specific types and methods&#41; to go about ingesting and transferring data sources that hopefully makes for a consistent experience for users, no matter what kind of data they&#39;re working with.</p> <h3 id=how_does_it_work ><a href="/pub/2015-10-25-datastreams.html#how_does_it_work">How does it work?</a></h3> <p>DataStreams is all about creating &quot;sources&quot; &#40;Julia types that represent true data sources; e.g. csv files, database backends, etc.&#41;, &quot;sinks&quot; or data destinations, and defining the appropriate <code>Data.stream&#33;&#40;source, sink&#41;</code> methods to actually transfer data from source to sink. Let&#39;s look at a quick example.</p> <p>Say I have a table of data in a CSV file on my local machine and need to do a little cleaning and aggregation on the data before building a model with the <a href="https://github.com/JuliaStats/GLM.jl">GLM.jl</a> package. Let&#39;s see some code in action:</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CSV, SQLite, DataStreams, DataFrames
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
-<span class=hljs-comment ># let's create a Julia type that understands our data file</span>
-csv_source = CSV.Source(<span class=hljs-string >"datafile.csv"</span>)
+  <base href="/pub/">
 
-<span class=hljs-comment ># let's also create an SQLite destination for our data</span>
-<span class=hljs-comment ># according to its structure</span>
-db = SQLite.DB() <span class=hljs-comment ># create an in-memory SQLite database</span>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
-<span class=hljs-comment ># creates an SQLite table</span>
-sqlite_sink = SQLite.Sink(Data.schema(csv_source), db, <span class=hljs-string >"mydata"</span>)
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
 
-<span class=hljs-comment ># parse the CSV data directly into our SQLite table</span>
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="RSS feed for Julia language blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
+
+   <title>JSoC 2015 project: DataStreams.jl</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>JSoC 2015 project: DataStreams.jl</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 25 October 2015 </span>
+      |
+      
+       <span style="font-weight: bold;"> </span> 
+      <!-- assumption that only one of the two is defined -->
+       <span style="font-weight: bold;"> <a href="https://github.com/quinnj">Jacob Quinn</a> </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+<p>Data processing got ya down? Good news&#33; The <a href="https://github.com/JuliaDB/DataStreams.jl">DataStreams.jl</a> package, er, framework, has arrived&#33;</p>
+<p>The DataStreams processing framework provides a consistent interface for working with data, from source to sink and eventually every step in-between. It&#39;s really about putting forth an interface &#40;specific types and methods&#41; to go about ingesting and transferring data sources that hopefully makes for a consistent experience for users, no matter what kind of data they&#39;re working with.</p>
+<h3 id="how_does_it_work"><a href="/pub/2015-10-25-datastreams.html#how_does_it_work">How does it work?</a></h3>
+<p>DataStreams is all about creating &quot;sources&quot; &#40;Julia types that represent true data sources; e.g. csv files, database backends, etc.&#41;, &quot;sinks&quot; or data destinations, and defining the appropriate <code>Data.stream&#33;&#40;source, sink&#41;</code> methods to actually transfer data from source to sink. Let&#39;s look at a quick example.</p>
+<p>Say I have a table of data in a CSV file on my local machine and need to do a little cleaning and aggregation on the data before building a model with the <a href="https://github.com/JuliaStats/GLM.jl">GLM.jl</a> package. Let&#39;s see some code in action:</p>
+<pre><code class="language-julia">using CSV, SQLite, DataStreams, DataFrames
+
+# let's create a Julia type that understands our data file
+csv_source = CSV.Source("datafile.csv")
+
+# let's also create an SQLite destination for our data
+# according to its structure
+db = SQLite.DB() # create an in-memory SQLite database
+
+# creates an SQLite table
+sqlite_sink = SQLite.Sink(Data.schema(csv_source), db, "mydata")
+
+# parse the CSV data directly into our SQLite table
 Data.stream!(csv_source, sqlite_sink)
 
-<span class=hljs-comment ># now I can do some data cleansing/aggregation</span>
-<span class=hljs-comment ># ...various SQL statements on the "mydata" SQLite table...</span>
+# now I can do some data cleansing/aggregation
+# ...various SQL statements on the "mydata" SQLite table...
 
-<span class=hljs-comment ># now I'm ready to get my data out and ready for model fitting</span>
+# now I'm ready to get my data out and ready for model fitting
 sqlite_source = SQLite.Source(sqlite_sink)
 
-<span class=hljs-comment ># stream our data into a Julia structure (Data.Table)</span>
+# stream our data into a Julia structure (Data.Table)
 dt = Data.stream!(sqlite_source, Data.Table)
 
-<span class=hljs-comment ># convert to DataFrame (non-copying)</span>
+# convert to DataFrame (non-copying)
 df = DataFrame(dt)
 
-<span class=hljs-comment ># do model-fitting</span>
-OLS = glm(Y~X,df,Normal(),IdentityLink())</code></pre> <p>Here we see it&#39;s quite simple to create a <code>Source</code> type by wrapping a true datasource &#40;our CSV file&#41;, a destination for that data &#40;an SQLite table&#41;, and to transfer the data. We can then turn our <code>SQLite.Sink</code> into an <code>SQLite.Source</code> for getting the data back out again.</p> <h3 id=so_what_have_you_really_been_working_on ><a href="/pub/2015-10-25-datastreams.html#so_what_have_you_really_been_working_on">So What Have You Really Been Working On?</a></h3> <p>Well, a lot actually. Even though the DataStreams framework is currently simple and minimalistic, it took a lot of back and forth on the design, including several discussions at this year&#39;s JuliaCon at MIT. Even with a tidy little framework, however, the bulk of the work still lies in actually implementing the interface in various packages. The two that are ready for release today are <a href="https://github.com/JuliaDB/CSV.jl">CSV.jl</a> and <a href="https://github.com/JuliaDB/SQLite.jl">SQLite.jl</a>. They are currently available for julia 0.4&#43; only.</p> <p>Quick rundown of each package:</p> <ul> <li><p>CSV: provides types and methods for working with CSV and other delimited files. Aims to be &#40;and currently is&#41; the fastest and most flexible CSV reader in Julia.</p> <li><p>SQLite: an interface to the popular <a href="http://sqlite.org/">SQLite</a> local-machine database. Provides methods for creating/managing database files, along with executing SQL statements and viewing the results of such.</p> </ul> <h3 id=so_whats_next ><a href="/pub/2015-10-25-datastreams.html#so_whats_next">So What&#39;s Next?</a></h3> <ul> <li><p><a href="https://github.com/JuliaDB/ODBC.jl">ODBC.jl</a>: the next package to get the DataStreams makeover is ODBC. I&#39;ve already started work on this and hopefully should be ready soon.</p> <li><p>Other packages: I&#39;m always on the hunt for new ways to spread the framework; if you&#39;d be interested in implementing DataStreams for your own package or want to collaborate, just <a href="https://github.com/quinnj">ping</a> me and I&#39;m happy to discuss&#33;</p> <li><p>transforms: an important part of data processing tasks is not just connecting to and moving the data to somewhere else: often you need to clean/transform/aggregate the data in some way in-between. Right now, that&#39;s up to users, but I have some ideas around creating DataStreams-friendly ways to easily incorporate transform steps as data is streamed from one place to another.</p> <li><p>DataStreams for chaining pipelines &#43; transforms: I&#39;m also excited about the idea of creating entire <code>DataStreams</code>, which would define entire data processing tasks end-to-end. Setting up a pipeline that could consistently move and process data gets even more powerful as we start looking into automatic-parallelism and extensibility.</p> <li><p>DataStream scheduling/management: I&#39;m also interested in developing capabilities around scheduling and managing DataStreams.</p> </ul> <p><em>The work on DataStreams.jl was carried out as part of the Julia Summer of Code program, made possible thanks to the generous support of the <a href="https://moore.org">Gordon and Betty Moore Foundation</a>, and MIT.</em></p> <div class=page-foot > <div class=copyright > &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>. </div> </div> </div>
+# do model-fitting
+OLS = glm(Y~X,df,Normal(),IdentityLink())</code></pre>
+<p>Here we see it&#39;s quite simple to create a <code>Source</code> type by wrapping a true datasource &#40;our CSV file&#41;, a destination for that data &#40;an SQLite table&#41;, and to transfer the data. We can then turn our <code>SQLite.Sink</code> into an <code>SQLite.Source</code> for getting the data back out again.</p>
+<h3 id="so_what_have_you_really_been_working_on"><a href="/pub/2015-10-25-datastreams.html#so_what_have_you_really_been_working_on">So What Have You Really Been Working On?</a></h3>
+<p>Well, a lot actually. Even though the DataStreams framework is currently simple and minimalistic, it took a lot of back and forth on the design, including several discussions at this year&#39;s JuliaCon at MIT. Even with a tidy little framework, however, the bulk of the work still lies in actually implementing the interface in various packages. The two that are ready for release today are <a href="https://github.com/JuliaDB/CSV.jl">CSV.jl</a> and <a href="https://github.com/JuliaDB/SQLite.jl">SQLite.jl</a>. They are currently available for julia 0.4&#43; only.</p>
+<p>Quick rundown of each package:</p>
+<ul>
+<li><p>CSV: provides types and methods for working with CSV and other delimited files. Aims to be &#40;and currently is&#41; the fastest and most flexible CSV reader in Julia.</p>
+</li>
+<li><p>SQLite: an interface to the popular <a href="http://sqlite.org/">SQLite</a> local-machine database. Provides methods for creating/managing database files, along with executing SQL statements and viewing the results of such.</p>
+</li>
+</ul>
+<h3 id="so_whats_next"><a href="/pub/2015-10-25-datastreams.html#so_whats_next">So What&#39;s Next?</a></h3>
+<ul>
+<li><p><a href="https://github.com/JuliaDB/ODBC.jl">ODBC.jl</a>: the next package to get the DataStreams makeover is ODBC. I&#39;ve already started work on this and hopefully should be ready soon.</p>
+</li>
+<li><p>Other packages: I&#39;m always on the hunt for new ways to spread the framework; if you&#39;d be interested in implementing DataStreams for your own package or want to collaborate, just <a href="https://github.com/quinnj">ping</a> me and I&#39;m happy to discuss&#33;</p>
+</li>
+<li><p>transforms: an important part of data processing tasks is not just connecting to and moving the data to somewhere else: often you need to clean/transform/aggregate the data in some way in-between. Right now, that&#39;s up to users, but I have some ideas around creating DataStreams-friendly ways to easily incorporate transform steps as data is streamed from one place to another.</p>
+</li>
+<li><p>DataStreams for chaining pipelines &#43; transforms: I&#39;m also excited about the idea of creating entire <code>DataStreams</code>, which would define entire data processing tasks end-to-end. Setting up a pipeline that could consistently move and process data gets even more powerful as we start looking into automatic-parallelism and extensibility.</p>
+</li>
+<li><p>DataStream scheduling/management: I&#39;m also interested in developing capabilities around scheduling and managing DataStreams.</p>
+</li>
+</ul>
+<p><em>The work on DataStreams.jl was carried out as part of the Julia Summer of Code program, made possible thanks to the generous support of the <a href="https://moore.org">Gordon and Betty Moore Foundation</a>, and MIT.</em></p>
+
+<div class="page-foot">
+  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <div class="copyright">
+    &copy; Last modified: October 04, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

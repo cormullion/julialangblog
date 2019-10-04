@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2016, 5, 8)
+@def rss = """ An invitation to JuliaCon 2016 | the annual meeting of the Julia programming language community.... """
+@def rss_author = "The JuliaCon organisers"
 @def published = "8 May 2016"
 @def title = "An invitation to JuliaCon 2016"
-@def authors = "The JuliaCon organisers"
+@def authors = "The JuliaCon organisers"  
 
 *For the third year in row we are happy to invite you to [JuliaCon][juliacon],
 the annual meeting of the Julia programming language community.

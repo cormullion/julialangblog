@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2017, 9, 19)
+@def rss = """ GSoC 2017 Project: Hamiltonian Indirect Inference | This is a writeup of my project for the Google Summer of Code 2017. The... """
+@def rss_author = "Dorisz Albrecht"
 @def published = "19 September 2017"
-@def title ="GSoC 2017 Project: Hamiltonian Indirect Inference"
-@def authors ="Dorisz Albrecht"
+@def title = "GSoC 2017 Project: Hamiltonian Indirect Inference"
+@def authors = "Dorisz Albrecht"  
 @def hasmath = true
 @def hascode = true
 

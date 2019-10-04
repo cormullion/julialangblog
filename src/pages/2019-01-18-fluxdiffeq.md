@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2019, 1, 18)
+@def rss = """ DiffEqFlux.jl – A Julia Library for Neural Differential Equations | Translations: ~~~ <a href="https://julialang.org/blog/2019/04/fluxdiffeq-zh_tw">Traditional Chinese</a>~~~... """
+@def rss_author = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""
 @def published = "18 January 2019"
 @def title = "DiffEqFlux.jl – A Julia Library for Neural Differential Equations"
-@def authors = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""
+@def authors = """Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit"""  
 @def hascode = true
 @def hasmath = true
 

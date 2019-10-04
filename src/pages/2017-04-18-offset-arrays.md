@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2017, 4, 18)
+@def rss = """ Knowing where you are: custom array indices in Julia | Arrays are a crucial component of any programming language,... """
+@def rss_author = """<a href="http://holylab.wustl.edu">Tim Holy</a>"""
 @def published = "18 April 2017"
 @def title = "Knowing where you are: custom array indices in Julia"
-@def authors = """<a href="http://holylab.wustl.edu">Tim Holy</a>"""
+@def authors = """<a href="http://holylab.wustl.edu">Tim Holy</a>"""  
 @def hasmath = true
 @def hascode = true
 

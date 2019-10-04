@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2019, 2, 3)
+@def rss = """ GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms | This blog briefly summarises my GSoC 2018 project (Parallel Graph Development (https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/)) and the results achieved. For a detailed description, please refer to my GSoC blog (https://sohamtamba.github.io/GSoC).... """
+@def rss_author = """<a href="https://github.com/SohamTamba">Soham Tamba</a>"""
 @def published = "3 February 2019"
 @def title = "GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms"
-@def authors = """<a href="https://github.com/SohamTamba">Soham Tamba</a>"""
+@def authors = """<a href="https://github.com/SohamTamba">Soham Tamba</a>"""  
 
 This blog briefly summarises my GSoC 2018 project ([Parallel Graph Development](https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/)) and the results achieved. For a detailed description, please refer to my [GSoC blog](https://sohamtamba.github.io/GSoC).
 

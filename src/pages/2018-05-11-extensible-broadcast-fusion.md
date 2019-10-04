@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2018, 5, 11)
+@def rss = """ Extensible broadcast fusion | Julia version 0.7 brings with it an exciting new feature: the ability to customize broadcast... """
+@def rss_author = """<a href="https://github.com/mbauman">Matt Bauman (Julia Computing)</a>"""
 @def published = "11 May 2018"
 @def title = "Extensible broadcast fusion"
-@def authors ="""<a href="https://github.com/mbauman">Matt Bauman (Julia Computing)</a>"""
+@def authors = """<a href="https://github.com/mbauman">Matt Bauman (Julia Computing)</a>"""  
 @def hascode = true
 
 Julia version 0.7 brings with it an exciting new feature: the ability to customize broadcast
@@ -55,12 +58,12 @@ julia> using BenchmarkTools, Random
 BenchmarkTools.Trial:
   memory estimate:  122.23 KiB
   allocs estimate:  3
-  \n\n\n\n--
+  ----------
   minimum time:     7.891 μs (0.00% GC)
   median time:      13.152 μs (0.00% GC)
   mean time:        17.826 μs (9.62% GC)
   maximum time:     591.497 μs (95.73% GC)
-  \n\n\n\n--
+  ----------
   samples:          10000
   evals/sample:     1
 ```
@@ -71,12 +74,12 @@ Compare this to previously on 0.6:
 BenchmarkTools.Trial:
   memory estimate:  126.45 KiB
   allocs estimate:  6
-  \n\n\n\n--
+  ----------
   minimum time:     3.615 ms (0.00% GC)
   median time:      3.741 ms (0.00% GC)
   mean time:        3.764 ms (0.18% GC)
   maximum time:     7.744 ms (50.18% GC)
-  \n\n\n\n--
+  ----------
   samples:          1328
   evals/sample:     1
 ```

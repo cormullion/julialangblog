@@ -1,8 +1,11 @@
+@def rss_pubdate = Date(2017, 8, 23)
+@def rss = """ GSoC 2017: Implementing iterative solvers for numerical linear algebra | The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in JacobiDavidson.jl (https://github.com/haampie/JacobiDavidson.jl). This method computes a few approximate solutions of the eigenvalue problem  Ax =  lambda Bx  for large and sparse mat... """
+@def rss_author = "Harmen Stoppels, Andreas Noack"
 @def published = "23 August 2017"
 @def title = "GSoC 2017: Implementing iterative solvers for numerical linear algebra"
-@def authors = "Harmen Stoppels, Andreas Noack"
+@def authors = "Harmen Stoppels, Andreas Noack"  
 @def hasmath = true
-@def hascode =true
+@def hascode = true
 
 The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in [JacobiDavidson.jl](https://github.com/haampie/JacobiDavidson.jl). This method computes a few approximate solutions of the eigenvalue problem $Ax = \lambda Bx$ for large and sparse matrices $A$ and $B$. As it uses iterative solvers internally, much time has gone into improving [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl) in general. Lastly, as iterative solvers are typically used with preconditioners, I have implemented the incomplete LU factorization for sparse matrices as well in [ILU.jl](https://github.com/haampie/ILU.jl).
 

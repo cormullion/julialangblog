@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2018, 7, 8)
+@def rss = """ Writing Iterators in Julia 0.7 | This post originally appeared on the Invenia blog (https://invenia.github.io/blog/2018/07/06/iteratorsinjulia07/).... """
+@def rss_author = """ <a href="https://github.com/iamed2">Eric Davies</a>"""
 @def published = "8 July 2018"
 @def title = "Writing Iterators in Julia 0.7"
-@def authors =""" <a href="https://github.com/iamed2">Eric Davies</a>"""
+@def authors = """ <a href="https://github.com/iamed2">Eric Davies</a>"""  
 @def hascode = true
 
 ### With the upcoming 0.7 release, Julia has simplified its iteration interface.

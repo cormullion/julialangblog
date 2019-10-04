@@ -14,3 +14,8 @@ For instance:
 
 @def author =  "" <!-- defined individually on blog pages -->
 @def hasmath = false
+
+<!-- RSS: these three are mandatory, otherwise no RSS generation  -->
+@def website_title = "The Julia Language blog (mirror)"
+@def website_descr = "News and views on the Julia language"
+@def website_url   = "https://julialang.org"

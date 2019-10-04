@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2014, 8, 9)
+@def rss = """ JuliaCon 2014 Opening Session Presentations | Tim Holy is a Professor in the Department of Anatomy and Neurobiology at Washington University in St. Louis. He’s been involved with Julia development for over 2 years. In this presentation, Tim describes how Images.jl can be used for rapid inquiry and dissection of biomedical imaging data.... """
+@def rss_author = """<a href="https://github.com/quinnj">Jacob Quinn</a>"""
 @def published = "9 August 2014"
 @def title = "JuliaCon 2014 Opening Session Presentations"
-@def authors = """<a href="https://github.com/quinnj">Jacob Quinn</a>"""
+@def authors = """<a href="https://github.com/quinnj">Jacob Quinn</a>"""  
 
 ## Scientific Applications Session
 

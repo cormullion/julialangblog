@@ -1,8 +1,11 @@
+@def rss_pubdate = Date(2017, 10, 13)
+@def rss = """ NeuralNetDiffEq.jl: A Neural Network solver for ODEs | My GSoC 2017 project (https://summerofcode.withgoogle.com/projects/#5850956641075200) was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks.... """
+@def rss_author = "Akshay Sharma"
 @def published = "13 October 2017"
 @def title = "NeuralNetDiffEq.jl: A Neural Network solver for ODEs"
-@def authors = "Akshay Sharma"
+@def authors = "Akshay Sharma"  
 @def hascode = true
-@def hasmath = false
+@def hasmath = true
 
 My GSoC 2017 [project](https://summerofcode.withgoogle.com/projects/#5850956641075200) was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks.
 The purpose of the project was to provide an additional DE solver using Neural Networks which has parallelism in time as the key advantage over other solvers which are iterative in nature. The project was based on research paper of [Lagaris et al. 1997](https://arxiv.org/pdf/physics/9705023.pdf) which proposed the function approximation capabilities of neural networks (NNs) for solving differential equations. The project was a mixture of research as well as implementation aspects and still has a few parts left to work upon.

@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2013, 9, 4)
+@def rss = """ Fast Numeric Computation in Julia | Working on numerical problems daily, I have always dreamt of a language that provides an elegant interface while allowing me to write codes that run blazingly fast on large data sets. Julia is a language that turns this dream into a reality.... """
+@def rss_author = """<a href="http://dahua.me">Dahua Lin</a>"""
 @def published = "4 September 2013"
 @def title = "Fast Numeric Computation in Julia"
-@def authors = """<a href="http://dahua.me">Dahua Lin</a>"""
+@def authors = """<a href="http://dahua.me">Dahua Lin</a>"""  
 @def hascode = true
 Working on numerical problems daily, I have always dreamt of a language that provides an elegant interface while allowing me to write codes that run blazingly fast on large data sets. Julia is a language that turns this dream into a reality.
 With Julia, you can focus on your problem, keep your codes clean, and more importantly, write fast codes without diving into lower level languages such as C or Fortran even when performance is critical.
@@ -69,7 +72,7 @@ for i = 1:length(x)
 end
 ```
 
-This version finishes the computation in one pass, without introducing any temporary arrays. Moreover, if `r` is pre-allocated, one can even omit the statment that creates `r`. The [*Devectorize.jl*](https://github.com/lindahua/Devectorize.jl) package provides a macro ```@devec``` that can automatically translate vectorized expressions into loops:
+This version finishes the computation in one pass, without introducing any temporary arrays. Moreover, if `r` is pre-allocated, one can even omit the statment that creates `r`. The [*Devectorize.jl*](https://github.com/lindahua/Devectorize.jl) package provides a macro ``@devec`` that can automatically translate vectorized expressions into loops:
 
 ```julia
 using Devectorize

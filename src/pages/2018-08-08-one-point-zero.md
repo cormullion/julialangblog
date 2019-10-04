@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2018, 8, 8)
+@def rss = """ Announcing the release of Julia 1.0 | The much anticipated 1.0 release of Julia (https://julialang.org) is the culmination of... """
+@def rss_author = "the Julia developers"
 @def published = "8 August 2018"
 @def title = "Announcing the release of Julia 1.0"
-@def authors = "the Julia developers"
+@def authors = "the Julia developers"  
 
 ~~~Translations:  <a href="https://julialang.org/blog/2018/08/one-point-zero-zh_cn">Simplified Chinese</a>, <a href="https://julialang.org/blog/2018/08/one-point-zero-zh_tw">Traditional Chinese</a>, <a href="https://julialang.org/blog/2018/08/one-point-zero-es">Spanish</a>
 ~~~

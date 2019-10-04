@@ -1,1 +1,183 @@
-<!doctype html> <html lang=en > <meta charset=UTF-8 > <base href="/pub/"> <link rel=stylesheet  href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel=stylesheet > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/css/judoc.css"> <link rel=stylesheet  href="/css/basic.css"> <link rel=stylesheet  href="/css/julialangblog.css"> <link rel=icon  href="/assets/infra/favicon.ico"> <title>GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms</title> <header> <div class=blog-name >The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div> <nav> <ul> <li><a href="/">Home</a> </ul> <img src="/assets/infra/hamburger.svg" id=menu-icon > </nav> </header> <div class=jd-content > <h1>GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms</h1> <h3> <span style="font-weight: lighter;"> 3 February 2019 </span> | <span style="font-weight: bold;"> </span> <span style="font-weight: bold;"><a href="https://github.com/SohamTamba">Soham Tamba</a> </span> </h3> </div> <div class=jd-content > <p>This blog briefly summarises my GSoC 2018 project &#40;<a href="https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/">Parallel Graph Development</a>&#41; and the results achieved. For a detailed description, please refer to my <a href="https://sohamtamba.github.io/GSoC">GSoC blog</a>.</p> <p>The project is spread over the <a href="https://github.com/JuliaGraphs/LightGraphs.jl">LightGraphs</a> codebase. It involved:</p> <ol> <li><p>Producing parallel implementations of crucial graph algorithms.</p> <li><p>Improving sequential implementation of crucial graph algorithms in LightGraphs.</p> <li><p>Implementing heuristics to obtain good solutions to crucial NP-Hard graph problems.</p> </ol> <p>The benchmarks were conducted on a 64-bit linux machine using 4 cores.</p> <style> table{ border-collapse: collapse; border-spacing: 0; border:2px solid #ff0000; } th{ border:2px solid #000000; } td{ border:1px solid #000000; } </style> <h3 id=benchmark_graph_datasets ><a href="/pub/2019-02-03-light-graphs.html#benchmark_graph_datasets">Benchmark Graph Datasets</a></h3> <table><tr><th>No.<th>Graph<th>Vertices<th>Edges<tr><td>1<td>Twitter Social Circles<td>81,306<td>1,342,310<tr><td>2<td>Astro-Physics Collaboration<td>17,903<td>197,031<tr><td>3<td>Facebook Social Circles<td>4,039<td>88,234</table> <p>The graphs were obtained from the <a href="https://github.com/JuliaGraphs/SNAPDatasets.jl">SNAPDatasets</a> repository.</p> <h3 id=speed-up_on_parallelization_with_4_cores ><a href="/pub/2019-02-03-light-graphs.html#speed-up_on_parallelization_with_4_cores">Speed-up on parallelization with 4 cores</a></h3> <table><tr><th>Algorithm<th>Twitter<th>Astro-Physics<th>Facebook<tr><td>Breadth-First Search<td>1.92<td>2.59<td>1.54<tr><td>PageRank<td>1.77<td>1.54<td>1.65<tr><td>Bellman Ford SSSP<td>-<td>-<td>1.88<tr><td>Floyd Warshall APSP<td>-<td>-<td>1.27<tr><td>Johnson APSP<td>-<td>-<td>2.10<tr><td>Randomized Heuristic<td>1.88<td>1.70<td>1.66<tr><td>Betweenness Centrality<td>-<td>-<td>1.96<tr><td>Closeness Centrality<td>-<td>-<td>2.17<tr><td>Stress Centrality<td>-<td>-<td>1.66</table> <h3 id=speed-up_on_sequential_optimization ><a href="/pub/2019-02-03-light-graphs.html#speed-up_on_sequential_optimization">Speed-up on sequential optimization</a></h3> <table><tr><th>Algorithm<th>Twitter<th>Astro-Physics<th>Facebook<tr><td>PageRank<td>3.05<td>3.37<td>3.17<tr><td>Dijkstra SSSP<td>2.80<td>2.10<td>1.68<tr><td>Prim MST<td>7.65<td>4.25<td>4.05<tr><td>Kruskal MST<td>7.70<td>3.37<td>2.80</table> <h3 id=absolute_runtime_in_ms_of_bread-first_search ><a href="/pub/2019-02-03-light-graphs.html#absolute_runtime_in_ms_of_bread-first_search">Absolute runtime &#40;in ms&#41; of Bread-First Search</a></h3> <table><tr><th>Algorithm<th>Twitter<th>Astro-Physics<th>Facebook<tr><td>Parallel<td>7.07<td>1.20<td>0.26<tr><td>Sequential<td>13.63<td>3.11<td>0.41</table> <h2 id=get_the_code ><a href="/pub/2019-02-03-light-graphs.html#get_the_code">Get the code</a></h2> <p>This section lists the functionality implemented and a link to the corresponding branch in my <a href="https://github.com/SohamTamba/LightGraphs.jl">cloned LightGraphs repository</a>.</p> <h3 id=completed_and_merged ><a href="/pub/2019-02-03-light-graphs.html#completed_and_merged">Completed and merged</a></h3> <p>The following branches have been merged into LightGraphs master:</p> <ul> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_GDistances">Parallel Breadth-First Search</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/kruskal_sort_IDS">Kruskal MST</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Soham/John_Shortest_Path">Sequential/Parallel Johnson APSP</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Floyd_Warshall">Parallel Floyd Warshall APSP</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Bellman_Ford">Parallel Bellman Ford SSSP</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Page_Rank">Parallel PageRank</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Seq_PageRank">PageRank</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Page_Rank">Load-balanced Partitioning</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Prim_PQ">Prim MST</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Dijkstra_Performance_Docs">Dijkstra SSSP I</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Dijkstra_Allocations">Dijkstra SSSP II</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/All_Greedy">Greedy Heuristics</a></p> <ol> <li><p>Minimum Vertex Cover</p> <li><p>Minimum Dominating Set</p> <li><p>Maximum Independent Set</p> <li><p>Vertex Connectivity</p> </ol> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/genrate_reduce">Parallel Random Heuristics</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Karger_min_cut">Karger Minimum Cut</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Threaded_Centrality">Multi-threaded Centrality Measures</a></p> <ol> <li><p>Betweeness Centrality</p> <li><p>Closeness Centrality</p> <li><p>Stress Centrality</p> </ol> </ul> <h3 id=completed_but_not_applicable ><a href="/pub/2019-02-03-light-graphs.html#completed_but_not_applicable">Completed but not applicable</a></h3> <p>The following branches have not been merged into LightGraphs master as the functionality is not suitable to LightGraphs:</p> <ul> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/GSoC/SteinerTree">Minimum Steiner Tree</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/GSoC/TravellingSalesman">Metric Travelling Salesman</a></p> </ul> <h3 id=requires_improvement ><a href="/pub/2019-02-03-light-graphs.html#requires_improvement">Requires Improvement</a></h3> <p>The following branches have not been merged into LightGraphs as the parallel implementations are slower than the sequential implementation:</p> <ul> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Kruskal">Parallel Kruskal MST</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/BatchPriorityQueue_Parallel_Dijkstra_Prim">Parallel Prim MST</a></p> <li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/BatchPriorityQueue_Parallel_Dijkstra_Prim">Parallel Dijkstra SSSP</a></p> </ul> <h1 id=acknowledgements ><a href="/pub/2019-02-03-light-graphs.html#acknowledgements">Acknowledgements</a></h1> <p>I would like to thank my mentor, <a href="https://github.com/somil55">Divyansh Srivastava</a> and LightGraphs co-owner, <a href="https://github.com/sbromberger">Seth Bromberger</a> for reviewing my code and providing valuable advice during the summer. I would also like to thank <a href="https://julialang.org/project">The Julia Project</a> and <a href="https://numfocus.org">NUMFocus</a> for sponsoring my attendance to <a href="https://juliacon.org/2018/">JuliaCon 2018</a>.</p> <div class=page-foot > <div class=copyright > &copy; Last modified: September 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>. </div> </div> </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <base href="/pub/">
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="RSS feed for Julia language blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
+
+   <title>GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>GSoC 2018 - Parallel Implementations of Graph Analysis Algorithms</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 3 February 2019 </span>
+      |
+      
+       <span style="font-weight: bold;"> </span> 
+      <!-- assumption that only one of the two is defined -->
+       <span style="font-weight: bold;"><a href="https://github.com/SohamTamba">Soham Tamba</a> </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+<p>This blog briefly summarises my GSoC 2018 project &#40;<a href="https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/">Parallel Graph Development</a>&#41; and the results achieved. For a detailed description, please refer to my <a href="https://sohamtamba.github.io/GSoC">GSoC blog</a>.</p>
+<p>The project is spread over the <a href="https://github.com/JuliaGraphs/LightGraphs.jl">LightGraphs</a> codebase. It involved:</p>
+<ol>
+<li><p>Producing parallel implementations of crucial graph algorithms.</p>
+</li>
+<li><p>Improving sequential implementation of crucial graph algorithms in LightGraphs.</p>
+</li>
+<li><p>Implementing heuristics to obtain good solutions to crucial NP-Hard graph problems.</p>
+</li>
+</ol>
+<p>The benchmarks were conducted on a 64-bit linux machine using 4 cores.</p>
+
+<style>
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:2px solid #ff0000;
+}
+th{
+    border:2px solid #000000;
+}
+td{
+    border:1px solid #000000;
+}
+</style>
+
+<h3 id="benchmark_graph_datasets"><a href="/pub/2019-02-03-light-graphs.html#benchmark_graph_datasets">Benchmark Graph Datasets</a></h3>
+<table><tr><th>No.</th><th>Graph</th><th>Vertices</th><th>Edges</th></tr><tr><td>1</td><td>Twitter Social Circles</td><td>81,306</td><td>1,342,310</td></tr><tr><td>2</td><td>Astro-Physics Collaboration</td><td>17,903</td><td>197,031</td></tr><tr><td>3</td><td>Facebook Social Circles</td><td>4,039</td><td>88,234</td></tr></table>
+<p>The graphs were obtained from the <a href="https://github.com/JuliaGraphs/SNAPDatasets.jl">SNAPDatasets</a> repository.</p>
+<h3 id="speed-up_on_parallelization_with_4_cores"><a href="/pub/2019-02-03-light-graphs.html#speed-up_on_parallelization_with_4_cores">Speed-up on parallelization with 4 cores</a></h3>
+<table><tr><th>Algorithm</th><th>Twitter</th><th>Astro-Physics</th><th>Facebook</th></tr><tr><td>Breadth-First Search</td><td>1.92</td><td>2.59</td><td>1.54</td></tr><tr><td>PageRank</td><td>1.77</td><td>1.54</td><td>1.65</td></tr><tr><td>Bellman Ford SSSP</td><td>-</td><td>-</td><td>1.88</td></tr><tr><td>Floyd Warshall APSP</td><td>-</td><td>-</td><td>1.27</td></tr><tr><td>Johnson APSP</td><td>-</td><td>-</td><td>2.10</td></tr><tr><td>Randomized Heuristic</td><td>1.88</td><td>1.70</td><td>1.66</td></tr><tr><td>Betweenness Centrality</td><td>-</td><td>-</td><td>1.96</td></tr><tr><td>Closeness Centrality</td><td>-</td><td>-</td><td>2.17</td></tr><tr><td>Stress Centrality</td><td>-</td><td>-</td><td>1.66</td></tr></table>
+<h3 id="speed-up_on_sequential_optimization"><a href="/pub/2019-02-03-light-graphs.html#speed-up_on_sequential_optimization">Speed-up on sequential optimization</a></h3>
+<table><tr><th>Algorithm</th><th>Twitter</th><th>Astro-Physics</th><th>Facebook</th></tr><tr><td>PageRank</td><td>3.05</td><td>3.37</td><td>3.17</td></tr><tr><td>Dijkstra SSSP</td><td>2.80</td><td>2.10</td><td>1.68</td></tr><tr><td>Prim MST</td><td>7.65</td><td>4.25</td><td>4.05</td></tr><tr><td>Kruskal MST</td><td>7.70</td><td>3.37</td><td>2.80</td></tr></table>
+<h3 id="absolute_runtime_in_ms_of_bread-first_search"><a href="/pub/2019-02-03-light-graphs.html#absolute_runtime_in_ms_of_bread-first_search">Absolute runtime &#40;in ms&#41; of Bread-First Search</a></h3>
+<table><tr><th>Algorithm</th><th>Twitter</th><th>Astro-Physics</th><th>Facebook</th></tr><tr><td>Parallel</td><td>7.07</td><td>1.20</td><td>0.26</td></tr><tr><td>Sequential</td><td>13.63</td><td>3.11</td><td>0.41</td></tr></table>
+<h2 id="get_the_code"><a href="/pub/2019-02-03-light-graphs.html#get_the_code">Get the code</a></h2>
+<p>This section lists the functionality implemented and a link to the corresponding branch in my <a href="https://github.com/SohamTamba/LightGraphs.jl">cloned LightGraphs repository</a>.</p>
+<h3 id="completed_and_merged"><a href="/pub/2019-02-03-light-graphs.html#completed_and_merged">Completed and merged</a></h3>
+<p>The following branches have been merged into LightGraphs master:</p>
+<ul>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_GDistances">Parallel Breadth-First Search</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/kruskal_sort_IDS">Kruskal MST</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Soham/John_Shortest_Path">Sequential/Parallel Johnson APSP</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Floyd_Warshall">Parallel Floyd Warshall APSP</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Bellman_Ford">Parallel Bellman Ford SSSP</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Page_Rank">Parallel PageRank</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Seq_PageRank">PageRank</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Page_Rank">Load-balanced Partitioning</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Prim_PQ">Prim MST</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Dijkstra_Performance_Docs">Dijkstra SSSP I</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Dijkstra_Allocations">Dijkstra SSSP II</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/All_Greedy">Greedy Heuristics</a></p>
+<ol>
+<li><p>Minimum Vertex Cover</p>
+</li>
+<li><p>Minimum Dominating Set</p>
+</li>
+<li><p>Maximum Independent Set</p>
+</li>
+<li><p>Vertex Connectivity</p>
+</li>
+</ol>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/genrate_reduce">Parallel Random Heuristics</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Karger_min_cut">Karger Minimum Cut</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Threaded_Centrality">Multi-threaded Centrality Measures</a></p>
+<ol>
+<li><p>Betweeness Centrality</p>
+</li>
+<li><p>Closeness Centrality</p>
+</li>
+<li><p>Stress Centrality</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="completed_but_not_applicable"><a href="/pub/2019-02-03-light-graphs.html#completed_but_not_applicable">Completed but not applicable</a></h3>
+<p>The following branches have not been merged into LightGraphs master as the functionality is not suitable to LightGraphs:</p>
+<ul>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/GSoC/SteinerTree">Minimum Steiner Tree</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/GSoC/TravellingSalesman">Metric Travelling Salesman</a></p>
+</li>
+</ul>
+<h3 id="requires_improvement"><a href="/pub/2019-02-03-light-graphs.html#requires_improvement">Requires Improvement</a></h3>
+<p>The following branches have not been merged into LightGraphs as the parallel implementations are slower than the sequential implementation:</p>
+<ul>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/Parallel_Kruskal">Parallel Kruskal MST</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/BatchPriorityQueue_Parallel_Dijkstra_Prim">Parallel Prim MST</a></p>
+</li>
+<li><p><a href="https://github.com/SohamTamba/LightGraphs.jl/tree/BatchPriorityQueue_Parallel_Dijkstra_Prim">Parallel Dijkstra SSSP</a></p>
+</li>
+</ul>
+<h1 id="acknowledgements"><a href="/pub/2019-02-03-light-graphs.html#acknowledgements">Acknowledgements</a></h1>
+<p>I would like to thank my mentor, <a href="https://github.com/somil55">Divyansh Srivastava</a> and LightGraphs co-owner, <a href="https://github.com/sbromberger">Seth Bromberger</a> for reviewing my code and providing valuable advice during the summer. I would also like to thank <a href="https://julialang.org/project">The Julia Project</a> and <a href="https://numfocus.org">NUMFocus</a> for sponsoring my attendance to <a href="https://juliacon.org/2018/">JuliaCon 2018</a>.</p>
+
+<div class="page-foot">
+  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <div class="copyright">
+    &copy; Last modified: October 04, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+    
+  </body>
+</html>

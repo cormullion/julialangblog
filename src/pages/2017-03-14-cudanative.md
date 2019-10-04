@@ -1,6 +1,9 @@
+@def rss_pubdate = Date(2017, 3, 14)
+@def rss = """ Technical preview: Native GPU programming with CUDAnative.jl | could use JuDoc's commands to allow this as variable?... """
+@def rss_author = """<a href="https://github.com/maleadt">Tim Besard</a>"""
 @def published = "14 March 2017"
-@def title =  "Technical preview: Native GPU programming with CUDAnative.jl"
-@def authors = """<a href="https://github.com/maleadt">Tim Besard</a>"""
+@def title = "Technical preview: Native GPU programming with CUDAnative.jl"
+@def authors = """<a href="https://github.com/maleadt">Tim Besard</a>"""  
 @def hascode = true
 
 <!--
