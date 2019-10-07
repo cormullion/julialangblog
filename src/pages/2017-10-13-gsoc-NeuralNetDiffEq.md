@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2017, 10, 13)
 @def rss = """ NeuralNetDiffEq.jl: A Neural Network solver for ODEs | My GSoC 2017 project (https://summerofcode.withgoogle.com/projects/#5850956641075200) was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks.... """
-@def rss_author = "Akshay Sharma"
 @def published = "13 October 2017"
 @def title = "NeuralNetDiffEq.jl: A Neural Network solver for ODEs"
 @def authors = "Akshay Sharma"  

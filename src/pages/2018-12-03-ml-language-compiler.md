@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2018, 12, 3)
 @def rss = """ Building a Language and Compiler for Machine Learning | Since we originally proposed (https://julialang.org/blog/2017/12/ml&pl) the need for a first-class language, compiler and ecosystem for machine learning (ML), there have been plenty of interesting developments in the field. Not only have the tradeoffs in existing systems, such as TensorFlow and PyTo... """
-@def rss_author = "Mike Innes, James Bradbury, Keno Fischer, Dhairya Gandhi, Neethu Mariya Joy, Tejan Karmali, Matt Kelley, Avik Pal, Marco Concetto Rudilosso, Elliot Saba, Viral Shah, Deniz Yuret"
 @def published = "3 December 2018"
 @def title = "Building a Language and Compiler for Machine Learning"
 @def authors = "Mike Innes, James Bradbury, Keno Fischer, Dhairya Gandhi, Neethu Mariya Joy, Tejan Karmali, Matt Kelley, Avik Pal, Marco Concetto Rudilosso, Elliot Saba, Viral Shah, Deniz Yuret"  

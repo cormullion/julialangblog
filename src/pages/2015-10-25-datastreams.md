@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2015, 10, 25)
 @def rss = """ JSoC 2015 project: DataStreams.jl | Data processing got ya down? Good news! The DataStreams.jl (https://github.com/JuliaDB/DataStreams.jl) package, er, framework, has arrived!... """
-@def rss_author = """ <a href="https://github.com/quinnj">Jacob Quinn</a>"""
 @def published = "25 October 2015"
 @def title = "JSoC 2015 project: DataStreams.jl"
 @def authors = """ <a href="https://github.com/quinnj">Jacob Quinn</a>"""  

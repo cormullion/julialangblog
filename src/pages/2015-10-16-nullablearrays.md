@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2015, 10, 16)
 @def rss = """ JSoC 2015 project: NullableArrays.jl | My project under the 2015 Julia Summer of Code (http://julialang.org/jsoc) program has been to develop the NullableArrays (https://github.com/JuliaStats/NullableArrays.jl) package, which provides the `NullableArray` data type and its respective interface. I first encountered Julia earlier this year... """
-@def rss_author = "David Gold"
 @def published = "16 October 2015"
 @def title = "JSoC 2015 project: NullableArrays.jl"
 @def authors = "David Gold"  

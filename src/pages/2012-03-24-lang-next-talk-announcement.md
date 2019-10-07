@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2012, 3, 24)
 @def rss = """ Lang.NEXT Announcement | Jeff and I will be giving a presentation on Julia (http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Julia) at the upcoming Lang.NEXT conference (http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012), a gathering of "programming language design experts and enthusiasts" featuring "talks, ... """
-@def rss_author = """<a href="http://karpinski.org/">Stefan Karpinski</a>"""
 @def published = "24 March 2012"
 @def title = "Lang.NEXT Announcement"
 @def authors = """<a href="http://karpinski.org/">Stefan Karpinski</a>"""  

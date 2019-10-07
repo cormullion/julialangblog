@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2018, 8, 14)
 @def rss = """ GSoC 2018 and Speech Recognition for the Flux Model Zoo: The Conclusion | Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn't have it any other way. I am thankful to the Julia community, and especially my mentor @MikeInnes (https://github.com/mikeinnes), for supporting me through this. I've learn... """
-@def rss_author = """<a href="https://github.com/maetshju">Matthew C. Kelley</a>"""
 @def published = "14 August 2018"
 @def title = "GSoC 2018 and Speech Recognition for the Flux Model Zoo: The Conclusion"
 @def authors = """<a href="https://github.com/maetshju">Matthew C. Kelley</a>"""  

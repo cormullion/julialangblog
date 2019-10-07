@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2013, 4, 8)
 @def rss = """ Put This In Your Pipe | In a previous post (http://julialang.org/blog/2012/03/shelling-out-sucks), I talked about why "shelling out" to spawn a pipeline of external programs via an intermediate shell is a common cause of bugs, security holes, unnecessary overhead, and silent failures.... """
-@def rss_author = """<a href="http://karpinski.org/">Stefan Karpinski</a>"""
 @def published = "8 April 2013"
 @def title = "Put This In Your Pipe"
 @def authors = """<a href="http://karpinski.org/">Stefan Karpinski</a>"""  

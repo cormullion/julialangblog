@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2013, 3, 5)
 @def rss = """ Efficient Aggregates in Julia | We recently introduced an exciting feature that has been in planning for some... """
-@def rss_author = """<a href="https://github.com/JeffBezanson">Jeff Bezanson</a>"""
 @def published = "5 March 2013"
 @def title = "Efficient Aggregates in Julia"
 @def authors = """<a href="https://github.com/JeffBezanson">Jeff Bezanson</a>"""  

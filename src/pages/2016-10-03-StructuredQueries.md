@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2016, 10, 3)
 @def rss = """ StructuredQueries.jl - A generic data manipulation framework | This post describes my work conducted this summer at the Julia Lab (http://julia.mit.edu/) to develop StructuredQueries.jl (https://github.com/davidagold/StructuredQueries.jl/), a generic data manipulation framework for Julia (http://julialang.org/).... """
-@def rss_author = """<a href="https://github.com/davidagold">David Gold</a>"""
 @def published = "3 October 2016"
 @def title = "StructuredQueries.jl - A generic data manipulation framework"
 @def authors = """<a href="https://github.com/davidagold">David Gold</a>"""  

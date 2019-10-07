@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2012, 8, 16)
 @def rss = """ Design and implementation of Julia | We describe the design and implementation of Julia in our first paper - Julia: A Fast Dynamic Language for Technical Computing (/images/julia-dynamic-2012-tr.pdf). This is work in progress and comments are appreciated.... """
-@def rss_author = "Jeff Bezanson Stefan Karpinski Viral B. Shah Alan Edelman"
 @def published = "16 August 2012"
 @def title = "Design and implementation of Julia"
 @def authors = "Jeff Bezanson Stefan Karpinski Viral B. Shah Alan Edelman"  

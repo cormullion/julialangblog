@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2017, 10, 5)
 @def rss = """ Command interpolation for dummies | I've never been a big user of the command line. One could even say I actively avoided it!... """
-@def rss_author = " 😄"
 @def published = "5 October 2017"
 @def title = "Command interpolation for dummies"
 @def authors = " 😄"  

@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2014, 8, 9)
 @def rss = """ JuliaCon 2014 Optimization Presentations | Iain Dunning and Joey Huchette are both doctoral students in the Massachusetts Institute of Technology Operations Research Center, where they study constrained continuous and combinatorial numerical optimization methods and theory. In this session they present the JuliaOpt suite of optimization packa... """
-@def rss_author = """ <a href="https://github.com/quinnj">Jacob Quinn</a>"""
 @def published = "9 August 2014"
 @def title = "JuliaCon 2014 Optimization Presentations"
 @def authors = """ <a href="https://github.com/quinnj">Jacob Quinn</a>"""  

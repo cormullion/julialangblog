@@ -1,6 +1,5 @@
 @def rss_pubdate = Date(2015, 10, 21)
 @def rss = """ JSoC 2015 project: Efficient data structures and algorithms for sequence analysis in BioJulia | Thanks to a grant from the Gordon and Betty Moore Foundation, I've enjoyed the... """
-@def rss_author = "Kenta Sato"
 @def published = "21 October 2015"
 @def title = "JSoC 2015 project: Efficient data structures and algorithms for sequence analysis in BioJulia"
 @def authors = "Kenta Sato"  
