@@ -1,1 +1,127 @@
-<!doctype html> <html lang=en > <meta charset=UTF-8 > <base href="/pub/"> <link rel=stylesheet  href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel=stylesheet > <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel=stylesheet > <link type="application/atom+xml" rel=alternate  href="/feed.xml" title="RSS feed for Julia language blog" /> <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/css/judoc.css"> <link rel=stylesheet  href="/css/basic.css"> <link rel=stylesheet  href="/css/julialangblog.css"> <link rel=icon  href="/assets/infra/favicon.ico"> <title>Why We Created Julia</title> <header> <div class=blog-name >The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div> <nav> <ul> <li><a href="/">Home</a> </ul> <img src="/assets/infra/hamburger.svg" id=menu-icon > </nav> </header> <div class=jd-content > <h1>Why We Created Julia</h1> <h3> <span style="font-weight: lighter;"> 14 February 2012 </span> | <span style="font-weight: bold;"> </span> <span style="font-weight: bold;">Jeff Bezanson Stefan Karpinski Viral B. Shah Alan Edelman </span> </h3> </div> <div class=jd-content > <a href="http://github.com/JeffBezanson/">Jeff Bezanson</a> <a href="http://karpinski.org/">Stefan Karpinski</a> <a href="http://github.com/ViralBShah/">Viral B. Shah</a> <a href="http://www-math.mit.edu/~edelman/">Alan Edelman</a> <p>In short, because we are greedy.</p> <p>We are power Matlab users. Some of us are Lisp hackers. Some are Pythonistas, others Rubyists, still others Perl hackers. There are those of us who used Mathematica before we could grow facial hair. There are those who still can&#39;t grow facial hair. We&#39;ve generated more R plots than any sane person should. C is our desert island programming language.</p> <p>We love all of these languages; they are wonderful and powerful. For the work we do — scientific computing, machine learning, data mining, large-scale linear algebra, distributed and parallel computing — each one is perfect for some aspects of the work and terrible for others. Each one is a trade-off.</p> <p>We are greedy: we want more.</p> <p>We want a language that&#39;s open source, with a liberal license. We want the speed of C with the dynamism of Ruby. We want a language that&#39;s homoiconic, with true macros like Lisp, but with obvious, familiar mathematical notation like Matlab. We want something as usable for general programming as Python, as easy for statistics as R, as natural for string processing as Perl, as powerful for linear algebra as Matlab, as good at gluing programs together as the shell. Something that is dirt simple to learn, yet keeps the most serious hackers happy. We want it interactive and we want it compiled.</p> <p>&#40;Did we mention it should be as fast as C?&#41;</p> <p>While we&#39;re being demanding, we want something that provides the distributed power of Hadoop — without the kilobytes of boilerplate Java and XML; without being forced to sift through gigabytes of log files on hundreds of machines to find our bugs. We want the power without the layers of impenetrable complexity. We want to write simple scalar loops that compile down to tight machine code using just the registers on a single CPU. We want to write <code>A*B</code> and launch a thousand computations on a thousand machines, calculating a vast matrix product together.</p> <p>We never want to mention types when we don&#39;t feel like it. But when we need polymorphic functions, we want to use generic programming to write an algorithm just once and apply it to an infinite lattice of types; we want to use multiple dispatch to efficiently pick the best method for all of a function&#39;s arguments, from dozens of method definitions, providing common functionality across drastically different types. Despite all this power, we want the language to be simple and clean.</p> <p>All this doesn&#39;t seem like too much to ask for, does it?</p> <p>Even though we recognize that we are inexcusably greedy, we still want to have it all. About two and a half years ago, we set out to create the language of our greed. It&#39;s not complete, but it&#39;s time for a 1.0 release — the language we&#39;ve created is called <a href="http://julialang.org">Julia</a>. It already delivers on 90&#37; of our ungracious demands, and now it needs the ungracious demands of others to shape it further. So, if you are also a greedy, unreasonable, demanding programmer, we want you to give it a try.</p> <p>trackbacks:</p> <ul> <li><p>Reddit: <a href="">http://www.reddit.com/r/programming/comments/pv3k9/why<em>we</em>created<em>julia</em>a<em>new</em>programming_language/</a></p> <li><p>Hacker News: <a href="">http://news.ycombinator.com/item?id&#61;3606380</a></p> <li><p>Lambda-the-Ultimate: <a href="">http://lambda-the-ultimate.org/node/4452</a></p> <li><p>Phoronix: <a href="">http://www.phoronix.com/scan.php?page&#61;news_item&amp;px&#61;MTA2ODg</a></p> <li><p>The Endeavor &#40;John D. Cook&#41;: <a href="">http://www.johndcook.com/blog/2012/02/22/julia-random-number-generation/</a></p> <li><p>Walking Randomly: <a href="">http://www.walkingrandomly.com/?p&#61;87</a></p> <li><p>Miguel Bazdresch: <a href="">http://2pif.info/op/julia.html</a></p> <li><p>Douglas Bates: <a href="">http://dmbates.blogspot.in/2012/03/julia-version-of-multinomial-sampler_12.html</a></p> <li><p>Vince Buffalo: <a href="">http://vincebuffalo.org/2012/03/07/thoughts-on-julia.html</a></p> <li><p>John Myles White: <a href="">http://www.johnmyleswhite.com/notebook/2012/03/31/julia-i-love-you/</a></p> <li><p>Shane Conway: <a href="">http://www.statalgo.com/2012/03/24/statistics-with-julia/</a></p> <li><p>Tim Salimans: <a href="">http://timsalimans.com/gibbs-sampling-with-julia/</a></p> <li><p>Twitter trackbacks: <a href="">http://topsy.com/julialang.org/</a></p> <li><p>Russian translation: <a href="">http://habrahabr.ru/blogs/programming/138577/</a></p> <li><p>Linux.org.ru blog post &#40;Russian&#41;: <a href="">http://www.linux.org.ru/news/opensource/7440863</a></p> <li><p>Simplified Chinese translation: <a href="">https://julialang.org/blog/2012/02/why-we-created-julia-zh_CN</a></p> <li><p>Traditional Chinese translation: <a href="">http://www.hellogcc.org/archives/666</a></p> <li><p>Linuxfr.org blog post &#40;French&#41;: <a href="">http://linuxfr.org/news/version-1-0-de-julia</a></p> </ul> <div class=page-foot > <p class=rss-subscribe >subscribe <a href="/feed.xml">via RSS</a></p> <div class=copyright > &copy; Last modified: October 07, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>. </div> </div> </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <base href="/pub/">
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="RSS feed for Julia language blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+
+  <link rel="stylesheet" href="/css/judoc.css">
+  <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/julialangblog.css">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
+
+   <title>Why We Created Julia</title>  
+</head>
+
+<body>
+  <header>
+    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+      <img src="/assets/infra/hamburger.svg" id="menu-icon">
+    </nav>
+  </header>
+
+  <div class="jd-content">
+    
+    <h1>Why We Created Julia</h1>
+    
+
+    <h3>
+       <span style="font-weight: lighter;"> 14 February 2012 </span>
+      |
+      
+       <span style="font-weight: bold;"> </span> 
+      <!-- assumption that only one of the two is defined -->
+       <span style="font-weight: bold;">Jeff Bezanson Stefan Karpinski Viral B. Shah Alan Edelman </span> 
+  </h3>
+
+  </div>
+
+<!-- Content appended here -->
+
+<div class="jd-content">
+<a href="http://github.com/JeffBezanson/">Jeff Bezanson</a>
+<a href="http://karpinski.org/">Stefan Karpinski</a>
+<a href="http://github.com/ViralBShah/">Viral B. Shah</a>
+<a href="http://www-math.mit.edu/~edelman/">Alan Edelman</a>
+<p>In short, because we are greedy.</p>
+<p>We are power Matlab users. Some of us are Lisp hackers. Some are Pythonistas, others Rubyists, still others Perl hackers. There are those of us who used Mathematica before we could grow facial hair. There are those who still can&#39;t grow facial hair. We&#39;ve generated more R plots than any sane person should. C is our desert island programming language.</p>
+<p>We love all of these languages; they are wonderful and powerful. For the work we do — scientific computing, machine learning, data mining, large-scale linear algebra, distributed and parallel computing — each one is perfect for some aspects of the work and terrible for others. Each one is a trade-off.</p>
+<p>We are greedy: we want more.</p>
+<p>We want a language that&#39;s open source, with a liberal license. We want the speed of C with the dynamism of Ruby. We want a language that&#39;s homoiconic, with true macros like Lisp, but with obvious, familiar mathematical notation like Matlab. We want something as usable for general programming as Python, as easy for statistics as R, as natural for string processing as Perl, as powerful for linear algebra as Matlab, as good at gluing programs together as the shell. Something that is dirt simple to learn, yet keeps the most serious hackers happy. We want it interactive and we want it compiled.</p>
+<p>&#40;Did we mention it should be as fast as C?&#41;</p>
+<p>While we&#39;re being demanding, we want something that provides the distributed power of Hadoop — without the kilobytes of boilerplate Java and XML; without being forced to sift through gigabytes of log files on hundreds of machines to find our bugs. We want the power without the layers of impenetrable complexity. We want to write simple scalar loops that compile down to tight machine code using just the registers on a single CPU. We want to write <code>A*B</code> and launch a thousand computations on a thousand machines, calculating a vast matrix product together.</p>
+<p>We never want to mention types when we don&#39;t feel like it. But when we need polymorphic functions, we want to use generic programming to write an algorithm just once and apply it to an infinite lattice of types; we want to use multiple dispatch to efficiently pick the best method for all of a function&#39;s arguments, from dozens of method definitions, providing common functionality across drastically different types. Despite all this power, we want the language to be simple and clean.</p>
+<p>All this doesn&#39;t seem like too much to ask for, does it?</p>
+<p>Even though we recognize that we are inexcusably greedy, we still want to have it all. About two and a half years ago, we set out to create the language of our greed. It&#39;s not complete, but it&#39;s time for a 1.0 release — the language we&#39;ve created is called <a href="http://julialang.org">Julia</a>. It already delivers on 90&#37; of our ungracious demands, and now it needs the ungracious demands of others to shape it further. So, if you are also a greedy, unreasonable, demanding programmer, we want you to give it a try.</p>
+<p>trackbacks:</p>
+<ul>
+<li><p>Reddit: <a href="">http://www.reddit.com/r/programming/comments/pv3k9/why<em>we</em>created<em>julia</em>a<em>new</em>programming_language/</a></p>
+</li>
+<li><p>Hacker News: <a href="">http://news.ycombinator.com/item?id&#61;3606380</a></p>
+</li>
+<li><p>Lambda-the-Ultimate: <a href="">http://lambda-the-ultimate.org/node/4452</a></p>
+</li>
+<li><p>Phoronix: <a href="">http://www.phoronix.com/scan.php?page&#61;news_item&amp;px&#61;MTA2ODg</a></p>
+</li>
+<li><p>The Endeavor &#40;John D. Cook&#41;: <a href="">http://www.johndcook.com/blog/2012/02/22/julia-random-number-generation/</a></p>
+</li>
+<li><p>Walking Randomly: <a href="">http://www.walkingrandomly.com/?p&#61;87</a></p>
+</li>
+<li><p>Miguel Bazdresch: <a href="">http://2pif.info/op/julia.html</a></p>
+</li>
+<li><p>Douglas Bates: <a href="">http://dmbates.blogspot.in/2012/03/julia-version-of-multinomial-sampler_12.html</a></p>
+</li>
+<li><p>Vince Buffalo: <a href="">http://vincebuffalo.org/2012/03/07/thoughts-on-julia.html</a></p>
+</li>
+<li><p>John Myles White: <a href="">http://www.johnmyleswhite.com/notebook/2012/03/31/julia-i-love-you/</a></p>
+</li>
+<li><p>Shane Conway: <a href="">http://www.statalgo.com/2012/03/24/statistics-with-julia/</a></p>
+</li>
+<li><p>Tim Salimans: <a href="">http://timsalimans.com/gibbs-sampling-with-julia/</a></p>
+</li>
+<li><p>Twitter trackbacks: <a href="">http://topsy.com/julialang.org/</a></p>
+</li>
+<li><p>Russian translation: <a href="">http://habrahabr.ru/blogs/programming/138577/</a></p>
+</li>
+<li><p>Linux.org.ru blog post &#40;Russian&#41;: <a href="">http://www.linux.org.ru/news/opensource/7440863</a></p>
+</li>
+<li><p>Simplified Chinese translation: <a href="">https://julialang.org/blog/2012/02/why-we-created-julia-zh_CN</a></p>
+</li>
+<li><p>Traditional Chinese translation: <a href="">http://www.hellogcc.org/archives/666</a></p>
+</li>
+<li><p>Linuxfr.org blog post &#40;French&#41;: <a href="">http://linuxfr.org/news/version-1-0-de-julia</a></p>
+</li>
+</ul>
+
+<div class="page-foot">
+  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <div class="copyright">
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+  </div>
+</div>
+
+</div>
+<!-- CONTENT ENDS HERE -->
+    
+    
+  </body>
+</html>
