@@ -35,7 +35,7 @@ Contributors to the documentation who received the certificate of accomplishment
 
 The certificates have been mailed to the awardees. Please contact [@Roger-luo](mailto:rogerluo.rl18@gmail.com) if we missed you!
 
-![certification](/images/blog/2019-08-31-julia-beijing-2019/certification.jpeg)
+![certification](/assets/images/blog/2019-08-31-julia-beijing-2019/certification.jpeg)
 
 ## Talks
 

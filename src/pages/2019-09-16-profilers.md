@@ -3,6 +3,7 @@
 @def published = "16 September 2019"
 @def title = "Profiling tool wins and woes"
 @def authors = """<a href="http://github.com/vtjnash/">Jameson Nash</a>"""  
+@def hascode=true
 
 Profiling tools are awesome. They let us see what actually is affecting our program performance. Profiling tools also are terrible. They lie to us and give us confusing information. They also have some surprisingly new developments: [brendangregg's often cloned flamegraphs tool](http://www.brendangregg.com/flamegraphs.html) was created in 2011! So here I will be investigating some ways to make our profile reports better; and looking at ways in which they commonly break, to raise awareness of those artifacts in the reports.
 
@@ -56,7 +57,7 @@ int main(void) {
 
 On my macOS machine, this takes on the order of one second, so that's usually a good number of samples. I'm going to use a few options to prevent certain stack optimizations, and otherwise let the compiler do it's best. The `-fno-optimize-sibling-calls` option prohibits the compiler from using a tailcall, which ensures `fib_r` stays in the stacktrace recording and that `fib` can't be partially optimized into a loop. The `-fno-inline` is there to help preserve the predictability of the record.
 
-```
+```bash
 $ clang -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c -o fib
 $ time ./fib
 real    0m0.723s
@@ -81,7 +82,7 @@ The only problem I can identify here is that all of the self-weights are zero in
 
 On Linux, with the `perf` tool, this is pretty similar to use:
 
-```
+```bash
 $ gcc -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c
 $ perf record --call-graph dwarf ./a.out
 [ perf record: Woken up 153 times to write data ]
@@ -90,7 +91,7 @@ $ perf record --call-graph dwarf ./a.out
 
 But I couldn't get this to generate a satisfactory report. I think the fault is with the dwarf implementation, so it seems you should be careful when using it to make decisions.
 
-```
+```bash
 $ perf report --stdio --call-graph=none
 # Total Lost Samples: 0
 #
@@ -113,7 +114,7 @@ so that might be a contributing factor (more overhead).
 
 But combining the compiler option `-fno-omit-frame-pointer` with the perf option `--call-graph fp` worked.
 
-```
+```bash
 $ perf report --stdio --call-graph=none
 # Total Lost Samples: 0
 #
@@ -138,7 +139,7 @@ There's also a bunch of other options for `--call-graph`, but all of them spewed
 
 Now let's see how JuliaLang (v1.3) does:
 
-```julia
+```julia-repl
 julia> @noinline function fib(n)
          return n > 1 ? fib_r(n - 1) + fib_r(n - 2) : 1
        end
@@ -170,7 +171,7 @@ So that's pretty bad—we appear to have about 212 samples, going by the counts 
 
 But there's also the recursive option, which doesn't suffer from this particular issue. So how does it fare:
 
-```julia
+```julia-repl
 julia> Profile.print(format=:tree)
 260 REPL[1]:2; fib(::Int64)
 112 REPL[1]:1; fib_r(::Int64)
@@ -296,7 +297,7 @@ Let's now examine how we can try to consolidate the recursive frames somehow. On
 
 Here's that same flat report above with the counts corrected (in Julia v1.4-dev), and some extra information also now compiled for it:
 
-```
+```julia-repl
 julia> Profile.print(format=:flat, sortedby=:counts)
  Count  Overhead File      Line Function
    228         2 ./boot.jl  330 eval
@@ -331,7 +332,7 @@ This is nice! We get to visualize the static functions call tree simultaneously 
 
 In addition, the `pprof` tool has a sandwich text report that summarizes the caller and callee list around each profile sample:
 
-```
+```bash
       Type: events
 Showing nodes accounting for 632, 100% of 632 total
 ----------------------------------------------------------+-------------
@@ -365,7 +366,7 @@ Let's combine all those ideas to make a new option for our Julia plain-text tree
 So this will no longer be a literal interpretation of the stack, but will show a particular linearization where each recursive call was re-written as a loop. This has a few secondary implications.
 It means that we may now see counts that sum to greater than their parent. For example, 100% (236/236) of the time inside the parent `fib` was spent inside the child `fib_r`, and additionally, 4% (9/236) were recorded as being part of a direct call to `fib` from `fib` (an artifact caused by unreliable stack recording). Additionally, if you recall the definition of `fib` above, `fib` has two distinct calls to `fib_r`. Since the goal was to rearrange recursive calls, and not recursive lines, we expect to see those two calls reflected exactly in the profile shape too. However, there's no distinction made between *which* call each was from (unless you also pass `collapse=false`[^2]).
 
-```
+```julia-repl
 julia> Profile.print(format=:tree, recur=:flat)
 94  ./REPL[1]:1; fib_r(::Int64)
 260 ./REPL[2]:2; fib(::Int64)
@@ -399,24 +400,24 @@ And finally, we're working on a [memory profiler](https://github.com/JuliaLang/j
 
 [^2]: The `collapse=false` option controls whether to merge the profile by line number or to keep them distinct by instruction pointer. One useful code-maintence trick is to try to ensure each line does relatively little, so that line numbers are a precise source of information. This doesn't need to be taken to the extreme, as I do below as an example (nearly writing out a [3AC](https://en.m.wikipedia.org/wiki/Three-address_code) manually), since several of these statements will likely get optimized and moved anyways. But sometimes it can be invaluable to see if one `fib_r` call was more expensive than the other in our example, or to know *which* array was being indexed just from the stacktrace, etc.
 
-    ```julia
-    @noinline function fib(n)
-        if n > 1
-            n -= 1
-            x1 = fib_r(n)
-            n -= 1
-            x2 = fib_r(n)
-            y = x1 + x2
-        else
-            y = 1
-        end
-        return y
+```julia-repl
+@noinline function fib(n)
+    if n > 1
+        n -= 1
+        x1 = fib_r(n)
+        n -= 1
+        x2 = fib_r(n)
+        y = x1 + x2
+    else
+        y = 1
     end
-    ```
+    return y
+end
+```
 
 Post-note: There was also an off-by-one lookup error in Profile.jl too that will soon be resolved. This is almost never an issue, but we can sometimes notice it as bogus information showing some frame that should never have been reached. For example, we can profile a call to the expensive `cpuid` instruction, and see that there's a bogus frame that makes it appear we used some code that happened to be located outside the target function was somehow getting used.
 
-```
+```julia-repl
 julia> testf() = for i = 1:10^7; ccall(:jl_cpuid, Cvoid, (Ref{NTuple{4,Int32}}, Int32), (0,0,0,0), 0); end
 julia> @profile testf()
 julia> Profile.print(C=true)

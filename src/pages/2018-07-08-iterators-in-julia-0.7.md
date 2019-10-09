@@ -39,7 +39,7 @@ end
 
 A simple example is a range iterator which yields every nth element up to some number of elements:
 
-```julia
+```julia-repl
 julia> struct EveryNth
            n::Int
            start::Int
@@ -65,7 +65,7 @@ julia> Base.eltype(iter::EveryNth) = Int
 
 Then we can iterate:
 
-```julia
+```julia-repl
 julia> for element in EveryNth(2, 0, 10)
            println(element)
        end
@@ -83,7 +83,7 @@ julia> for element in EveryNth(2, 0, 10)
 
 Which is equivalent to:
 
-```julia
+```julia-repl
 julia> let iterable = EveryNth(2, 0, 10), state = start(iterable)
            while !done(iterable, state)
                (element, state) = next(iterable, state)
@@ -128,7 +128,7 @@ The second is called repeatedly to iterate, like `next` in Julia 0.6.
 
 The `EveryNth` example now looks like this:
 
-```julia
+```julia-repl
 julia> struct EveryNth
            n::Int
            start::Int

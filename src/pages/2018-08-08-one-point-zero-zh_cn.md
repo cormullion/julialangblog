@@ -2,7 +2,7 @@
 @def rss = """ Julia 1.0 正式發佈 (Simplified Chinese) | 备受期待的Julia语言 (https://julialang.org)的1.0版本积累了富有野心的程序员们的十年心血。... """
 @def published = "8 August 2018"
 @def title = "Julia 1.0 正式發佈 (Simplified Chinese)"
-@def authors = "the Julia developers"  
+@def authors = "the Julia developers"
 
 
 备受期待的[Julia语言](https://julialang.org)的1.0版本积累了富有野心的程序员们的十年心血。
@@ -225,11 +225,13 @@ innovative language features. Some of the new features since version 0.6 include
 * 围绕Julia 1.0的新特性，我们特别地创建了一些新的外部包：
     * 数据处理生态系统通过翻新利用了新的缺失值支持
     * [Cassette.jl](https://github.com/jrevels/Cassette.jl)将为Julia带来向编译器中注入代码变换，使得
-    事后分析（post-hoc analysis）和扩展已有的代码成为可能。在除了提供profiling和debugging这样的工具之外，
-    这甚至可以用于实现用于机器学习任务的自动微分。
-    * 异构计算的支持被大大提高，并且从Julia编译器中分离了出来。Intel KNL系列硬件可以直接使用Julia。而Nvidia的GPU
-    也可以通过[CUDANative.jl](https://github.com/JuliaGPU/CUDAnative.jl)来直接编程（无须编写CUDA代码），而
-    支持Google TPU的接口也正在开发中。
+
+<!-- removed the indent on this paragraph to avoid StringIndexError -->
+事后分析（post-hoc analysis）和扩展已有的代码成为可能。在除了提供profiling和debugging这样的工具之外，
+这甚至可以用于实现用于机器学习任务的自动微分。
+* 异构计算的支持被大大提高，并且从Julia编译器中分离了出来。Intel KNL系列硬件可以直接使用Julia。而Nvidia的GPU
+也可以通过[CUDANative.jl](https://github.com/JuliaGPU/CUDAnative.jl)来直接编程（无须编写CUDA代码），而
+支持Google TPU的接口也正在开发中。
 
 
 <!-- * A number of new external packages are being built specifically around the new capabilities

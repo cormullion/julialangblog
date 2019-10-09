@@ -19,8 +19,11 @@ pre {
 }
 
 code {
-    color: #e83e8c;
     font-size: 90%;
+}
+
+.hljs-keyword {
+    color: #826;
 }
 
 .language-bash-script < pre {

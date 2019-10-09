@@ -2,7 +2,7 @@
 @def rss = """ DiffEqFlux.jl – Julia 的神經微分方程套件 | 在這篇文章中，我們將會展示在 Julia 中使用微分方程解算器（DiffEq solver）搭配神經網路有多麼簡單、有效而且穩定。... """
 @def published = "4 April 2019"
 @def title = "DiffEqFlux.jl – Julia 的神經微分方程套件"
-@def authors = "Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit, 譯者：杜岳華（Yueh-Hua Tu）Dboy Liao (Yin-Chen Liao)"  
+@def authors = "Chris Rackauckas, Mike Innes, Yingbo Ma, Jesse Bettencourt, Lyndon White, Vaibhav Dixit, 譯者：杜岳華（Yueh-Hua Tu）Dboy Liao (Yin-Chen Liao)"
 @def hascode = true
 @def hasmath = true
 
@@ -178,7 +178,7 @@ when we have more rabbits. The simplest way of encoding that is -->
 
 $$\text{rabbits}'(t) = \alpha\cdot \text{rabbits}(t)$$
 
-其中，$α$ 是可以學習調整的參數。如果你還記得以前學過的微積分，
+其中， $\alpha$  是可以學習調整的參數。如果你還記得以前學過的微積分，
 這個方程的解即為成長率為 $\alpha$ 的指數成長函數:
 
 <!-- where $\alpha$ is some learnable constant. If you know your calculus, the solution
@@ -242,7 +242,7 @@ $$\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$$
 
 則會導出
 
-$$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i})。$$
+$$y_{i+1} = y_{i} + \Delta x\cdot ML(x_{i}) $$ <!-- removed 。-->
 
 <!-- $\Delta y = (y_\text{next} - y_\text{prev}) = \Delta x\cdot ML(x)$
 which implies that

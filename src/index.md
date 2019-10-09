@@ -1,6 +1,6 @@
 @def title = "The Julia Language Blog"
-@def hasmath = true
-@def hascode = true
+@def hasmath = false
+@def hascode = false
 
 <!-- Note: by default hasmath == true and hascode == false. You can change this in
 the config file by setting hasmath = false for instance and just setting it to true
@@ -11,7 +11,7 @@ so let's go with a simple CSS grid -->
 
 The Julia blog discusses issues of numerical, technical, distributed and parallel computing, as well as programming language design, and how these issues touch upon the design and implementation of the Julia programming language. Also see the [Julia Computing blog](http://juliacomputing.com/blog/) for another source of information regarding ongoing Julia development.
 
-Blogs from the broader Julia community can be found at [Julia Bloggers.](http://www.juliabloggers.com/).
+Blogs from the broader Julia community can be found at [Julia Bloggers](http://www.juliabloggers.com/).
 
 This is a mirror of the official Julia blog, a playground useful when developing with  [JuDoc](https://github.com/tlienart/JuDoc.jl). The JuDoc source for this is [here](https://github.com/cormullion/julialangblog).
 

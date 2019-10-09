@@ -14,11 +14,13 @@
   <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
 
   <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="RSS feed for Julia language blog" />
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  
+   <!-- Syntax highlighting via Prism, note: restricted langs -->
+<link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
 
   <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
@@ -95,14 +97,15 @@ int main(void) {
 }
 </code></pre>
 <p>On my macOS machine, this takes on the order of one second, so that&#39;s usually a good number of samples. I&#39;m going to use a few options to prevent certain stack optimizations, and otherwise let the compiler do it&#39;s best. The <code>-fno-optimize-sibling-calls</code> option prohibits the compiler from using a tailcall, which ensures <code>fib_r</code> stays in the stacktrace recording and that <code>fib</code> can&#39;t be partially optimized into a loop. The <code>-fno-inline</code> is there to help preserve the predictability of the record.</p>
-<pre><code class="language-julia">$ clang -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c -o fib
+<pre><code class="language-bash">$ clang -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c -o fib
 $ time ./fib
 real    0m0.723s
 user    0m0.717s
 sys     0m0.003s
 $ instruments -t "Time Profiler" ./fib
 Instruments Trace Complete: instrumentscli0.trace
-$ open instrumentscli0.trace</code></pre>
+$ open instrumentscli0.trace
+</code></pre>
 <p>In <code>Instruments.app</code>, this does quite well, except for one peculiar combination of options.</p>
 <p><img src="/assets/images/blog/2019-09-16-profilers/profile-instruments-bad.png" alt="Instruments.app bad result" /></p>
 <p>I don&#39;t know how it computed those numbers, but note that the total runtime was 738 ms, so all those numbers that are some multiple of that &#40;1.47 s, 1.15 s, 230 ms&#41; are wrong.</p>
@@ -110,12 +113,13 @@ $ open instrumentscli0.trace</code></pre>
 <p><img src="/assets/images/blog/2019-09-16-profilers/profile-instruments-good.png" alt="Instruments.app good result" /></p>
 <p>The only problem I can identify here is that all of the self-weights are zero in this view. In the source code view, the lines are properly annotated with counts.</p>
 <p>On Linux, with the <code>perf</code> tool, this is pretty similar to use:</p>
-<pre><code class="language-julia">$ gcc -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c
+<pre><code class="language-bash">$ gcc -Wall -Werror -pedantic -std=c11 -fno-optimize-sibling-calls -fno-inline -O3 -g fib.c
 $ perf record --call-graph dwarf ./a.out
 [ perf record: Woken up 153 times to write data ]
-[ perf record: Captured and wrote 38.221 MB perf.data (4748 samples) ]</code></pre>
+[ perf record: Captured and wrote 38.221 MB perf.data (4748 samples) ]
+</code></pre>
 <p>But I couldn&#39;t get this to generate a satisfactory report. I think the fault is with the dwarf implementation, so it seems you should be careful when using it to make decisions.</p>
-<pre><code class="language-julia">$ perf report --stdio --call-graph=none
+<pre><code class="language-bash">$ perf report --stdio --call-graph=none
 # Total Lost Samples: 0
 #
 # Samples: 4K of event 'cycles:uppp'
@@ -128,10 +132,11 @@ $ perf record --call-graph dwarf ./a.out
     43.30%    35.77%  a.out    a.out             [.] fib_r
      8.75%     0.00%  a.out    [unknown]         [.] 0x00007ffc2454634f
      7.52%     0.00%  a.out    a.out             [.] _start
-     7.52%     0.00%  a.out    a.out             [.] main</code></pre>
+     7.52%     0.00%  a.out    a.out             [.] main
+</code></pre>
 <p>I tried various options including <code>-gdwarf-2</code>, <code>-gdwarf-4</code>, <code>-fno-omit-frame-pointer</code><sup id="fnref:1"><a href="/pub/2019-09-16-profilers.html#fndef:1" class="fnref">[1]</a></sup>, and switching to <code>clang</code>. None of those helped much. With FPO disabled, the clang results were much better than with gcc &#40;both improved&#41;, but clang&#39;s output was also a smidgen slower running, so that might be a contributing factor &#40;more overhead&#41;.</p>
 <p>But combining the compiler option <code>-fno-omit-frame-pointer</code> with the perf option <code>--call-graph fp</code> worked.</p>
-<pre><code class="language-julia">$ perf report --stdio --call-graph=none
+<pre><code class="language-bash">$ perf report --stdio --call-graph=none
 # Total Lost Samples: 0
 #
 # Samples: 4K of event 'cycles:uppp'
@@ -144,12 +149,13 @@ $ perf record --call-graph dwarf ./a.out
     99.99%    34.97%  a.out    a.out             [.] fib_r
     99.99%     0.00%  a.out    a.out             [.] main
     99.99%     0.00%  a.out    libc-2.27.so      [.] __libc_start_main
-    99.99%     0.00%  a.out    [unknown]         [.] 0x077e258d4c544155</code></pre>
+    99.99%     0.00%  a.out    [unknown]         [.] 0x077e258d4c544155
+</code></pre>
 <p>Here we see it&#39;s got the right children &#40;total&#41; and self weights&#33;</p>
 <p>There&#39;s also a bunch of other options for <code>--call-graph</code>, but all of them spewed vast amounts of &#40;mis&#41;information, so I&#39;ve opted not to try to fit that in here.</p>
 <h2 id="profiling_julialang_code"><a href="/pub/2019-09-16-profilers.html#profiling_julialang_code">Profiling JuliaLang code</a></h2>
 <p>Now let&#39;s see how JuliaLang &#40;v1.3&#41; does:</p>
-<pre><code class="language-julia">julia> @noinline function fib(n)
+<pre><code class="language-julia-repl">julia> @noinline function fib(n)
          return n > 1 ? fib_r(n - 1) + fib_r(n - 2) : 1
        end
 
@@ -177,7 +183,7 @@ julia> count(==(0), Profile.fetch())
 </code></pre>
 <p>So that&#39;s pretty bad—we appear to have about 212 samples, going by the counts on the <code>eval</code> function at the top of the stack. And we&#39;re told that about 2000&#37; of the time was in <code>fib</code>. Clearly not true. What happened here? We computed that <code>fib</code> &#40;and <code>fib_r</code>&#41; each appeared an average of 10-20 times in every backtrace, so we over-represent them in our flat-format output. OK, so first thing to do is to fix that: each frame should only be counted once towards each output line.</p>
 <p>But there&#39;s also the recursive option, which doesn&#39;t suffer from this particular issue. So how does it fare:</p>
-<pre><code class="language-julia">julia> Profile.print(format=:tree)
+<pre><code class="language-julia-repl">julia> Profile.print(format=:tree)
 260 REPL[1]:2; fib(::Int64)
 112 REPL[1]:1; fib_r(::Int64)
 212 task.jl:333; REPL.var"##26#27"
@@ -289,14 +295,15 @@ index cf339d8a4b..f6e9c08e2c 100644
 <p>However, none of these option are helpful for our tree above. We need more tools in our toolbox&#33;</p>
 <p>Let&#39;s now examine how we can try to consolidate the recursive frames somehow. One option is the flat reports we looked at earlier.</p>
 <p>Here&#39;s that same flat report above with the counts corrected &#40;in Julia v1.4-dev&#41;, and some extra information also now compiled for it:</p>
-<pre><code class="language-julia">julia> Profile.print(format=:flat, sortedby=:counts)
+<pre><code class="language-julia-repl">julia> Profile.print(format=:flat, sortedby=:counts)
  Count  Overhead File      Line Function
    228         2 ./boot.jl  330 eval
      2         2 ./int.jl    52 -
     25        25 ./int.jl    53 +
    321       155 ./REPL[2]    1 fib_r
    514       426 ./REPL[1]    2 fib
-Total snapshots: 610</code></pre>
+Total snapshots: 610
+</code></pre>
 <p>That&#39;s better, and now the information matches the tree&#33; But unlike the tree view, this flat view doesn&#39;t show context. Some of those functions are very common, like <code>&#43;</code>, and it might not be sufficient to see them in aggregate like this. Can we combine the benefits of both views somehow?</p>
 <h2 id="better_recursion_handling"><a href="/pub/2019-09-16-profilers.html#better_recursion_handling">Better recursion handling</a></h2>
 <p>Let&#39;s now look at some different approaches some tools take to flatten this recursion to make it easier to find insights.</p>
@@ -309,7 +316,7 @@ Total snapshots: 610</code></pre>
 <p><img src="/assets/images/blog/2019-09-16-profilers/profile-pprof.png" alt="PProf" /></p>
 <p>This is nice&#33; We get to visualize the static functions call tree simultaneously with the weight each function contributes to the time. However, this format can be a bit limited on the total quantity of information it can fit, so it might not always help. The <code>pprof</code> tool automatically filters out smaller frames to aid the user in seeing the important ones, and provides several options for adding and removing functions from the view.</p>
 <p>In addition, the <code>pprof</code> tool has a sandwich text report that summarizes the caller and callee list around each profile sample:</p>
-<pre><code class="language-julia">Type: events
+<pre><code class="language-bash">Type: events
 Showing nodes accounting for 632, 100% of 632 total
 ----------------------------------------------------------+-------------
       flat  flat%   sum%        cum   cum%   calls calls% + context
@@ -330,14 +337,15 @@ Showing nodes accounting for 632, 100% of 632 total
 ----------------------------------------------------------+-------------
                                                  1   100% |   - ./int.jl:2 (inline)
          1  0.16% 99.53%          1  0.16%                | - ./int.jl:52
-----------------------------------------------------------+-------------</code></pre>
+----------------------------------------------------------+-------------
+</code></pre>
 <p>Let&#39;s combine all those ideas to make a new option for our Julia plain-text tree view: flattened recursion. Here&#39;s the docstring for the new argument to <code>Profile.print</code>:</p>
 <ul>
 <li><p><code>recur</code> – Controls the recursion handling in <code>:tree</code> format. <code>:off</code> &#40;default&#41; prints the tree as normal. <code>:flat</code> instead compresses any recursion &#40;by ip&#41;, showing the approximate effect of converting any self-recursion into an iterator. <code>:flatc</code> does the same but also includes collapsing of C frames &#40;may do odd things around <code>jl_apply</code>&#41;.</p>
 </li>
 </ul>
 <p>So this will no longer be a literal interpretation of the stack, but will show a particular linearization where each recursive call was re-written as a loop. This has a few secondary implications. It means that we may now see counts that sum to greater than their parent. For example, 100&#37; &#40;236/236&#41; of the time inside the parent <code>fib</code> was spent inside the child <code>fib_r</code>, and additionally, 4&#37; &#40;9/236&#41; were recorded as being part of a direct call to <code>fib</code> from <code>fib</code> &#40;an artifact caused by unreliable stack recording&#41;. Additionally, if you recall the definition of <code>fib</code> above, <code>fib</code> has two distinct calls to <code>fib_r</code>. Since the goal was to rearrange recursive calls, and not recursive lines, we expect to see those two calls reflected exactly in the profile shape too. However, there&#39;s no distinction made between <em>which</em> call each was from &#40;unless you also pass <code>collapse&#61;false</code><sup id="fnref:2"><a href="/pub/2019-09-16-profilers.html#fndef:2" class="fnref">[2]</a></sup>&#41;.</p>
-<pre><code class="language-julia">julia> Profile.print(format=:tree, recur=:flat)
+<pre><code class="language-julia-repl">julia> Profile.print(format=:tree, recur=:flat)
 94  ./REPL[1]:1; fib_r(::Int64)
 260 ./REPL[2]:2; fib(::Int64)
 275 ./task.jl:333; (::REPL.var"##26#27"{REPL.REPLBackend})()
@@ -352,7 +360,8 @@ Showing nodes accounting for 632, 100% of 632 total
   ╎    39 ./int.jl:53; +
   ╎    3  ./int.jl:52; -
   ╎  1   ./REPL[2]:2; fib(::Int64)
-Total snapshots: 629</code></pre>
+Total snapshots: 629
+</code></pre>
 <p>I think this looks cool, and vaguely even shows how I would conceptualize the functions in my head. This is availble right now only on <a href="https://github.com/JuliaLang/julia/tree/jn/profile-recurflat">my jn/profile-recurflat</a> branch, but should be a PR soon, and show up in the JuliaLang v1.4 release.</p>
 <h2 id="final_thoughts"><a href="/pub/2019-09-16-profilers.html#final_thoughts">Final thoughts</a></h2>
 <p>There&#39;s many more tools for examining profile exploration tools that I haven&#39;t mentioned, including the venerable <a href="https://github.com/timholy/ProfileView.jl">ProfileView.jl</a> and <a href="https://docs.junolab.org/stable/man/juno_frontend.html#Profiler-1">Juno.jl</a>. And there&#39;s other tools too for working on performance questions, such as the simple <a href="https://docs.julialang.org/en/v1/base/base/#Base.@time">@time</a> and the batteries-included <a href="https://github.com/JuliaCI/BenchmarkTools.jl">BenchmarkTools.jl</a> . Those will often then lead to needing to do deeper exploration of the code. For that next step, consider using <a href="https://github.com/JuliaDebug/Cthulhu.jl">Cthulhu.jl</a> and <a href="https://jvns.ca/blog/2019/06/23/a-few-debugging-resources/">learning more about other kinds of debugging</a>.</p>
@@ -370,8 +379,7 @@ Total snapshots: 629</code></pre>
         <td class="fndef-content">The <code>collapse&#61;false</code> option controls whether to merge the profile by line number or to keep them distinct by instruction pointer. One useful code-maintence trick is to try to ensure each line does relatively little, so that line numbers are a precise source of information. This doesn&#39;t need to be taken to the extreme, as I do below as an example &#40;nearly writing out a <a href="https://en.m.wikipedia.org/wiki/Three-address_code">3AC</a> manually&#41;, since several of these statements will likely get optimized and moved anyways. But sometimes it can be invaluable to see if one <code>fib_r</code> call was more expensive than the other in our example, or to know <em>which</em> array was being indexed just from the stacktrace, etc.</td>
     </tr>
 </table>
-<pre><code class="language-julia">```julia
-@noinline function fib(n)
+ <pre><code class="language-julia-repl">@noinline function fib(n)
     if n > 1
         n -= 1
         x1 = fib_r(n)
@@ -383,26 +391,32 @@ Total snapshots: 629</code></pre>
     end
     return y
 end
-```</code></pre> Post-note: There was also an off-by-one lookup error in Profile.jl too that will soon be resolved. This is almost never an issue, but we can sometimes notice it as bogus information showing some frame that should never have been reached. For example, we can profile a call to the expensive <code>cpuid</code> instruction, and see that there&#39;s a bogus frame that makes it appear we used some code that happened to be located outside the target function was somehow getting used.</p>
-<pre><code class="language-julia">julia> testf() = for i = 1:10^7; ccall(:jl_cpuid, Cvoid, (Ref{NTuple{4,Int32}}, Int32), (0,0,0,0), 0); end
+</code></pre>
+<p>Post-note: There was also an off-by-one lookup error in Profile.jl too that will soon be resolved. This is almost never an issue, but we can sometimes notice it as bogus information showing some frame that should never have been reached. For example, we can profile a call to the expensive <code>cpuid</code> instruction, and see that there&#39;s a bogus frame that makes it appear we used some code that happened to be located outside the target function was somehow getting used.</p>
+<pre><code class="language-julia-repl">julia> testf() = for i = 1:10^7; ccall(:jl_cpuid, Cvoid, (Ref{NTuple{4,Int32}}, Int32), (0,0,0,0), 0); end
 julia> @profile testf()
 julia> Profile.print(C=true)
 201 ./REPL[2]:1; testf()
  199 ./REPL[1]:1; cpuid
   3   ./processor_x86.cpp:8; jl_cpuid
   192 ./processor_x86.cpp:12; jl_cpuid
-  1   ./libjulia.1.4.dylib:?; _GLOBAL__sub_I_runtime_ccall.cpp</code></pre></p>
+  1   ./libjulia.1.4.dylib:?; _GLOBAL__sub_I_runtime_ccall.cpp
+</code></pre></p>
 
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 09, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 
 </div>
 <!-- CONTENT ENDS HERE -->
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
   </body>
 </html>

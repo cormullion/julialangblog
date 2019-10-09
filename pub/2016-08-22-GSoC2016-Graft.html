@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
 
   <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="RSS feed for Julia language blog" />
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
@@ -115,10 +115,10 @@
 <pre><code># Label Map to resolve queries
 LabelMap&#40;
    # Forward map : labels to vertex identifiers
-   Dict&#40;&quot;Alice&quot; &#61;&gt; 1, &quot;David&quot; &#61;&gt; 4, &quot;Charlie&quot; &#61;&gt; 3, Bob&quot; &#61;&gt; 2&#41;,
+   Dict&#40;&quot;Alice&quot; &#61;&gt; 1, &quot;David&quot; &#61;&gt; 4, &quot;Charlie&quot; &#61;&gt; 3, &quot;Bob&quot; &#61;&gt; 2&#41;,
 
    # Reverse map : vertex identifiers to labels
-   String&#91;&quot;Alice, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;&#93;
+   String&#91;&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;&#93;
 &#41;
 
 # Vertex DataFrame
@@ -144,7 +144,8 @@ LabelMap&#40;
 │ 1   │ &quot;follow&quot;     │
 │ 2   │ &quot;friend&quot;     │
 │ 3   │ &quot;follow&quot;     │
-│ 4   │ &quot;friend&quot;     │</code></pre>
+│ 4   │ &quot;friend&quot;     │
+</code></pre>
 <h2 id="sql_like_queries"><a href="/pub/2016-08-22-GSoC2016-Graft.html#sql_like_queries">SQL Like Queries</a></h2>  Graft&#39;s query notation is borrowed from <a href="https://github.com/davidagold/jplyr.jl">Jplyr</a>. The <code>@query</code> macro is used to simplify the query syntax, and accepts a pipeline of abstractions separated by the pipe operator <code>|&gt;</code>. The stages are described through abstractions:</p>
 <h3 id="eachvertex"><a href="/pub/2016-08-22-GSoC2016-Graft.html#eachvertex">eachvertex</a></h3>  Accepts an expression, that is run over every vertex. Vertex properties can be expressed using the dot notation. Some reserved properties are <code>v.id</code>, <code>v.label</code>, <code>v.adj</code>, <code>v.indegree</code> and <code>v.outdegree</code>. Examples: <pre><code class="language-julia"># Check if the user has overridden the default labels
 julia> @query(g |> eachvertex(v.id == v.label)) |> all
