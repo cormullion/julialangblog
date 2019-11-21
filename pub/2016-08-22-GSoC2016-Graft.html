@@ -144,8 +144,7 @@ LabelMap&#40;
 │ 1   │ &quot;follow&quot;     │
 │ 2   │ &quot;friend&quot;     │
 │ 3   │ &quot;follow&quot;     │
-│ 4   │ &quot;friend&quot;     │
-</code></pre>
+│ 4   │ &quot;friend&quot;     │</code></pre>
 <h2 id="sql_like_queries"><a href="/pub/2016-08-22-GSoC2016-Graft.html#sql_like_queries">SQL Like Queries</a></h2>  Graft&#39;s query notation is borrowed from <a href="https://github.com/davidagold/jplyr.jl">Jplyr</a>. The <code>@query</code> macro is used to simplify the query syntax, and accepts a pipeline of abstractions separated by the pipe operator <code>|&gt;</code>. The stages are described through abstractions:</p>
 <h3 id="eachvertex"><a href="/pub/2016-08-22-GSoC2016-Graft.html#eachvertex">eachvertex</a></h3>  Accepts an expression, that is run over every vertex. Vertex properties can be expressed using the dot notation. Some reserved properties are <code>v.id</code>, <code>v.label</code>, <code>v.adj</code>, <code>v.indegree</code> and <code>v.outdegree</code>. Examples: <pre><code class="language-julia"># Check if the user has overridden the default labels
 julia> @query(g |> eachvertex(v.id == v.label)) |> all
@@ -210,7 +209,7 @@ julia&gt; @query g |&gt; eachedge&#40;e.mutualcount&#41;</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: November 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
   </div>
 </div>
 

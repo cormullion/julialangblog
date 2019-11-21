@@ -1,8 +1,9 @@
-# Julia blog mirror via JuDoc
+# The official Julia blog, mirrored using the JuDoc package
 
 See it [in action](https://julialangblogmirror.netlify.com/).
 
-Note: the pre-rendering processes almost all pages perfectly fine but complains about:
+This repository contains copies of the Markdown source files and accompanying images from the offical [Julia](https://julialang.org/blog/) blog, the originals are maintained by the Julia team [here](https://github.com/JuliaLang/www.julialang.org/tree/master/blog). 
 
-- 2 posts in chinese (though it's hard to say what's the issue but it may be a unicode thing)
-- the post on `Graft.jl` though I couldn't find the issue.
+The official blog uses Jekyll (written in Ruby). This mirror uses Thibaut Lienart's [JuDoc](https://github.com/tlienart/JuDoc.jl), an all-Julia static site generator instead, for the purpose of exploring and demonstrating some of its many features.
+
+Some changes have been made to the Markdown formatting of the original posts to accommodate the differences between Jekyll-flavoured Markdown and Julia-flavoured Markdown (which are both close approximations to the "official" Markdown standard). Some Jekyll-specific additions have been removed or replaced with equivalents where possible.
