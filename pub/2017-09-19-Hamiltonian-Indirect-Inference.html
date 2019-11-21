@@ -63,7 +63,7 @@
 
 <div class="jd-content">
 <p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017. See also <a href="https://github.com/DoriszAlbrecht/Bayesian_Examples.jl">Bayesian_Examples.jl</a>.</p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#parametric_bayesian_indirect_likelihood_for_the_full_data">Parametric Bayesian Indirect Likelihood for the Full Data</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#first_stage_of_my_project">First stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#second_stage_of_my_project">Second stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#stochastic_volatility_model">Stochastic Volatility model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#problems_that_i_have_faced_during_gsoc">Problems that I have faced during GSOC</a><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#1_difficult_auxiliary_model">1 Difficult auxiliary model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#2_type-stability_issues">2 Type-stability issues</a></li></ol></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#future_work">Future work</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#references">References</a></li></ol></div>
 <h2 id="gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood"><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></h2>
 <p>This summer I have had the opportunity to participate in the Google Summer of Code program. My project was in the Julia language and the main goal was to implement Indirect Inference &#40;A. A. Smith 1993; A. Smith 2008&#41; to overcome the typically arising issues &#40;such as intractable or costly to compute likelihoods&#41; when estimating models using likelihood-based methods. Hamiltonian Monte Carlo was expected to result in a more efficient sampling process.</p>
 <p>Under the mentorship of Tamás K. Papp, I completed a major revision of Bayesian estimation methods using Indirect Inference &#40;II&#41; and Hamiltonian Monte Carlo. I also got familiar with using git, opening issues, creating a repository among others.</p>
@@ -117,8 +117,7 @@ end
 "second auxiliary regression y, X, meant to capture levels"
 function yX2(zs, K)
     lag(zs, 0, K), hcat(ones(eltype(zs), length(zs)-K), lag_matrix(zs, 1:K, K))
-end
-</code></pre> The AR&#40;2&#41; process of the first differences can be summarized by:</p>
+end</code></pre> The AR&#40;2&#41; process of the first differences can be summarized by:</p>
 <p>Given a series Y, it is the first difference of the first difference. The so called &quot;change in the change&quot; of Y at time t. The second difference of a discrete function can be interpreted as the second derivative of a continuous function, which is the &quot;acceleration&quot; of the function at a point in time t. In this model, we want to capture the &quot;acceleration&quot; of the logarithm of return.</p>
 <p>The AR&#40;2&#41; process of the original variables is needed to capture the effect of \(\rho\). It turned out that the impact of ρ was rather weak in the AR&#40;2&#41; process of the first differences . That is why we need a second auxiliary model.</p>
 <p>I will now describe the required steps for the estimation of the parameters of interest in the stochastic volatility model with the Dynamic Hamiltonian Monte Carlo method. First we need a callable Julia object which gives back the logdensity and the gradient in DiffResult type. After that, we write a function that computes the density, then we calculate its gradient using the ForwardDiff package in a wrapper function.</p>
@@ -131,8 +130,7 @@ using StatsBase
 using Base.Test
 using ContinuousTransformations
 using DiffWrappers
-import Distributions: Uniform, InverseGamma
-</code></pre>
+import Distributions: Uniform, InverseGamma</code></pre>
 <ul>
 <li><p>First, we define a structure. This structure should contain the observed data, the priors, the shocks and the transformation performed on the parameters, but the components may vary depending on the estimated model.</p>
 </li>
@@ -150,9 +148,7 @@ import Distributions: Uniform, InverseGamma
     ν::Vector{T}
     "Transformations cached"
     transformation::Ttrans
-end
-
-</code></pre> After specifying the data generating function and a couple of facilitator and additional functions for the particular model &#40;whole module can be found in <em>src</em> folder&#41;, we can make the model structure callable, returning the log density. The logjac is needed because of the transformation we make on the parameters.</p>
+end</code></pre> After specifying the data generating function and a couple of facilitator and additional functions for the particular model &#40;whole module can be found in <em>src</em> folder&#41;, we can make the model structure callable, returning the log density. The logjac is needed because of the transformation we make on the parameters.</p>
 <pre><code class="language-julia">function (pp::StochasticVolatility)(θ)
     @unpack ys, prior_ρ, prior_σ, ν, ϵ, transformation = pp
     ρ, σ = transformation(θ)
@@ -174,8 +170,7 @@ end
     y₂, X₂ = yX2(ys, 2)
     log_likelihood2 = sum(logpdf.(Normal(0, √v₂), y₂ - X₂ * β₂))
     logprior + log_likelihood1 + log_likelihood2 + logjac(transformation, θ)
-end
-</code></pre> We need the transformations because the parameters are in the proper subset of \(\Re^{n}\), but we want to use \(\Re^{n}\). The ContinuousTransformation package is used for the transformations. We save the transformations such that the callable object stays type-stable which makes the process faster.</p>
+end</code></pre> We need the transformations because the parameters are in the proper subset of \(\Re^{n}\), but we want to use \(\Re^{n}\). The ContinuousTransformation package is used for the transformations. We save the transformations such that the callable object stays type-stable which makes the process faster.</p>
 \(\nu\) and \(\epsilon\) are random variables which we use after the transformation to simulate observation points. This way the simulated variables are continuous in the parameters and the posterior is differentiable.</p>
 <p>Given the defined functions, we can now start the estimation and sampling process:</p>
 <pre><code class="language-julia">RNG = Base.Random.GLOBAL_RNG
@@ -190,8 +185,7 @@ model = StochasticVolatility(y, Uniform(-1, 1), InverseGamma(1, 1), 10000)
 # wrap for gradient calculations
 fgw = ForwardGradientWrapper(model, θ₀)
 # sampling
-sample, tuned_sampler = NUTS_tune_and_mcmc(RNG, fgw, 5000; q = θ₀)
-</code></pre>
+sample, tuned_sampler = NUTS_tune_and_mcmc(RNG, fgw, 5000; q = θ₀)</code></pre>
 <p>The following graphs show the results for the parameters:</p>
 <p><img src="/assets/images/blog/2017-09-19-Hamiltonian-Indirect-Inference/rho_plot.png" alt="rho_plot" /></p>
 <p><img src="/assets/images/blog/2017-09-19-Hamiltonian-Indirect-Inference/sigma_plot.png" alt="sigma_plot" /></p>
@@ -220,8 +214,7 @@ sample, tuned_sampler = NUTS_tune_and_mcmc(RNG, fgw, 5000; q = θ₀)
         xs[i] = (i == 1) ? νs[1]*σ*(1 - ρ^2)^(-0.5) : (ρ*xs[i-1] + σ*νs[i])
     end
     xs + log.(ϵs) + 1.27
-end
-</code></pre>
+end</code></pre>
 <ul>
 <li><p>This is type-stable</p>
 </li>
@@ -235,8 +228,7 @@ end
         xs[i] = (i == 1) ? x₀ : (ρ*xs[i-1] + σ*νs[i])
     end
     xs + log.(ϵs) + 1.27
-end
-</code></pre>
+end</code></pre>
 <h2 id="future_work"><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#future_work">Future work</a></h2>
 <ul>
 <li><p>More involved models</p>

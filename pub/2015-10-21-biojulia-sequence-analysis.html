@@ -116,15 +116,13 @@ julia> sort!(array)
  0x02
  0x02
  0x03
- 0x03
-</code></pre>
+ 0x03</code></pre>
 <p>And the memory footprint of <code>IntArray</code> is much smaller:</p>
 <pre><code class="language-julia">julia> sizeof(IntVector{2,UInt8}(1_000_000))
 250000
 
 julia> sizeof(Vector{UInt8}(1_000_000))
-1000000
-</code></pre>
+1000000</code></pre>
 <p>Since packing and unpacking integers in a buffer require additional operations, there are overheads in operations and <code>IntArray</code> is often slower than <code>Array</code>. I&#39;ve tried to keep this discrepancy as small as possible, but the <code>IntArray</code> is about 4-5 times slower when sorting it:</p>
 <pre><code class="language-julia">julia> array = rand(0x00:0x03, 2^24);
 
@@ -134,8 +132,7 @@ julia> sort(array); @time sort(array);
 julia> iarray = IntVector{2}(array);
 
 julia> sort(iarray); @time sort(iarray);
-  2.290878 seconds (18 allocations: 4.001 MB)
-</code></pre>
+  2.290878 seconds (18 allocations: 4.001 MB)</code></pre>
 <p>If you have a great idea to improve the performance, please let me know&#33;</p>
 <h2 id="indexablebitvectorsjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#indexablebitvectorsjl">IndexableBitVectors.jl</a></h2>
 <p>The next package is <a href="https://github.com/BioJulia/IndexableBitVectors.jl">IndexableBitVectors.jl</a>. You must be familiar with the <code>BitVector</code> type in the standard library; types defined in my package is a static but indexable version of it. Here &quot;indexable&quot; means that a query to ask the number of bits between an arbitrary range can be answered <strong>in constant time</strong>. If you are already familiar with <a href="https://en.wikipedia.org/wiki/Succinct_data_structure">succinct data structures</a>, you may know this is an important building block of other succinct data structures like wavelet trees, LOUDS, etcetera.</p>
@@ -165,15 +162,13 @@ julia> rank1(sbv, 2^29); @time rank1(sbv, 2^29);  # much faster!
 julia> rrr = RRR(bv);
 
 julia> rank1(rrr, 2^29); @time rank1(rrr, 2^29);  # much faster, too!
-  0.000004 seconds (6 allocations: 192 bytes)
-</code></pre>
+  0.000004 seconds (6 allocations: 192 bytes)</code></pre>
 <p>The <code>select1&#40;bv, j&#41;</code> query is also useful in many cases, which locates the <code>j</code>-th 1 bit in the bit vector <code>bv</code>.  For example, if a set of positive integers is represented in this bit vector, you can efficiently query the <code>j</code>-th smallest member in the set.</p>
 <p>Let&#39;s see the internal representation of <code>SucVector</code> to understand the magic. A bit vector is separated into large blocks:</p>
 <pre><code class="language-julia">type SucVector <: AbstractIndexableBitVector
     blocks::Vector{Block}
     len::Int
-end
-</code></pre>
+end</code></pre>
 <p>Each large block contains 256 bits and consists of four small blocks which contain 64 bits respectively, a large block stores <em>global</em> 1s&#39; count up to the starting position of it and a small block stores <em>local</em> 1s&#39; count staring from the beginning position of its parent large block.  Bits itself are stored in four bit chunks corresponding to small blocks:</p>
 <pre><code class="language-julia">immutable Block
     # large block
@@ -184,8 +179,7 @@ end
     smalls::NTuple{4,UInt8}
     # bit chunks (64bits × 4 = 256bits)
     chunks::NTuple{4,UInt64}
-end
-</code></pre>
+end</code></pre>
 <p><img src="/assets/images/blog/2015-10-03-sequence-analysis/sucvector.png" alt="Block" /></p>
 <p>Since the bit count of the first small block is always zero, we can exploit this space to extend the cache of the large block &#40;red frame&#41;.  When running the <code>rank1&#40;bv, i&#41;</code> query, it first picks a large and small block pair that the <code>i</code>-th bit belongs to and then adds their cached bit counts, finally counts remaining 1 bits in a chunk on the fly.</p>
 <p>As I mentioned, this data structure can be used as a building block of various data structures. The next package I&#39;m going to introduce is one of them.</p>
@@ -218,8 +212,7 @@ julia> sum(xs[1:2^15] .== 0x03)
 8171
 
 julia> rank(0x03, wm, 2^15)
-8171
-</code></pre>
+8171</code></pre>
 <p>The details of the data structure and algorithms are relatively simple but beyond the scope of this post. For people who are interested in this data structure, the paper I mentioned above and my implementation would be helpful. There are more operations that the wavelet matrix can run efficiently and those operations will be added in the future.</p>
 <h2 id="fmindexesjl"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#fmindexesjl">FMIndexes.jl</a></h2>
 <p>80&#37; of sequence analysis in bioinformatics is about sequence search, which includes pattern search, homologous gene search, genome comparison, short-read mapping, and so on.  The <a href="https://en.wikipedia.org/wiki/FM-index">FM-Index</a> is often regarded as one of the most efficient indices for full-text search, and I&#39;ve implemented it in the <a href="https://github.com/BioJulia/FMIndexes.jl">FMIndexes.jl</a> package.  Thanks to the packages I&#39;ve introduced so far, the code of it looks really simple.  For example, counting the number of occurrences of a given pattern in a text can be written as follows &#40;slightly simplified for explanatory purpose&#41;:</p>
@@ -235,14 +228,12 @@ julia> rank(0x03, wm, 2^15)
         i -= 1
     end
     return length(sp:ep)
-end
-</code></pre>
+end</code></pre>
 <p>A unique property of the FM-Index is that an index itself is just a permutation of characters of an original text and counts of characters contained in it. This permutation is called <a href="https://en.wikipedia.org/wiki/Burrows&#37;E2&#37;80&#37;93Wheeler_transform">Burrows-Wheeler transform</a> &#40;also known as BWT&#41;, and the permuted text is stored in a wavelet matrix &#40;or a wavelet tree&#41; in order to efficiently count the number of characters within a specific region.  Therefore, the space required to index a text is often smaller than that of other full-text indices &#40;actually, in practice, efficiently finding positions of a query needs auxiliary data as well&#41;. Moreover, this transform is <a href="https://en.wikipedia.org/wiki/Bijection">bijective</a>, and thus the original text can be restored from an index.</p>
 <p>Building an index for full-text search is ridiculously simple: just passing a sequence to a constructor:</p>
 <pre><code class="language-julia">julia> using FMIndexes
 
-julia> fmindex = FMIndex("abracadabra");
-</code></pre>
+julia> fmindex = FMIndex("abracadabra");</code></pre>
 <p>The <code>FMIndex</code> type supports two main queries: <code>count</code> and <code>locate</code>.  The <code>count&#40;query, index&#41;</code> query literally counts the number of occurrences of the <code>query</code> string and the <code>locate&#40;query, index&#41;</code> locates starting positions of the <code>query</code>.  In order to restore the original text, you can use the <code>restore</code> function.  Here is a simple usage:</p>
 <pre><code class="language-julia">julia> count("a", fmindex)
 5
@@ -264,8 +255,7 @@ julia> locate("abra", fmindex) |> collect
  1
 
 julia> bytestring(restore(fmindex))
-"abracadabra"
-</code></pre>
+"abracadabra"</code></pre>
 <p>As an example, for bioinformaticians, let&#39;s try several queries on a chromosome.  You also need to install the <a href="https://github.com/BioJulia/Bio.jl">Bio.jl</a> package to efficiently parse a <a href="https://en.wikipedia.org/wiki/FASTA_format">FASTA</a> file. The next script reads a chromosome from a FASTA file, build an FM-Index, and then serialize it into a file for later use &#40;I love the serializers of Julia, they are available for free&#33;&#41;:</p>
 <p><strong>index.jl</strong></p>
 <pre><code class="language-julia">using Bio.Seq
@@ -291,8 +281,7 @@ fmindex = FMIndex(encode(record.seq))
 # save it in a file
 open(string(filepath, ".index"), "w+") do io
     serialize(io, fmindex)
-end
-</code></pre>
+end</code></pre>
 <p>OK, then create an index for chromosome 22 of human &#40;you can download it from <a href="http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/">here</a>&#41;:</p>
 <pre><code class="language-julia">$ julia4 index.jl chr22.fa
 chr22: 50818468bp
@@ -301,8 +290,7 @@ $ ls -lh chr22.fa.index
 <p>After construction finished &#40;this will take several minutes&#41;, read the index in REPL:</p>
 <pre><code class="language-julia">julia> using FMIndexes
 
-julia> fmindex = open(deserialize, "chr22.fa.index");
-</code></pre>
+julia> fmindex = open(deserialize, "chr22.fa.index");</code></pre>
 <p>Now that you can execute queries to search a DNA fragment:</p>
 <pre><code class="language-julia">julia> using Bio.Seq
 
@@ -326,8 +314,7 @@ julia> locate(dna"GACTTTCACTTTCCC", fmindex) |> collect
  36253071
 
 julia> @time locate(dna"GACTTTCACTTTCCC", fmindex);  # this can be located in 32 μs!
-  0.000032 seconds (5 allocations: 192 bytes)
-</code></pre>
+  0.000032 seconds (5 allocations: 192 bytes)</code></pre>
 <p>This locus, <a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db&#61;hg38&amp;position&#61;chr22&#37;3A36253071-36253120&amp;hgsid&#61;446220019_CeC0woSUOd5ov3GLph7a6fs5Uryo">chr22:36253071</a>, is the starting position of the <em>APOL1</em> gene.</p>
 <h2 id="applications"><a href="/pub/2015-10-21-biojulia-sequence-analysis.html#applications">Applications</a></h2>
 <p>My aim of having created these packages was to prove that it is practicable to implement high-performance data structures for bioinformatics in Julia.  I&#39;m pretty sure that it is true, but it may be skeptical to others.  So, I&#39;m going to prove it by writing useful and performant applications using these packages. Now I&#39;m working on <a href="https://github.com/bicycle1885/FMM.jl">FMM.jl</a>, which aligns massive amounts of DNA fragments to a genome sequence using the FM-Index and other algorithms.  This is still a work in progress, there would be many bugs and unusual cases I should care about, but its performance is not so bad compared to other implementations.</p>

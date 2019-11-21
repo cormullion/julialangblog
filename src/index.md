@@ -38,11 +38,14 @@ This is a mirror of the official Julia blog, a playground useful when developing
 <div class="grid">
 ~~~
 
+
+[Pkg + BinaryBuilder — The Next Generation](/pub/2019-11-19-artifacts.html) 2019-11-19
+
+[Profiling tool wins and woes](/pub/2019-09-16-profilers.html) 2019-09-16
+
 [Julia的版本发布流程](/pub/2019-09-07-release-process-zh-cn.html) 2019-09-07
 
 [Julia夏季会议@Beijing & 本地化奖](/pub/2019-09-07-julia-workshop-beijing-zh_cn.html) 2019-09-07
-
-[Profiling tool wins and woes](/pub/2019-09-16-profilers.html) 2019-09-16
 
 [Julia Workshop@Beijing](/pub/2019-09-07-julia-workshop-beijing.html) 2019-09-07
 

@@ -93,8 +93,7 @@ function multitask()
     end
 end
 
-multitask()  # => 24
-</code></pre>
+multitask()  # => 24</code></pre>
 <p>In the example above, <code>x &#61; sum&#40;1, 2&#41;</code> and <code>y &#61; sum&#40;3, 4&#41;</code> will be executed in parallel on different processes. These function calls are arranged by a scheduler of ConcurrentCalls.jl and each taks is assigned to a worker process based on some heuristics. The third line inside the <code>@cc</code> macro has two function calls. Each of them will also be assigned to a worker but it never starts until the first two finish. Dependencies of tasks are handled by the scheduler and a task will not be executed until all of its arguments are finished and results are available.</p>
 <p>Execution of tasks are defined in an imperative way and so its semantics would be apparent from the code. Data dependencies are naturally expressed by arguments passed to functions.  The code below shows three examples that use a for loop to describe a job:</p>
 <pre><code class="language-julia"># independent tasks
@@ -120,8 +119,7 @@ end
         a = task3(a)
         b = task4(b)
     end
-end
-</code></pre>
+end</code></pre>
 <p>This package is still at a very early stage of development but some simple subset of Julia code can be executed in parallel. See the <a href="https://github.com/bicycle1885/ConcurrentCalls.jl#usage">README</a> page of ConcurrentCalls.jl for more examples and some caveats.</p>
 <h2 id="new_io_apis"><a href="/pub/2017-09-07-bio-parallel.html#new_io_apis">New I/O APIs</a></h2>
 <p>A difficulty of parallelizing data processing in bioinformatics is that input files are often compressed. The most common compression format, gzip, does not support either parallel decompression or splitting data into smaller chunks. Some special file formats &#40;<a href="https://github.com/BioJulia/BGZFStreams.jl">BGZF</a> for example&#41; can support parallel decompression and chunking but gzip is still slow.</p>

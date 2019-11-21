@@ -64,7 +64,7 @@
 <div class="jd-content">
 <p>Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn&#39;t have it any other way. I am thankful to the Julia community, and especially my mentor <a href="https://github.com/mikeinnes">@MikeInnes</a>, for supporting me through this. I&#39;ve learned a lot and become even more familiar with neural nets than I was before, and I learned how to do basic GPU programming, which will be incredibly useful for my academic career.</p>
 <p>The rest of this blog post will summarize my project and the work I&#39;ve done over the whole summer, remark on what work remains to be done, and conclude with a brief tutorial of how to run the code I&#39;ve written to try it out for yourself.</p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_ctc_network">Results of the CTC network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_framewise_network">Results of the framewise network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#what_remains_to_be_done">What remains to be done</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#running_the_models">Running the models</a><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#ctc_model">CTC model</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#framewise_model">Framewise model</a></li></ol></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#get_the_code">Get the code</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#references">References</a></li></ol></div>
 <h1 id="have_you_ever_wanted_your_computer_to_understand_speech"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></h1>
 <p>Speech recognition is currently in vogue among many tech companies. Google and Amazon, for example, are heavily pushing their standalone digital assistant devices, Google Home and Alexa, respectively. Without functional speech recognition, these products would be dead in the water.</p>
 <p>Unfortunately for many researchers and potential users of speech recognition, there doesn&#39;t seem to be as much documentation available for speech recognition systems as there is for image recognition, for example. The goal of this Google Summer of Code 2018 project was to contribute some speech recognition models to the <a href="https://github.com/FluxML/model-zoo">Flux model zoo</a> so that there would be some freely available models for others to work from.</p>
@@ -81,14 +81,11 @@
 <p>More information on this is available in <a href="https://maetshju.github.io/update5.html">my previous post on it</a>. Making this change caused the network to finally output label predictions for each time step of data. The labels don&#39;t necessarily always make sense, but it is at least making predictions.</p>
 <p>And this is where the speech recognition system is sitting right now. The network architecture should be implemented correctly, and the loss function would seem to be running correctly now. That is, the network runs and learns, to an extent. You can assess for yourself how well it&#39;s learning based off the example output below:</p>
 <p><strong>Textual transcription</strong></p>
-<pre><code class="language-plaintext">The reasons for this dive seemed foolish now.
-</code></pre>
+<pre><code class="language-plaintext">The reasons for this dive seemed foolish now.</code></pre>
 <p><strong>Target sequence of phones</strong></p>
-<pre><code class="language-plaintext">h# dh ix r iy z ax n z f axr dh ih s dcl d ay v s iy m dcl d f uw l ix sh epi n aw h#
-</code></pre>
+<pre><code class="language-plaintext">h# dh ix r iy z ax n z f axr dh ih s dcl d ay v s iy m dcl d f uw l ix sh epi n aw h#</code></pre>
 <p><strong>Predicted sequence of phones</strong></p>
-<pre><code class="language-plaintext">h# pau w iy bcl r iy ux z bcl b iy bcl b uw z ay n pcl p z iy n dcl d v w iy er h#
-</code></pre>
+<pre><code class="language-plaintext">h# pau w iy bcl r iy ux z bcl b iy bcl b uw z ay n pcl p z iy n dcl d v w iy er h#</code></pre>
 <p>The phone error rate for this prediction compared to the target was approximately 84&#37;. This model is obviously not ready to be added to the model zoo, as it is not performing well.</p>
 <h1 id="results_of_the_framewise_network"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_framewise_network">Results of the framewise network</a></h1>
 <p>The main task for the framewise network was to find how to efficiently train the network. In terms of recognition results, the framewise network fared much better than the CTC network. In just two epochs of training, it reached approximately <strong>53.5&#37; label prediction accuracy on the test set</strong>. Obviously, the network should be trained longer than that to achieve similar performance as Graves &amp; Schmidhuber, but it&#39;s noteworthy that it&#39;s outperforming the CTC network even at such an early stage. The discrepancy between this network and the CTC network&#39;s performance is astounding. Even though the task of the CTC network is more difficult, it is striking, if not surprising, that allowing the network to exploit extra information in the training data grants an improvement of this magnitude.</p>
@@ -99,24 +96,19 @@
 <p>The validation loss is settling at a suboptimal level, even though the training loss continues to decrease. I am unsure at this juncture what the cause of this behavior may be, since I have endeavored to hew as closely as possible to the implementation details given by Zhang et al. I don&#39;t believe it is in the CTC function since I have tested the CTC loss function several times against hand-worked solutions and seen it produce correct results; similarly, the gradients it provided allowed the network to fit one training example to a near-zero level of loss, so it would seem the function is providing a loss signal reliable enough to minimize the loss. It is possible that how I called the backpropagation needs to be investigated to see if the loss values from within a batch were being composed properly.</p>
 <h1 id="running_the_models"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#running_the_models">Running the models</a></h1>
 <p>Running the training procedure for the models should be straightforward. Make sure that the WAV, Flux, CuArrays, JLD, and BSON packages are installed. As well, install <a href="https://github.com/maetshju/MFCC.jl">the fork I&#39;ve made of the MFCC package</a> &#40;which only updates one line to make a function run on Julia 0.6&#41;. Start by cloning the Git repository for the project:</p>
-<pre><code class="language-bash">$> git clone https://github.com/maetshju/gsoc2018.git
-</code></pre>
+<pre><code class="language-bash">$> git clone https://github.com/maetshju/gsoc2018.git</code></pre>
 <p>The user will need to download the TIMIT speech corpus from the Linguistic Data Consortium, as I discussed in the first section of <a href="https://maetshju.github.io/speech-features.html">this previous blog post</a>.</p>
 <h2 id="ctc_model"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#ctc_model">CTC model</a></h2>
 <p>Navigate into the <code>speech-cnn</code> folder. To extract the data from the TIMIT corpus, use the <code>00-data.jl</code> script. More information on this script can be found in <a href="https://maetshju.github.io/speech-features.html">the blog post dedicated to it</a>.</p>
-<pre><code class="language-bash">$> julia 00-data.jl
-</code></pre>
+<pre><code class="language-bash">$> julia 00-data.jl</code></pre>
 <p>Now, to train the network, run the <code>01-speech-cnn.jl</code> script. Make sure you&#39;ve removed the <code>README.md</code> files from the data folders, if you downloaded them.</p>
-<pre><code class="language-bash">$> julia 01-speech-cnn.jl
-</code></pre>
+<pre><code class="language-bash">$> julia 01-speech-cnn.jl</code></pre>
 <p>Note that it is essentially necessary to have a GPU to train the network on because the training process is extremely slow on just the CPU. Additionally, the script calls out to the GPU implementation of the CTC algorithm, which will fail without a GPU. The script will likely take over a day to run, so come back to it later. After the script finishes, the model should be trained and ready for use in making predictions.</p>
 <h2 id="framewise_model"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#framewise_model">Framewise model</a></h2>
 <p>Navigate into the <code>speech-blstm</code> folder. To extract the data from the TIMIT corpus, use the <code>00-data.jl</code> script.</p>
-<pre><code class="language-bash">$> julia 00-data.jl
-</code></pre>
+<pre><code class="language-bash">$> julia 00-data.jl</code></pre>
 <p>Now, to train the network, run the <code>01-speech-blstm.jl</code> script. Make sure you&#39;ve removed the <code>README.md</code> files from the data folders, if you downloaded them.</p>
-<pre><code class="language-bash">$> julia 01-speech-blstm.jl
-</code></pre>
+<pre><code class="language-bash">$> julia 01-speech-blstm.jl</code></pre>
 <p>This network trains reasonably fast on the CPU, so GPU functionality was not implemented.</p>
 <h1 id="get_the_code"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#get_the_code">Get the code</a></h1>
 <p>The code written during this project may be found <a href="https://github.com/maetshju/gsoc2018">on my GitHub</a>. There are also several pull requests that were made to contribute code to the larger package ecosystem:</p>

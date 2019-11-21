@@ -61,14 +61,13 @@
 
 <div class="jd-content">
 <p>Hi&#33; Today we all got a new member to the DiffEq family. Say hi to our own <a href="https://github.com/DiffEqBot">DiffEqBot</a> - A bot which helps run benchmarks and compares with the current master of a given package. It also generates and stores the Reports generated in a <a href="https://github.com/DiffEqBot/Reports">repository</a>. What&#39;s special about this is that it is completely stateless &#40;no databases involved at all, just juggling between repositories&#33;&#41; and it has no exposed public URLs. Even though highly inspired by Nanosoldier, this has a completely unique workflow.</p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2019-06-18-diffeqbot.html#how_do_you_make_it_work">How do you make it work?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#how_does_diffeqbot_work_internally">How does DiffEqBot work internally?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#configuring_the_bot">Configuring the Bot</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#access_control_and_security">Access Control and Security</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#shortcomings_and_road_ahead">Shortcomings and Road ahead</a></li></ol></div>
 <h2 id="how_do_you_make_it_work"><a href="/pub/2019-06-18-diffeqbot.html#how_do_you_make_it_work">How do you make it work?</a></h2>
 <p>So what all you need to do is call <code>@DiffEqBot runbenchmarks</code> in a comment in a PR of a JuliaDiffEq repository and it will do all the work for you.  It will benchmark your pull request against the current master and post the link of report when the job gets completed. Found a bug in PR and now you don&#39;t need to complete previous job? Just comment <code>@DiffEqBot abort</code> and it won&#39;t run now. You also need to maintain two folders <code>diagrams</code> &#40;For diagrams generation of the report&#41; and <code>benchmark</code>&#40;for comparing the results with master&#41; &#40;like <code>test</code> folder&#41; in the root of your repository. <code>benchmark</code> folder should have <code>benchmark/runbenchmarks.jl</code> &#40;it uses the package <code>PkgBenchmark</code>&#41; and <code>diagrams</code> should have <code>diagrams/diagrams.jl</code>. You can store <code>REQUIRE</code>/<code>Project.toml</code> in the <code>diagrams</code> folder to define the dependencies specifically for <code>diagrams</code> generation.</p>
 <p>For collecting diagrams, all you have to do is to make a dictionary called <code>DIAGRAMS</code> and save all the plot references in that dictionary. For eg -</p>
 <pre><code class="language-julia">DIAGRAMS = Dict()
 sol = solve(prob, Tsit5())
-DIAGRAMS["Fig1"] = plot(sol)
-</code></pre>
+DIAGRAMS["Fig1"] = plot(sol)</code></pre>
 <p>Right now, <code>DIAGRAMS</code> cannot be a recursive dictionary, i.e. an element of the dictionary can only be a reference to the plot.</p>
 <h2 id="how_does_diffeqbot_work_internally"><a href="/pub/2019-06-18-diffeqbot.html#how_does_diffeqbot_work_internally">How does DiffEqBot work internally?</a></h2>
 <p>DiffEqBot works by jumping accross many repositories and it has been all possible due to awesome APIs both GitHub and Gitlab has provided us with&#33; I will explain the workflow of DiffEqBot in the steps it take to get a particular job done -</p>
@@ -99,8 +98,7 @@ DIAGRAMS["Fig1"] = plot(sol)
 failed_job:
   script:
     - curl "http://endpoint_to_tell_that_report_failed?repo=${repo}&pr=${pr}&commit=${commit}"
-  when: on_failure
-</code></pre>
+  when: on_failure</code></pre>
 <p><img src="https://i.imgur.com/ORRPWx7.jpg" alt="" /></p>
 <ol start="4">
 <li><p>As soon as we make this commit on the <code>BenchmarkingRepo</code> on the branch, the Gitlab CI detects that this pushed branch has a config file in it and it goes wild. It knows now that it needs to run this script&#33; It looks for available Gitlab Runners. We don&#39;t use shared runner as they are not suitable for benchmarking jobs. We have our own dedicated Gitlab Runner for this purpose.</p>
@@ -143,8 +141,7 @@ failed_job:
     {
       "access_token"        : "access_token_of_bot_account_gitlab"
     }
-}
-</code></pre>
+}</code></pre>
 <ul>
 <li><p><code>admin</code> -  This is the admin and maintainer of the bot. Bot will ping this person in case of any problem.</p>
 </li>

@@ -64,59 +64,48 @@
 <div class="jd-content">
 <p><img src="/assets/images/blog/2017-03-14-piday/pi.png" alt="pi" /> <sup id="fnref:credit"><a href="/pub/2017-03-14-piday.html#fndef:credit" class="fnref">[1]</a></sup>
 <p><em>This post is available as a Jupyter notebook <a href="https://github.com/simonbyrne/Pi.jl/blob/master/pi.ipynb">here</a></em></p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></li><li><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></li><li><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a><ol><li><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></li><li><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a><ol><li><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></li><li><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></li></ol></div>
 <h2 id="pi_in_julia"><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></h2>
 <p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Like most technical languages, Julia provides a variable constant for &pi;. However Julia&#39;s handling is a bit special.</p>
 <pre><code class="language-julia">pi
 
-π = 3.1415926535897...
-</code></pre>
+π = 3.1415926535897...</code></pre>
 <p>It can also be accessed via the unicode symbol &#40;you can get it at the REPL or in a notebook via the TeX completion <code>\pi</code> followed by a tab&#41;</p>
 <pre><code class="language-julia">π
 
-π = 3.1415926535897...
-
-</code></pre>
+π = 3.1415926535897...</code></pre>
 <p>You&#39;ll notice that it doesn&#39;t print like an ordinary floating point number: that&#39;s because it isn&#39;t one.</p>
 <pre><code class="language-julia">typeof(pi)
 
-Irrational{:π}
-</code></pre>
+Irrational{:π}</code></pre>
 &pi; and a few other irrational constants are instead stored as special <code>Irrational</code> values, rather than being rounded to <code>Float64</code>. These act like ordinary numeric values, except that they can are converted automatically to any floating point type without any intermediate rounding:</p>
 <pre><code class="language-julia">1 + pi # integers are promoted to Float64 by default
 
-4.141592653589793
-</code></pre>
+4.141592653589793</code></pre>
 <pre><code class="language-julia">Float32(1) + pi # Float32
 
-4.141593f0
-</code></pre>
+4.141593f0</code></pre>
 <p>This is particularly useful for use with arbitrary-precision <code>BigFloat</code>s, as &pi; can be evaluated to full precision &#40;rather than be truncated to <code>Float64</code> and converted back&#41;.</p>
 <pre><code class="language-julia">BigFloat(1) + pi # 256 bits by default
 
-4.141592653589793238462643383279502884197169399375105820974944592307816406286198
-</code></pre>
+4.141592653589793238462643383279502884197169399375105820974944592307816406286198</code></pre>
 <p>If &pi; were stored as a <code>Float64</code>, we would instead get</p>
 <pre><code class="language-julia">BigFloat(1) + Float64(pi)
 
-4.141592653589793115997963468544185161590576171875000000000000000000000000000000
-
-</code></pre>
+4.141592653589793115997963468544185161590576171875000000000000000000000000000000</code></pre>
 <p>In fact <code>BigFloat</code> &#40;which uses the <a href="http://www.mpfr.org">MPFR</a> library&#41; will compute &pi; on demand to the current precision, which is set via <code>setprecision</code>. This provides an easy way to get its digits:</p>
 <pre><code class="language-julia"># to 1024 bits
 setprecision(BigFloat, 1024) do
     BigFloat(pi)
 end
 
-3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724586997
-</code></pre>
+3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724586997</code></pre>
 <p>The last few printed digits may be incorrect due to the conversion from the internal binary format of <code>BigFloat</code> to the decimal representation used for printing. This is just a presentation issue, however – the internal binary representation is correctly rounded to the last bit.</p>
 <p>Another neat property of <code>Irrational</code>s is that inequalities are correct:</p>
 <pre><code class="language-julia">Float64(pi) < pi < nextfloat(Float64(pi))
 
-true
-</code></pre>
+true</code></pre>
 <h2 id="pi_via_inline_assembly_instructions"><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></h2>
 <p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Julia provides a very low-level <code>llvmcall</code> interface, which allows the user to directly write <a href="http://llvm.org/docs/LangRef.html">LLVM intermediate representation</a>, including the use of inline assembly. The following snippet calls the <code>fldpi</code> instruction &#40;&quot;<strong>f</strong>loating point <strong>l</strong>oa<strong>d</strong> <strong>pi</strong>&quot;&#41; which loads the constant &pi; onto the floating point register stack &#40;this works only on x86 and x86_64 architectures&#41;</p>
@@ -127,13 +116,10 @@ true
     Float64, Tuple{})
 end
 
-asm_pi (generic function with 1 method)
-</code></pre>
+asm_pi (generic function with 1 method)</code></pre>
 <pre><code class="language-julia">asm_pi()
 
-3.141592653589793
-
-</code></pre>
+3.141592653589793</code></pre>
 <p>We can look at the actual resulting code that is generated:</p>
 <pre><code class="language-julia">@code_native asm_pi()
 
@@ -146,9 +132,7 @@ asm_pi (generic function with 1 method)
     	fstpl	-8(%rbp)
     	movsd	-8(%rbp), %xmm0         ## xmm0 = mem[0],zero
     	popq	%rbp
-    	retq
-
-</code></pre>
+    	retq</code></pre>
 <p>If you&#39;re wondering what the rest of these instructions are doing:</p>
 <ol>
 <li><p>the <code>pushq</code> and <code>movq</code> adds to the <a href="https://en.wikipedia.org/wiki/Call_stack">call stack frame</a>.</p>
@@ -175,8 +159,7 @@ asm_pi (generic function with 1 method)
 <h2 id="pi_using_a_taylor_series_expansions"><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a></h2>
 <p>by <a href="https://github.com/lbenet">Luis Benet</a>, Instituto de Ciencias Físicas, Universidad Nacional Autónoma de México &#40;UNAM&#41;&#41;</p>
 <p>This will demonstrate how to evaluate &pi; using various Taylor series expansions via the <a href="https://github.com/JuliaDiff/TaylorSeries.jl">TaylorSeries.jl</a> package.</p>
-<pre><code class="language-julia">using TaylorSeries
-</code></pre>
+<pre><code class="language-julia">using TaylorSeries</code></pre>
 <h3 id="madhavas_formula"><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></h3>
 <p>One of the standard trigonmetric identities is</p>
 \[ \tan\left( \frac{\pi}{6} \right) = \frac{1}{\sqrt{3}}. \]
@@ -185,30 +168,24 @@ asm_pi (generic function with 1 method)
 <pre><code class="language-julia">series1 = 6atan( Taylor1(BigFloat, 37) )
 convert(Taylor1{Rational{BigInt}},series1)
 
-6//1 t - 2//1 t³ + 6//5 t⁵ - 6//7 t⁷ + 2//3 t⁹ - 6//11 t¹¹ + 6//13 t¹³ - 2//5 t¹⁵ + 6//17 t¹⁷ - 6//19 t¹⁹ + 2//7 t²¹ - 6//23 t²³ + 6//25 t²⁵ - 2//9 t²⁷ + 6//29 t²⁹ - 6//31 t³¹ + 2//11 t³³ - 6//35 t³⁵ + 6//37 t³⁷ + 𝒪(t³⁸)
-
-</code></pre>
+6//1 t - 2//1 t³ + 6//5 t⁵ - 6//7 t⁷ + 2//3 t⁹ - 6//11 t¹¹ + 6//13 t¹³ - 2//5 t¹⁵ + 6//17 t¹⁷ - 6//19 t¹⁹ + 2//7 t²¹ - 6//23 t²³ + 6//25 t²⁵ - 2//9 t²⁷ + 6//29 t²⁹ - 6//31 t³¹ + 2//11 t³³ - 6//35 t³⁵ + 6//37 t³⁷ + 𝒪(t³⁸)</code></pre>
 <p>Note that the series above has only odd powers, so we will be using in this case 18 coefficients.</p>
 <p>Evaluating that expression in \(1/\sqrt{3}\) we get</p>
 <pre><code class="language-julia">pi_approx1 = evaluate(series1, 1/sqrt(big(3)))
 
-3.141592653647826046431202390582141253830948237428790668441592864548346569098516
-</code></pre>
+3.141592653647826046431202390582141253830948237428790668441592864548346569098516</code></pre>
 <p>Then, the 37th order Taylor expansion yields a value which differs from \(\pi\) in:</p>
 <pre><code class="language-julia">abs(pi - pi_approx1)
 
-5.803280796855900730263836963377883805368484746664827224053016281231814650118929e-11
-</code></pre>
+5.803280796855900730263836963377883805368484746664827224053016281231814650118929e-11</code></pre>
 <p>To obtain more accurate results, we may simply increase the order of the expansion:</p>
 <pre><code class="language-julia">series2 = 6atan( Taylor1(BigFloat,99) ) # 49 coefficients of the series
 pi_approx2 = evaluate(series2, 1/sqrt(BigInt(3)))
 
-3.141592653589793238462643347272152237127662423839333289949470742535834074912581
-</code></pre>
+3.141592653589793238462643347272152237127662423839333289949470742535834074912581</code></pre>
 <pre><code class="language-julia">abs(pi - pi_approx2)
 
-3.600735064706950697553577253102547384977198233137361734413175534929622111373249e-26
-</code></pre>
+3.600735064706950697553577253102547384977198233137361734413175534929622111373249e-26</code></pre>
 <p>This formulation is one of the <a href="https://en.wikipedia.org/wiki/Madhava_series#Another_formula_for_the_circumference_of_a_circle"><em>Madhava</em> or <em>Gregory–Leibniz series</em></a>:</p>
 \[\pi = 6 \sum_{n=0}^{\infty} (-1)^n \frac{(1/\sqrt{3})^{2n+1}}{2n+1}.\]
 <h3 id="machins_approach"><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></h3>
@@ -217,11 +194,9 @@ pi_approx2 = evaluate(series2, 1/sqrt(BigInt(3)))
 <p>Following what we did above, using again a 37th Taylor expansion:</p>
 <pre><code class="language-julia">ser = atan( Taylor1(BigFloat, 37) )
 pi_approx3 = 4*( 4*evaluate(ser, 1/big(5)) - evaluate(ser, 1/big(239)) )
-3.141592653589793238462643383496777424642594661632063407072684671069773618535135
-</code></pre>
+3.141592653589793238462643383496777424642594661632063407072684671069773618535135</code></pre>
 <pre><code class="language-julia">abs(pi - pi_approx3)
-2.17274540445425262256957586097740078761957212248936631045983596428448951876822e-28
-</code></pre>
+2.17274540445425262256957586097740078761957212248936631045983596428448951876822e-28</code></pre>
 <h2 id="finding_guaranteed_bounds_on_pi"><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a></h2>
 <p>by <a href="http://sistemas.fciencias.unam.mx/~dsanders/">David P. Sanders</a>,  Department of Physics, Faculty of Sciences, National University of Mexico &#40;UNAM&#41;</p>
 <h3 id="using_standard_floating-point_arithmetic"><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></h3>
@@ -252,9 +227,7 @@ function reverse_sum(N, T=Float64)
     total
 end
 
-reverse_sum (generic function with 2 methods)
-
-</code></pre>
+reverse_sum (generic function with 2 methods)</code></pre>
 <p>To find <em>rigorous</em> bounds for \(S_N\), we use &quot;directed rounding&quot;, that is, we round downwards for the lower bound and  upwards for the upper bound:</p>
 <pre><code class="language-julia">N = 10^6
 
@@ -270,9 +243,7 @@ upperbound_S_N =
 
 (lowerbound_S_N, upperbound_S_N)
 
-(1.6449330667377557,1.644933066959796)
-
-</code></pre>
+(1.6449330667377557,1.644933066959796)</code></pre>
 <p>We incorporate the respective bound on \(T_N\) to obtain the bounds on \(S\), and hence on \(\pi\):</p>
 <pre><code class="language-julia">N = 10^6
 
@@ -290,18 +261,14 @@ upper_π =
 
 (lower_π, upper_π, lowerbound_S_N)
 
-(3.1415926534833463,3.1415926536963346,1.6449330667377557)
-</code></pre>
+(3.1415926534833463,3.1415926536963346,1.6449330667377557)</code></pre>
 <pre><code class="language-julia">upper_π - lower_π
 
-2.1298829366855898e-10
-
-</code></pre>
+2.1298829366855898e-10</code></pre>
 <p>We may check that the true value of \(\pi\) is indeed contained in the interval:</p>
 <pre><code class="language-julia">lower_π < pi < upper_π
 
-true
-</code></pre>
+true</code></pre>
 <p>Summing in the opposite direction turns out to give a more accurate answer:</p>
 <pre><code class="language-julia">N = 10^6
 
@@ -318,69 +285,54 @@ upper_π =
     end
 
 (lower_π, upper_π)
-(3.1415926535893144,3.141592653590272)
-
-</code></pre>
+(3.1415926535893144,3.141592653590272)</code></pre>
 <pre><code class="language-julia">upper_π - lower_π
 
 9.57456336436735e-13
 
 lower_π < pi < upper_π
-true
-</code></pre>
+true</code></pre>
 <p>In principle, we could attain arbitrarily good precision with higher-precision <code>BigFloat</code>s, but the result is hampered by the slow convergence of the series.</p>
 <h2 id="summing_a_series_using_interval_arithmetic"><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></h2>
 <p>We repeat the calculation using <em>interval arithmetic</em>, provided by the <a href="https://github.com/dpsanders/ValidatedNumerics.jl">ValidatedNumerics.jl</a> package.</p>
-<pre><code class="language-julia">using ValidatedNumerics
-</code></pre>
+<pre><code class="language-julia">using ValidatedNumerics</code></pre>
 <pre><code class="language-julia">setdisplay(:standard)  # abbreviated display of intervals
-6
-</code></pre>
+6</code></pre>
 <pre><code class="language-julia">N = 10000
 S = forward_sum(N, Interval)
 S += 1/(N+1) .. 1/N  # interval bound on the remainder of the series
 π_interval = √(6S)
 
-[3.14159, 3.1416]
-
-</code></pre>
+[3.14159, 3.1416]</code></pre>
 <p>Here we used an abbreviated display for the interval. Let&#39;s see the whole thing:</p>
 <pre><code class="language-julia">setdisplay(:full)
 π_interval
 
-Interval(3.1415926488148807, 3.141592658365341)
-</code></pre>
+Interval(3.1415926488148807, 3.141592658365341)</code></pre>
 <p>Its diameter &#40;width&#41; is</p>
 <pre><code class="language-julia">diam(π_interval)
-9.550460422502738e-9
-</code></pre>
+9.550460422502738e-9</code></pre>
 <p>Thus, the result is correct to approximately 8 decimals.</p>
 <p>In this calculation, we used the fact that arithmetic operations of intervals with numbers automatically promote the numbers to an interval:</p>
 <pre><code class="language-julia">setdisplay(:full)  # full interval display
 Interval(0) + 1/3^2
 
-Interval(0.1111111111111111, 0.11111111111111112)
-</code></pre>
+Interval(0.1111111111111111, 0.11111111111111112)</code></pre>
 <p>This is an interval containing the true real number \(1/9\) &#40;written <code>1//9</code> in Julia&#41;:</p>
 <pre><code class="language-julia">1//9 ∈ convert(Interval{Float64}, 1/3^2)
 
-true
-</code></pre>
+true</code></pre>
 <p>Finally, we can check that the true value of \(\pi\) is indeed inside our interval:</p>
 <pre><code class="language-julia">pi ∈ π_interval
 
-true
-</code></pre>
+true</code></pre>
 <h2 id="calculating_an_area"><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></h2>
 <p>Although the calculation above is simple, the derivation of the series itself is not. In this section, we will use a more natural way to calculate \(\pi\), namely that the area of a circle of radius \(r\) is \(A(r) = \pi r^2\). We will calculate the area of one quadrant of a circle of radius \(r=2\), which is equal to \(\pi\):</p>
-<pre><code class="language-julia">using Plots; gr();
-</code></pre>
+<pre><code class="language-julia">using Plots; gr();</code></pre>
 <pre><code class="language-julia">f(x) = √(4 - x^2)
 
-f (generic function with 1 method)
-</code></pre>
-<pre><code class="language-julia">plot(f, 0, 2, aspect_ratio=:equal, fill=(0, :orange), alpha=0.2, label="")
-</code></pre>
+f (generic function with 1 method)</code></pre>
+<pre><code class="language-julia">plot(f, 0, 2, aspect_ratio=:equal, fill=(0, :orange), alpha=0.2, label="")</code></pre>
 
 <?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 600 400">
@@ -510,17 +462,14 @@ intervals = make_intervals()
  Interval(1.2, 1.4000000000000001)                
  Interval(1.4, 1.6)                               
  Interval(1.5999999999999999, 1.8)                
- Interval(1.7999999999999998, 2.0)                
-</code></pre>
+ Interval(1.7999999999999998, 2.0)</code></pre>
 <p>Given one of those intervals, we evaluate the function of interest:</p>
 <pre><code class="language-julia">II = intervals[1]
 
-Interval(0.0, 0.2)
-</code></pre>
+Interval(0.0, 0.2)</code></pre>
 <pre><code class="language-julia">f(II)
 
-Interval(1.9899748742132397, 2.0)
-</code></pre>
+Interval(1.9899748742132397, 2.0)</code></pre>
 <p>The result is an interval that is <strong>guaranteed to contain</strong> the true range of the function \(f\) over that interval. So the lower and upper bounds of the intervals may be used as lower and upper bounds of the height of the box in a Riemann integral:</p>
 <pre><code class="language-julia">intervals = make_intervals(30)
 
@@ -534,8 +483,7 @@ end
 
 plot!(f, 0, 2)
 
-p
-</code></pre>
+p</code></pre>
 
 <?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 600 400">
@@ -1042,8 +990,7 @@ intervals = make_intervals(N)
 width = 2/N
 width * sum(√(4 - X^2) for X in intervals)
 
-Interval(3.0284648797549782, 3.2284648797549846)
-</code></pre>
+Interval(3.0284648797549782, 3.2284648797549846)</code></pre>
 <p>As we increase the number of sub-intervals, the approximation gets better and better:</p>
 <pre><code class="language-julia">setdisplay(:standard, sigfigs=5)
 
@@ -1075,8 +1022,7 @@ N 	 area interval 	 	 diameter
 850 	 [3.1391, 3.1439] 	 0.004705882353203794
 900 	 [3.1393, 3.1438] 	 0.004444444444719142
 950 	 [3.1394, 3.1437] 	 0.004210526316076102
-1000 	 [3.1395, 3.1436] 	 0.004000000000294435
-</code></pre>
+1000 	 [3.1395, 3.1436] 	 0.004000000000294435</code></pre>
 <p>&#91;credit&#93; Image courtesy of <a href="https://github.com/cormullion">Cormullion</a>, code <a href="https://gist.github.com/cormullion/e979d819e478da73280faaeb67490888">here</a>.</p>
 
 <div class="page-foot">

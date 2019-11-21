@@ -64,7 +64,7 @@
 <div class="jd-content">
 <p>This project is an attempt towards building a PDE solver for JuliaDiffEq using the <a href="https://en.wikipedia.org/wiki/Finite_difference_method">Finite Difference Method</a>&#40;FDM&#41; approach. We take up the FDM approach instead of <a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a> and <a href="https://en.wikipedia.org/wiki/Finite_volume_method">FVM</a> as there are many toolboxes which already exist for FEM and FVM but not for FDM. Also, there are many use cases where the geometry of the problem is simple enough to be solved by FDM methods which are much faster due to their being able to avoid the bottleneck step of matrix multiplication by using Linear transformations to mimic the effect of a matrix multiplication. Since matrix multiplication basically transforms a vector element to a weighted sum of the neighbouring elements, this can be easily acheived using a special function which acts on the vector in optimal \(\mathcal{O}(n)\) time.</p>
 <p>The result is a new package called <a href="https://github.com/JuliaDiffEq/DiffEqOperators.jl">DiffEqOperators.jl</a> which creates efficient discretizations of partial differential operators thereby converting PDEs to ODEs which can be solved efficiently by existing ODE solvers. The <code>DerivativeOperator</code> is based on central differencing schemes of approximating derivatives at a point whereas the <code>UpwindOperators</code> are based on one-sided differencing schemes where the solution is typically a wave moving in a particular direction. The package also supports a variety of boundary conditions like <a href="https://en.wikipedia.org/wiki/Dirichlet_boundary_condition">Dirichlet</a>, <a href="https://en.wikipedia.org/wiki/Neumann_boundary_condition">Neumann</a>, <a href="https://en.wikipedia.org/wiki/Periodic_boundary_conditions">Periodic</a> and the <a href="https://en.wikipedia.org/wiki/Robin_boundary_condition">Robin</a> <a href="https://en.wikipedia.org/wiki/Boundary_value_problem">boundary condition</a>.</p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#solving_the_heat_equation_using_diffeqoperators">Solving the Heat equation using DiffEqOperators</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#where_do_central_derivatives_fail">Where do central derivatives fail?</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#future_work">Future Work</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#acknowledgments">Acknowledgments</a></li></ol></div>
 <h2 id="motivation"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></h2>
 <p>The general idea of finite difference methods is to generate finite difference weights corresponding to a differential operator allowing a certain level of approximation. The time and space variable are divided to form a grid where \(h = \Delta x = \frac{1}{N+1}\) and \(x_i = ih\) for \(i = 0, 1,...,N+1\) and \(k = \Delta t = \frac{T}{M+1}\) and \(t_j = jk\) for \(j = 0, 1,...,M+1\). <br/> The discrete unknowns are scalars \(u_i^j\) for the above values of i and j, and it is hoped that \(u_i^j\) will be an approximation of \(u(x_i, t_j)\). The right-hand side of the equation is discretized by setting \(f_i^j = f(x_i, t_j)\). We also use the notation</p>
 \[ U^{j} = \begin{pmatrix}
@@ -159,16 +159,14 @@ julia> sparse(A)
 <pre><code class="language-julia">julia> using DiffEqOperators, DifferentialEquations, Plots
 julia> x = -pi : 2pi/511 : pi;
 julia> u0 = -(x - 0.5).^2 + 1/12;
-julia> A = DerivativeOperator{Float64}(2,2,2pi/511,512,:Dirichlet,:Dirichlet;BC=(u0[1],u0[end]));
-</code></pre>
+julia> A = DerivativeOperator{Float64}(2,2,2pi/511,512,:Dirichlet,:Dirichlet;BC=(u0[1],u0[end]));</code></pre>
 <p>This is the code to set-up the problem. First we define the domain which is just a plane line divided up into <code>512</code> segments. Then we define the initial condition, which is a parabolic function of the x-coordinate.</p>
 <p>Finally we initialize the <code>DerivativeOperator</code> of 2nd derivative order and 2nd approximation order. We tell the grid step value, total length of the domain and the boundary conditions at both the ends. Notice that since we are applying the Dirichlet boundary condition here, we need to tell the value at boundaries which is given in the form of a tuple as the last parameter.</p>
 <p>Now solving equation as an ODE we have:-</p>
 <pre><code class="language-julia">julia> prob1 = ODEProblem(A, u0, (0.,10.));
 julia> sol1 = solve(prob1, dense=false, tstops=0:0.01:10);
 # try to plot the solution at different time points using
-julia> plot(x, [sol1(i) for i in 0:1:10])
-</code></pre>
+julia> plot(x, [sol1(i) for i in 0:1:10])</code></pre>
 <p><img src="/assets/images/blog/2017-09-06-gsoc-derivative_operators/heat_eqn_D1.png" alt="Heat Equation" /></p>
 <p>Notice how the heat distribution &#39;flattens&#39; out with time as expected and finally tends to increase linearly from left to right end.</p>
 <h2 id="where_do_central_derivatives_fail"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#where_do_central_derivatives_fail">Where do central derivatives fail?</a></h2>

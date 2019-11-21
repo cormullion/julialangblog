@@ -66,8 +66,7 @@
     r::Uint8
     g::Uint8
     b::Uint8
-end
-</code></pre>
+end</code></pre>
 <p>Instances of this type can now be packed efficiently into arrays, using exactly 3 bytes per object. In all other respects, these objects continue to act like normal first-class objects. To see how we might use this, here is a function that converts an RGB image in standard 24-bit framebuffer format to grayscale:</p>
 <pre><code class="language-julia">function rgb2gray!(img::Array{Pixel})
     for i=1:length(img)
@@ -75,8 +74,7 @@ end
         v = uint8(0.30*p.r + 0.59*p.g + 0.11*p.b)
         img[i] = Pixel(v,v,v)
     end
-end
-</code></pre>
+end</code></pre>
 <p>This code will run blazing fast, performing no memory allocation. We have not done thorough benchmarking, but this is in fact likely to be the fastest way to write this function in Julia from now on.</p>
 <p>The key to this behavior is the new <code>immutable</code> keyword, which means instances of the type cannot be modified. At first this sounds like a mere restriction — how come I&#39;m not allowed to modify one? — but what it really means is that the object is identified with its contents, rather than its memory address. A mutable object has &quot;behavior&quot;; it changes over time, and there may be many references to the object, all of which can observe those changes. An immutable object, on the other hand, has only a value, and no time-varying behavior. Its location does not matter. It is &quot;just some bits&quot;.</p>
 <p>Julia has always had some immutable values, in the form of bits types, which are used to represent fixed-bit-width numbers. It is highly intuitive that numbers are immutable. If <code>x</code> equals 2, you might later change the value of <code>x</code>, but it is understood that the value of 2 itself does not change. The <code>immutable</code> keyword generalizes this idea to structured data types with named fields. Julia variables and containers, including arrays, are all still mutable. While a <code>Pixel</code> object itself can&#39;t change, a new <code>Pixel</code> can be written over an old one within an array, since the array is mutable.</p>
@@ -92,8 +90,7 @@ end
 </ol>
 <p>Some languages, such as C&#43;&#43; and C#, provide &quot;value types&quot;, which have many of the benefits of immutable objects. However, their behavior can be confusing. Consider code like the following:</p>
 <pre><code class="language-julia">item = lookup(collection, index)
-modify!(item)
-</code></pre>
+modify!(item)</code></pre>
 <p>The question here is whether we have modified the same <code>item</code> that is in the collection, or if we have modified a local copy. In Julia there are only two possibilities: either <code>item</code> is mutable, in which case we modified the one and only copy of it, or it is immutable, in which case modifying it is not allowed.</p>
 <ol start="3">
 <li><p>No-overhead data abstractions become possible.</p>
@@ -103,8 +100,7 @@ modify!(item)
 <pre><code class="language-julia">immutable ModInt{n} <: Integer
   k::Int
   ModInt(k) = new(mod(k,n))
-end
-</code></pre>
+end</code></pre>
 <p>Since a given <code>ModInt</code> doesn&#39;t need to exist at a particular address, it can be passed to functions, stored in arrays, and so on, as efficiently as a single <code>Int</code>, with no wrapping overhead. But, in Julia, the overhead will not <em>always</em> be zero. The <code>ModInt</code> type information will &quot;follow the data around&quot; at compile time to the extent possible, but heap-allocated wrappers will be added as needed at run time. Typically these wrappers will be short-lived; if the final destination of a <code>ModInt</code> is in a <code>ModInt</code> array, for example, the wrapper can be discarded when the value is assigned. But if the value is only used locally inside a function, there will most likely be no wrappers at all.</p>
 <ol start="4">
 <li><p>Abstractions are fully enforced. If a custom constructor is written for an immutable type, then all instances will be created by it.</p>

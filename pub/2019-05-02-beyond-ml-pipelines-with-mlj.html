@@ -71,7 +71,7 @@
   <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png"/>
 </p>
 
-
+<div class="jd-toc"><ol><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#mlj_features">MLJ features</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#learning_networks">Learning networks</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#building_a_simple_network">Building a simple network</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></li></ol></div>
 <h2 id="introduction"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></h2>
 <p><a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> is an open-source machine learning toolbox written in pure Julia. It provides a uniform interface for interacting with supervised and unsupervised learning models currently scattered in different Julia packages.</p>
 <p>Building on a earlier proof-of-concept, development began in earnest at <a href="https://www.turing.ac.uk">The Alan Turing Institute</a> in December 2018. In a short time interest grew and the project is now the Institute&#39;s most starred software repository.</p>
@@ -132,8 +132,7 @@ Xt = transform(hot, X)
 # fit a decision tree to the transformed data:
 tree_model = DecisionTreeRegressor()
 tree = machine(tree_model, Xt, y)
-fit!(tree, rows = 1:1300)
-</code></pre>
+fit!(tree, rows = 1:1300)</code></pre>
 <p>Note that a <em>model</em> in MLJ is just a struct containing hyperparameters. Wrapping a model in data delivers a <em>machine</em> struct, which will additionally record the results of training.</p>
 <p>Without a pipeline, each time we want to present new data for prediction we must first apply one-hot encoding:</p>
 <pre><code class="language-julia">Xnew = X[1301:1400,:];
@@ -143,8 +142,7 @@ yhat[1:3]
  3-element Array{Float64,1}:
   223956.9999999999
   320142.85714285733
-  161227.49999999994
-</code></pre>
+  161227.49999999994</code></pre>
 <p>To build a pipeline one simply wraps the supplied data in source nodes and repeats similar declarations, omitting calls to <code>fit&#33;</code>. The difference now is that each &quot;variable&quot; &#40;e.g., <code>Xt</code>, <code>yhat</code>&#41; is a node of our pipeline, instead of concrete data:</p>
 <pre><code class="language-julia">Xs = source(X)
 ys = source(y)
@@ -153,8 +151,7 @@ hot = machine(hot_model, Xs)
 Xt = transform(hot, Xs);
 
 tree = machine(tree_model, Xt, ys)
-yhat = predict(tree, Xt)
-</code></pre>
+yhat = predict(tree, Xt)</code></pre>
 <p>If we like, we can think of a node as <em>dynamic data</em> - &quot;data&quot; because it can be called &#40;indexed&#41; on rows, but &quot;dynamic&quot; because the result depends on the outcome of training events, which in turn depend on hyperparameter values. For example, after fitting the completed pipeline, we can make new predictions like this:</p>
 <pre><code class="language-julia">fit!(yhat, rows=1:1300)
  [ Info: Training NodalMachine @ 1…51.
@@ -168,8 +165,7 @@ yhat(Xnew)           # to predict on new data
 156-element Array{Float64,1}:
  223956.9999999999
  320142.85714285733
- ...
-</code></pre>
+ ...</code></pre>
 <h2 id="exporting_and_retraining"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></h2>
 <p>Once a pipeline like this has been built and tested on sample data, it can be exported as a stand-alone model, ready to be trained on any dataset. For details, see the MLJ <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/learning_networks/">documentation</a>. In the future, Julia macros will allow common architectures &#40;e.g., linear pipelines&#41; to be built in a couple of lines.</p>
 <p>Finally, we mention that MLJ learning networks, and their exported counterparts, are &quot;smart&quot; in the sense that changing a hyperparameter does not trigger retraining of component models upstream of the change:</p>
@@ -177,8 +173,7 @@ yhat(Xnew)           # to predict on new data
 fit!(yhat, rows=1:1300)
  [ Info: Not retraining NodalMachine @ 1…51. It is up-to-date.
  [ Info: Updating NodalMachine @ 1…17.
- Node @ 1…79 = predict(1…17, transform(1…51, 1…07))
-</code></pre>
+ Node @ 1…79 = predict(1…17, transform(1…51, 1…07))</code></pre>
 <h2 id="just_quotwrite_the_mathquot"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></h2>
 <p>Because of Julia&#39;s generic programming features, any kind of operation you would normally apply to data &#40;arithmetic, row selection, column concatenation, etc&#41; can be overloaded to work with nodes. In this way, MLJ&#39;s network-building syntax is economical, intuitive and easy to read. In this respect we have been inspired by <a href="https://julialang.org/blog/2017/12/ml&amp;pl">On Machine Learning and Programming Languages</a>.</p>
 <h2 id="invitation_to_the_community"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></h2>  We now invite the community to try out our newly registered <a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> package and provide any feedback or suggestions you may have going forward. We are also particularly interested in hearing how you would use our package, and what features it may be lacking.

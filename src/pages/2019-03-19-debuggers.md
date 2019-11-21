@@ -2,7 +2,7 @@
 @def rss = """ A Julia interpreter and debugger | The authors are pleased to announce the release of a fully-featured... """
 @def published = "19 March 2019"
 @def title = "A Julia interpreter and debugger"
-@def authors = """<a href="https://github.com/timholy">Tim Holy</a>, <a href="https://github.com/KristofferC">Kristoffer Carlsson</a>, <a href="https://github.com/pfitzseb">Sebastian Pfitzner</a>, <a href="https://github.com/Keno">Keno Fischer</a>"""  
+@def authors = """<a href="https://github.com/timholy">Tim Holy</a>, <a href="https://github.com/KristofferC">Kristoffer Carlsson</a>, <a href="https://github.com/pfitzseb">Sebastian Pfitzner</a>, <a href="https://github.com/Keno">Keno Fischer</a>"""
 @def hascode = true
 
 The authors are pleased to announce the release of a fully-featured
@@ -261,10 +261,10 @@ new debugging capabilities further accelerate Julia's rapid development,
 and make it that much more fun of a language to use.
 
 
-[CT]: https://github.com/timholy/CodeTracking.jl        
-[DB]: https://github.com/JuliaDebug/Debugger.jl         
+[CT]: https://github.com/timholy/CodeTracking.jl
+[DB]: https://github.com/JuliaDebug/Debugger.jl
 [JI]: https://github.com/JuliaDebug/JuliaInterpreter.jl
-[Juno]: http://junolab.org/                             
 [LCU]: https://github.com/JuliaDebug/LoweredCodeUtils.jl
-[RB]: https://github.com/timholy/Rebugger.jl             
-[RV]: https://github.com/timholy/Revise.jl               
+[RB]: https://github.com/timholy/Rebugger.jl
+[RV]: https://github.com/timholy/Revise.jl
+[Juno]: http://junolab.org/

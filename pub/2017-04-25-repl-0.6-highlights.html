@@ -67,13 +67,11 @@
 f (generic function with 1 method)
 
 julia> @time f();
-  0.052948 seconds (25.05 k allocations: 8.769 MiB)
-</code></pre>
+  0.052948 seconds (25.05 k allocations: 8.769 MiB)</code></pre>
 <p>If you wanted to try out this code in 0.5, you would typically copy the code into a text editor, remove the <code>julia&gt; </code> prompt, remove the output, and then finally have code that looked like:</p>
 <pre><code class="language-julia">f() = rand(10^6);
 
-@time f();
-</code></pre>
+@time f();</code></pre>
 <p>which could then be pasted back into the REPL to be executed. In 0.6, the REPL comes with a feature called <em>prompt pasting</em> by which a pasted expression starting with <code>julia&gt; </code> automatically has prompts and eventual output scrubbed before being executed. If you have a 0.6 REPL currently at hand, you can try to copy and paste the example with the prompt and output above directly into the REPL and you will see that it works in exactly the same way as if we had manually removed them.</p>
 <p>Unfortunately, for technical reasons &#40;no support for bracket pasting&#41;, this feature does not work in the standard cmd-terminal on Windows. There are, however, multiple alternative terminal emulators on Windows that do support this, e.g. <a href="https://sourceforge.net/projects/console/">Console2</a> or <a href="https://www.cygwin.com/">Cygwin</a>.</p>
 <h2 id="printing_of_stack_traces"><a href="/pub/2017-04-25-repl-0.6-highlights.html#printing_of_stack_traces">Printing of stack traces</a></h2>
@@ -86,8 +84,7 @@ julia> @time f();
 <p>For example, setting</p>
 <pre><code class="language-julia">julia> ENV["JULIA_STACKFRAME_LINEINFO_COLOR"] = :cyan;
 
-julia> ENV["JULIA_STACKFRAME_FUNCTION_COLOR"] = :yellow;
-</code></pre>
+julia> ENV["JULIA_STACKFRAME_FUNCTION_COLOR"] = :yellow;</code></pre>
 <p>and rerunning the example above yields</p>
 <p><img src="/assets/images/blog/2017-02-24-repl0.6/0.6stacktrace_conf.png" alt="Stacktrace in 0.6 with configured colors" /></p>
 <p>In addition to the visual changes to the stack trace, there is also a new interactive feature, possible now that we can refer to stack frames by number. After a stack trace has been printed, you can simply enter the number of one of the stack frames in the REPL, press <code>CTRL &#43; Q</code> and the file will be opened in an editor at the line number corresponding to that stack frame. To set the editor, use the environment variable <code>EDITOR</code>, for example <code>ENV&#91;&quot;EDITOR&quot;&#93; &#61; &quot;subl&quot;</code> for the Sublime Text editor. This can be used when you quickly want to fix a typo or just to jump around with the editor in the call stack leading up to the error. Note that it is currently not possible to open the location of a stack frame that refers to code directly evaluated in the REPL.</p>

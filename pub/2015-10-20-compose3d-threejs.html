@@ -88,8 +88,7 @@ ThreeJS.outerdiv() << (ThreeJS.initscene() <<
         ],
         ThreeJS.pointlight(3.0, 3.0, 3.0),
         ThreeJS.camera(0.0, 0.0, 10.0)
-    ])
-</code></pre>
+    ])</code></pre>
 <h3 id="making_them_interactive"><a href="/pub/2015-10-20-compose3d-threejs.html#making_them_interactive">Making them interactive</a></h3>
 <p>Currently, interactivity is broken in IJulia &#40;a side effect of the switch to Polymer 1.0, and the new sneaky DOM&#41;, so Escher is the way to go if you want to interact with your 3D scene. So an example for this can be the same scene as before, but after adding a slider and make it such that the size of the cube is controlled by the slider.</p>
 <pre><code class="language-julia">import ThreeJS
@@ -112,8 +111,7 @@ function main(window)
       ])
     end
   )
-end
-</code></pre>
+end</code></pre>
 <h3 id="you_can_also_do_animations"><a href="/pub/2015-10-20-compose3d-threejs.html#you_can_also_do_animations">You can also do animations&#33;</a></h3>
 <p>Small scale animations can also be created using Escher. Instead of using sliders to update the elements, we just update it at certain intervals using the <code>every</code> function or the <code>fpswhen</code> functions. A scene with a rotating cube can be drawn using just a couple of modifications of the above code.</p>
 <pre><code class="language-julia">import ThreeJS
@@ -139,8 +137,7 @@ function main(window)
           ThreeJS.camera(0.0, 0.0, 10.0)
       ])
     end
-end
-</code></pre>
+end</code></pre>
 <p><img src="https://gist.github.com/rohitvarkey/1d65925850198bc284f5/raw/b7dc41f2b3f869c103dcbcb79632f92397767b01/rotating_cube.gif" alt="Rotating Cube" /></p>
 <h3 id="surf_and_mesh_plots_sort_of"><a href="/pub/2015-10-20-compose3d-threejs.html#surf_and_mesh_plots_sort_of">Surf and mesh plots&#33; &#40;Sort of&#41;</a></h3>
 <p>ThreeJS has support to render parametric surfaces, which are basically the kind of surfaces drawn by a typical <code>surf</code> plot. It also has support for drawing lines like a typical <code>mesh</code> plot. Colormaps can be applied to these surfaces by passing in an array of colors to be used. Colors to be applied are calculated and chosen by ThreeJS. These come into effect when put together with materials using the <code>colorkind</code> property of <code>vertex</code>. Screenshots of such surfaces drawn by ThreeJS are shown below.</p>
@@ -163,8 +160,7 @@ function sierpinski(n)
         (Context(0.25w,0.5h,0.25d,(1/2)w,(1/2)h,(1/2)d), t)) #The top one
     end
 end
-compose(Context(-5mm,-5mm,-5mm,10mm,10mm,10mm),sierpinski(3))
-</code></pre>
+compose(Context(-5mm,-5mm,-5mm,10mm,10mm,10mm),sierpinski(3))</code></pre>
 <p>And voila&#33; You have a Sierpinski pyramid of level 3 like in the figure below.</p>
 <p><img src="https://gist.github.com/rohitvarkey/1d65925850198bc284f5/raw/d1d8e389dd5baf5420cb24c1dfdf784bc61bf217/sierpinski.png" alt="Sierpinski" /></p>
 <p>The switch to ThreeJS allows Compose3D all the advantages that comes with ThreeJS. This includes interactivity and animations&#33;</p>
@@ -186,8 +182,7 @@ compose(Context(-5mm,-5mm,-5mm,10mm,10mm,10mm),sierpinski(3))
             )
         end
     )
-end
-</code></pre>
+end</code></pre>
 <p><img src="https://gist.github.com/rohitvarkey/1d65925850198bc284f5/raw/78fefb17032a0bd9861e8497133cb6ce3876a4d4/interactive_sierpinski.gif" alt="Interactive Sierpinski" /></p>
 <p>An an example for animations, I ported the Escher boids example by Ian Dunning from 2D to 3D and a screencast of the same can be found below.</p>
 

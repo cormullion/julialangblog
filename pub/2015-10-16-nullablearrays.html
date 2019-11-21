@@ -83,15 +83,13 @@ julia> f(D);
 
 julia> @time f(D)
   0.163567 seconds (10.00 M allocations: 152.598 MB, 9.21% gc time)
-2.500102419334644e6
-</code></pre>
+2.500102419334644e6</code></pre>
 <p>Looping through and summing the elements of <code>D</code> is over twenty times slower and allocates far more memory than running the same loop over <code>A</code>:</p>
 <pre><code class="language-julia">julia> f(A);
 
 julia> @time f(A)
   0.007465 seconds (5 allocations: 176 bytes)
-2.500102419334644e6
-</code></pre>
+2.500102419334644e6</code></pre>
 <p>This is because the code generated for <code>f&#40;D&#41;</code> must assume that <code>getindex&#40;D, i&#41;</code> for an arbitrary index <code>i</code> may return an object either of type <code>Float64</code> or of type <code>NAType</code> and hence must “box” every object returned from indexing into <code>D</code>. The performance penalty incurred by this requirement is reflected in the comparison above. &#40;The interested reader can find more about these issues <a href="http://www.johnmyleswhite.com/notebook/2014/11/29/whats-wrong-with-statistics-in-julia/">here</a>.&#41;</p>
 <p>On the other hand, <code>NullableArray</code>s are designed to support the sort of static analysis used by Julia’s type inference system to generate efficient machine code. The crux of the strategy is to use a single type — <code>Nullable&#123;T&#125;</code> — to represent both missing and present values. <code>Nullable&#123;T&#125;</code> objects are specialized containers that hold precisely either one or zero values. A <code>Nullable</code> that wraps, say, <code>5</code> can be taken to represent a present value of <code>5</code>, whereas an empty <code>Nullable&#123;Int&#125;</code> can represent a missing value that, if it had been present, would have been of type <code>Int</code>. Crucially, both such objects are of the same type, i.e. <code>Nullable&#123;Int&#125;</code>. Interested readers can hear a bit more on these design considerations in my <a href="https://www.youtube.com/watch?v&#61;2v5k28F80BQ">JuliaCon 2015 lighting talk</a>.</p>
 <p>Here is the result of running the same loop over a comparable <code>NullableArray</code>:</p>
@@ -112,8 +110,7 @@ julia> f(X);
 
 julia> @time f(X)
   0.009812 seconds (5 allocations: 192 bytes)
-Nullable(2.500102419334644e6)
-</code></pre>
+Nullable(2.500102419334644e6)</code></pre>
 <p>As can be seen, naively looping over a <code>NullableArray</code> is on the same order of magnitude as naively looping over a regular <code>Array</code> in terms of both time elapsed and memory allocated. Below is a set of plots &#40;drawn with <a href="https://github.com/dcjones/Gadfly.jl">Gadfly.jl</a>&#41; that visualize the results of running 20 benchmark samples of <code>f</code> over both <code>NullableArray</code> and <code>DataArray</code> arguments each consisting of 5,000,000 random <code>Float64</code> values and containing either zero null entries or approximately half randomly chosen null entries.</p>
 <p><img src="/assets/images/blog/images/2015-10-03-nullablearrays-images/f_plot.png" alt="" /></p>
 <p>Of course, it is possible to bring the performance of such a loop over a <code>DataArray</code> up to par with that of a loop over an <code>Array</code>. But such optimizations generally introduce additional complexity that oughtn’t to be required to achieve acceptable performance in such a simple task. Considerably more complex code can be required to achieve performance in more involved implementations, such as that of <code>broadcast&#33;</code>. We intend for <code>NullableArray</code>s to to perform well under involved tasks involving missing data while requiring as little interaction with <code>NullableArray</code> internals as possible. This includes allowing users to leverage extant implementations without sacrificing performance. Consider for instance the results of relying on Base’s implementation of <code>broadcast&#33;</code> for <code>DataArray</code> and <code>NullableArray</code> arguments &#40;i.e., having omitted the respective <code>src/broadcast.jl</code> from each package’s source code&#41;. Below are plots that visualize the results of running 20 benchmark samples of <code>broadcast&#33;&#40;dest, src1, src2&#41;</code>, where <code>dest</code> and <code>src2</code> are <code>5_000_000 x 2</code> <code>Array</code>s, <code>NullableArray</code>s or <code>DataArray</code>s, and <code>src1</code> is a <code>5_000_000 x 1</code> <code>Array</code>, <code>NullableArray</code> or <code>DataArray</code>. As above, the <code>NullableArray</code> and <code>DataArray</code> arguments are tested in cases with either zero or approximately half null entries:</p>
@@ -156,8 +153,7 @@ julia> map(f, X; lift=true)
     14
     16
  #NULL
-    20
-</code></pre>
+    20</code></pre>
 <p>I also plan to release shortly a small package that will offer a more flexible “lift” macro, which will be able to lift function calls over <code>Nullable</code> arguments within a variety of expression types.</p>
 <p>We hope that the new NullableArrays package will help to support not only Julia’s statistical computing ecosystem as it moves forward but also any endeavor that requires an efficient, developed interface for handling arrays of <code>Nullable</code> objects. Please do try the package, submit feature requests, report bugs, and, if you’re interested, submit a PR or two. Happy coding&#33;</p>
 

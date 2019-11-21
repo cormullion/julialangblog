@@ -85,8 +85,7 @@ state, subproblems = initialize()
 while !isconverged(state)
     results = map(solvesubproblem,subproblems)
     state, subproblems = process(state, results)
-end
-</code></pre>
+end</code></pre>
 <p>The function <code>solvesubproblem</code> corresponds to evaluating \((f_i(x)\)&#41; for a given \(( i \)&#41; and \(( x \)&#41; &#40;the elements of <code>subproblems</code> could be tuples <code>&#40;i,x&#41;</code>&#41;. The function <code>process</code> corresponds to minimizing the model in step 3, and it produces a new state and a new set of subproblems to solve.</p>
 <p>Note that the algorithm looks much like a map-reduce that would be easy to parallelize using many existing frameworks. Indeed, in Julia we can simply replace <code>map</code> with <code>pmap</code> &#40;parallel map&#41;. Let&#39;s consider a twist that makes the parallelism not so straightforward.</p>
 <h3 id="asynchronous_variant"><a href="/pub/2013-04-05-distributed-numerical-optimization.html#asynchronous_variant">Asynchronous variant</a></h3>
@@ -126,8 +125,7 @@ end
         end
     end
     results
-end
-</code></pre>
+end</code></pre>
 <p>On first sight, this code is not particularly intuitive. The <code>@spawnlocal</code> macro creates a <a href="http://docs.julialang.org/en/latest/manual/control-flow/#man-tasks">task</a> on the <em>master process</em> &#40;e.g. process 1&#41;. Each task feeds work to a corresponding worker; the call <code>remotecall_fetch&#40;p, f, lst&#91;idx&#93;&#41;</code> function calls <code>f</code> on process <code>p</code> and returns the result when finished. Tasks are uninterruptable and only surrender control at specific points such as <code>remotecall_fetch</code>. Tasks cannot directly modify variables from the enclosing scope, but the same effect can be achieved by using the <code>next_idx</code> function to access and mutate <code>i</code>. <em>The task idiom functions in place of using a loop to poll for results from each worker process.</em></p>
 <p>Implementing our asynchronous algorithm is not much more than a modification of the above code:</p>
 <pre><code class="language-julia"># given constants n and 0 < alpha <= 1
@@ -173,8 +171,7 @@ end
             end
         end
     end
-end
-</code></pre>
+end</code></pre>
 <p>where <code>state</code> is an instance of a type defined as</p>
 <pre><code class="language-julia">type State
     didtrigger::Vector{Bool}
@@ -185,13 +182,11 @@ end</code></pre>
 <h3 id="running_it"><a href="/pub/2013-04-05-distributed-numerical-optimization.html#running_it">Running it</a></h3>
 <p>Now for the fun part. The complete cutting-plane algorithm &#40;along with additional variants&#41; is implemented in <a href="https://github.com/mlubin/JuliaBenders">JuliaBenders</a>. The code is specialized for <a href="http://en.wikipedia.org/wiki/Stochastic_programming">stochastic programming</a> where the cutting-plane algorithm is known as the <a href="http://www.springerreference.com/docs/html/chapterdbid/72429.html">L-shaped method</a> or Benders decomposition and is used to decompose the solution of large linear optimization problems. Here, <code>solvesubproblem</code> entails solving a relatively small linear optimization problem. Test instances are taken from <a href="http://dx.doi.org/10.1023/A:1021858008222">the previously mentioned paper</a>.</p>
 <p>We&#39;ll first run on a large multicore server. The <code>runals.jl</code> &#40;asynchronous L-shaped&#41; file contains the algorithm we&#39;ll use. Its usage is</p>
-<pre><code class="language-bash">julia runals.jl [data source] [num subproblems] [async param] [block size]
-</code></pre>
+<pre><code class="language-bash">julia runals.jl [data source] [num subproblems] [async param] [block size]</code></pre>
 <p>where <code>&#91;num subproblems&#93;</code> is the \((n\)&#41; as above and <code>&#91;async param&#93;</code> is the proportion \((\alpha\)&#41;. By setting \((\alpha = 1\)&#41; we obtain the synchronous algorithm. For the asynchronous version we will take \((\alpha =
 0.6\)&#41;. The <code>&#91;block size&#93;</code> parameter controls how many subproblems are sent to a worker at once &#40;in the previous code, this value was always 1&#41;. We will use 4000 subproblems in our experiments.</p>
 <p>To run multiple Julia processes on a shared-memory machine, we pass the <code>-p N</code> option to the <code>julia</code> executable, which will start up <code>N</code> system processes. To execute the asynchronous version with 10 workers, we run</p>
-<pre><code class="language-bash">julia -p 12 runals.jl Data/storm 4000 0.6 30
-</code></pre>
+<pre><code class="language-bash">julia -p 12 runals.jl Data/storm 4000 0.6 30</code></pre>
 <p>Note that we start 12 processes. These are the 10 workers, the master &#40;which distributes tasks&#41;, and another process to perform the master&#39;s computations &#40;an additional refinement which was not described above&#41;. Results from various runs are presented in the table below.</p>
 
 <table style="text-align:right;margin-left:auto;margin-right:auto" cellspacing="5">

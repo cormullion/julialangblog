@@ -67,8 +67,7 @@
 <pre><code class="language-julia">ret1 = function1(args...)
 ret2 = function2(ret1, ...)
 ret3 = function3(ret1, ret2, ...)
-...
-</code></pre>
+...</code></pre>
 <p>Let&#39;s imagine that <code>ret1</code> can be one of two types, <code>A</code> or <code>B</code> &#40;i.e, <code>Union&#123;A,B&#125;</code>&#41;. In older versions of Julia, here&#39;s what would happen: starting after <code>function1</code>, the compiler would say &quot;I can&#39;t tell which method of <code>function2</code> should be used.&quot; So it wouldn&#39;t specialize any of the code thereafter; instead, each time this block got executed, it would take the actual type of <code>ret1</code> and start poring through the method tables,  performing type-intersection trying to find an applicable compiled version of <code>function2</code>. The computations involved in type intersection, while very well optimized, are nevertheless quite demanding, and consequently the &quot;method lookup&quot; step was quite slow &#40;especially for functions that had tens or hundreds of methods&#41;.</p>
 <p>In Julia 0.7 and 1.0, the compiler does something quite different: it automatically &#40;without any effort on your part&#41; compiles the block above to something that schematically looks like this:</p>
 <pre><code class="language-julia">ret1 = function1(args...)    # ret1 isa Union{A,B}
@@ -80,8 +79,7 @@ else
     ret2 = function2_specialized_for_B(ret1, ...)
     ret3 = function3_specialized_for_B(ret1, ret2, ...)
     ...
-end
-</code></pre>
+end</code></pre>
 <p>The difference here is huge. While Julia can&#39;t know ahead of time the precise type of <code>ret1</code>, within the first block it definitely is of type <code>A</code> &#40;because it checked&#41;, and within the second block it is definitely of type <code>B</code> &#40;because that&#39;s the only other option&#41;. Consequently, Julia can <strong>look up the appropriate compiled methods for <code>function2</code> and <code>function3</code> at compile time rather than run time</strong>, and that allows it to be blazingly fast when you actually run it.</p>
 <p>Now, I hear some of you saying, &quot;but there&#39;s that branch in there, and branches are slow compared to many other CPU instructions.&quot; True enough. But a single branch is almost inconsequential compared to method lookup; moreover, in cases where Union-splitting gets used, it&#39;s often the case that you would have needed that branch anyway. In such cases, the cost is literally zero.</p>
 <p>To illustrate why, consider the operation <code>findfirst&#40;isequal&#40;7&#41;, A&#41;</code> for an array <code>A</code>, which formerly always returned an integer indicating the first index of <code>A</code> at which it found the value 7. One problematic case arises: what if <code>A</code> doesn&#39;t contain any 7s? Previously, we used to return 0, and the receiver had to check <code>if ret1 &#61;&#61; 0</code> to determine whether execution needed to divert to error-handling code. Consequently, in properly-written code there was no getting away from needing that branch. Worse, if you forgot to check, and <code>function2</code> didn&#39;t error when you passed it 0, then you would likely get a meaningless answer. That is far worse than getting an error, because it&#39;s much harder to track down where wrong results come from.</p>

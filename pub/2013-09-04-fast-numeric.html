@@ -67,8 +67,7 @@
 <h2 id="devectorize_expressions"><a href="/pub/2013-09-04-fast-numeric.html#devectorize_expressions">Devectorize expressions</a></h2>
 <p>Users of other high level languages such as MATLAB® or Python are often advised to <em>vectorize</em> their codes as much as possible to get performance, because loops are slow in those languages. In Julia, on the other hand, loops can run as fast as those written in C and you no longer have to count on vectorization for speed. Actually, turning vectorized expressions into loops, which we call <em>devectorization</em>, often results in even higher performance.</p>
 <p>Consider the following:</p>
-<pre><code class="language-julia">r = exp(-abs(x-y))
-</code></pre>
+<pre><code class="language-julia">r = exp(-abs(x-y))</code></pre>
 <p>Very simple expression, right? Behind the scenes, however, it takes a lot of steps and temporary arrays to get you the results of this expression. The following sequence of temporary array constructions is what is done to compute the above expression:</p>
 <pre><code class="language-julia">n = length(x)
 
@@ -90,8 +89,7 @@ end
 r = Array(Float64, n)
 for i = 1:n
     r[i] = exp(tmp3[i])
-end
-</code></pre>
+end</code></pre>
 <p>We can see that this procedure creates three temporary arrays and it takes four passes to complete the computation. This introduces significant overhead:</p>
 <ul>
 <li><p>It takes time to allocate memory for the temporary arrays;</p>
@@ -105,24 +103,20 @@ end
 <pre><code class="language-julia">r = similar(x)
 for i = 1:length(x)
     r[i] = exp(-abs(x[i]-y[i]))
-end
-</code></pre>
+end</code></pre>
 <p>This version finishes the computation in one pass, without introducing any temporary arrays. Moreover, if <code>r</code> is pre-allocated, one can even omit the statment that creates <code>r</code>. The <a href="https://github.com/lindahua/Devectorize.jl"><em>Devectorize.jl</em></a> package provides a macro <code>@devec</code> that can automatically translate vectorized expressions into loops:</p>
 <pre><code class="language-julia">using Devectorize
 
-@devec r = exp(-abs(x-y))
-</code></pre>
+@devec r = exp(-abs(x-y))</code></pre>
 <p>The comprehension syntax also provides a concise syntax for devectorized computation:</p>
-<pre><code class="language-julia">r = [exp(-abs(x[i]-y[i])) for i = 1:length(x)]
-</code></pre>
+<pre><code class="language-julia">r = [exp(-abs(x[i]-y[i])) for i = 1:length(x)]</code></pre>
 <p>Note that comprehension always creates new arrays to store the results. Hence, to write results to pre-allocated arrays, you still have to devectorize the computation manually or use the <code>@devec</code> macro.</p>
 <h2 id="merge_computations_into_a_single_loop"><a href="/pub/2013-09-04-fast-numeric.html#merge_computations_into_a_single_loop">Merge computations into a single loop</a></h2>
 <p>Traversing arrays, especially large ones, may incur cache misses or even page faults, both of which can cause significant latency. Thus, it is desirable to minimize the number of round trips to memory as much as possible. For example, you may compute multiple maps with one loop:</p>
 <pre><code class="language-julia">for i = 1:length(x)
     a[i] = x[i] + y[i]
     b[i] = x[i] - y[i]
-end
-</code></pre>
+end</code></pre>
 <p>This is usually faster than writing <code>a &#61; x &#43; y; b &#61; x - y</code>.</p>
 <p>The following example shows how you can compute multiple statistics &#40;e.g. sum, max, and min&#41; over a dataset efficiently.</p>
 <pre><code class="language-julia">n = length(x)
@@ -135,8 +129,7 @@ for i = 2:n
     elseif xi < rmin
         rmin = xi
     end
-end
-</code></pre>
+end</code></pre>
 <h2 id="write_cache-friendly_codes"><a href="/pub/2013-09-04-fast-numeric.html#write_cache-friendly_codes">Write cache-friendly codes</a></h2>
 <p>Modern computer systems have a complicated heterogeneous memory structure that combines registers, multiple levels of caches, and RAM. Data are accessed through the cache hierarchy – a smaller and much faster memory that stores copies of frequently used data.</p>
 <p>Most systems do not provide ways to directly control the cache system. However, you can take steps to make it much easier for the automated cache management system to help you if you write <em>cache-friendly</em> codes. In general, you don&#39;t have to understand every detail about how a cache system works. It is often sufficient to observe the simple rule below:</p>
@@ -154,8 +147,7 @@ for i = 1:m
         s += a[i,j]
     end
     r[i] = s
-end
-</code></pre>
+end</code></pre>
 <p>The loop here accesses the elements row-by-row, as <code>a&#91;i,1&#93;, a&#91;i,2&#93;, ..., a&#91;i,n&#93;</code>. The interval between these elements is <code>m</code>. Intuitively, it jumps at the stride of length <code>m</code> from the begining of each row to the end in each inner loop, and then jumps back to the begining of next row. This is not very efficient, especially when <code>m</code> is large.</p>
 <p>This procedure can be made much more cache-friendly by changing the order of computation:</p>
 <pre><code class="language-julia">for i = 1:m
@@ -164,8 +156,7 @@ end
 
 for j = 2:n, i = 1:m
     r[i] += a[i,j]
-end
-</code></pre>
+end</code></pre>
 <p>Some benchmarking shows that this version can be <em>5-10 times</em> faster than the one above for large matrices.</p>
 <h2 id="avoid_creating_arrays_in_loops"><a href="/pub/2013-09-04-fast-numeric.html#avoid_creating_arrays_in_loops">Avoid creating arrays in loops</a></h2>
 <p>Creating arrays requires memory allocation and adds to the workload of the garbage collector. Reusing the same array is a good way to reduce the cost of memory management.</p>
@@ -175,8 +166,7 @@ end
     dists = compute_distances(x, means)
     labels = assign_labels(dists)
     ...
-end
-</code></pre>
+end</code></pre>
 <p>In this implementation of K-means, the arrays <code>means</code>, <code>dists</code>, and <code>labels</code> are recreated at each iteration. This reallocation of memory on each step is unnecessary. The sizes of these arrays are fixed, and their storage can be reused across iterations. The following alternative code is a more efficient way to implement the same algorithm:</p>
 <pre><code class="language-julia">d, n = size(x)
 
@@ -190,8 +180,7 @@ while !converged && t < maxiter
     update_distances!(dists, x, means)
     update_labels!(labels, dists)
     ...
-end
-</code></pre>
+end</code></pre>
 <p>In this version, the functions invoked in the loop updates pre-allocated arrays in-place.</p>
 <p>If you are writing a package, it is recommended that you provide two versions for each function that outputs arrays: one that performs the update in-place, and another that returns a new array. The former can usually be implemented as a light-weight wrapper of the latter that copies the input array before modifying it. A good example is the <a href="https://github.com/JuliaStats/Distributions.jl"><em>Distributions.jl</em></a> package, which provides both <code>logpdf</code> and <code>logpdf&#33;</code>, so that one can write <code>lp &#61; logpdf&#40;d,x&#41;</code> when a new array is needed, or <code>logpdf&#33;&#40;lp,d,x&#41;</code> when <code>lp</code> has been pre-allocated.</p>
 <h2 id="identify_opportunities_to_use_blas"><a href="/pub/2013-09-04-fast-numeric.html#identify_opportunities_to_use_blas">Identify opportunities to use BLAS</a></h2>
@@ -200,13 +189,11 @@ end
 <pre><code class="language-julia">r = zeros(size(x,1))
 for j = 1:size(x,2)
     r += x[:,j] * w[j]
-end
-</code></pre>
+end</code></pre>
 <p>You can replace the statement <code>r &#43;&#61; x&#91;:,j&#93; * w&#91;j&#93;</code> with a call to the BLAS <code>axpy&#33;</code> function to get better performance:</p>
 <pre><code class="language-julia">for j = 1:size(x,2)
     axpy!(w[j], x[:,j], r)
-end
-</code></pre>
+end</code></pre>
 <p>This, however, is still far from being optimal. If you are familiar with linear algebra, you may have probably found that this is just matrix-vector multiplication, and can be written as <code>r &#61; x * w</code>, which is not only shorter, simpler and clearer than either of the above loops – it also runs much faster than either versions.</p>
 <p>Our next example is a subtler application of BLAS routines to computing pairwise Euclidean distances between columns in two matrices. Below is a straightforward implementation that directly computes pairwise distances:</p>
 <pre><code class="language-julia">m, n = size(a)
@@ -214,8 +201,7 @@ r = Array(Float64, m, n)
 
 for j = 1:n, i = 1:m
     r[i,j] = sqrt(sum(abs2(a[:,i] - b[:,j])))
-end
-</code></pre>
+end</code></pre>
 <p>This is clearly suboptimal – a lot of temporary arrays are created in evaluating the expression in the inner loop. To speed this up, we can devectorize the inner expression:</p>
 <pre><code class="language-julia">d, m = size(a)
 n = size(b,2)
@@ -228,11 +214,9 @@ for j = 1:n, i = 1:m
         end
         r[i,j] = sqrt(s)
     end
-end
-</code></pre>
+end</code></pre>
 <p>This version is much more performant than the vectorized form. But is it the best we can do? By employing an alternative strategy, we can write a even faster algorithm for computing pairwise distances. The trick is that the squared Euclidean distance between two vectors can be expanded as:</p>
-<pre><code class="language-julia">sum(abs2(x-y)) == sum(abs2(x)) + sum(abs2(y)) - 2*dot(x,y)
-</code></pre>
+<pre><code class="language-julia">sum(abs2(x-y)) == sum(abs2(x)) + sum(abs2(y)) - 2*dot(x,y)</code></pre>
 <p>If we evaluate these three terms separately, the computation can be mapped to BLAS routines perfectly. Below, we have a new implementation of pairwise distances written using only BLAS routines, including the norm calls that are wrapped by the <a href="https://github.com/lindahua/NumericExtensions.jl"><em>NumericExtensions.jl</em></a> package:</p>
 <pre><code class="language-julia">using NumericExtensions   # for sqsum
 using Base.LinAlg.BLAS    # for gemm!
@@ -247,8 +231,7 @@ gemm!('T', 'N', -2.0, a, b, 1.0, r)  # add (-2.0) * a' * b to r
 
 for i = 1:length(r)
     r[i] = sqrt(r[i])
-end
-</code></pre>
+end</code></pre>
 <p>This version is over <em>100 times</em> faster than our original implementation — the <code>gemm</code> function in BLAS has been optimized to the extreme by many talented developers and engineers over the past few decades.</p>
 <p>We should mention that you don&#39;t have to implement this yourself if you really want to compute pairwise distances: the <a href="https://github.com/lindahua/Distance.jl"><em>Distance.jl</em></a> package provides optimized implementations of a broad variety of distance metrics, including this one. We presented this optimization trick as an example to illustrate the substantial performance gains that can be achieved by writing code that uses BLAS routines wherever possible.</p>
 <h2 id="explore_available_packages"><a href="/pub/2013-09-04-fast-numeric.html#explore_available_packages">Explore available packages</a></h2>

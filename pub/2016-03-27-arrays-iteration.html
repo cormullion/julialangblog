@@ -113,15 +113,13 @@ eachindex&#40;A&#41;</code> construct.  This allows one to select an iterator th
     for i = 1:size(B, 1)
         dest[i] += B[i,j] * vj
     end
-end
-</code></pre>
+end</code></pre>
 <p>might be written in a more performant manner like this:</p>
 <pre><code class="language-julia">for (jj, vj) in zip(eachindex(B, Dimension{2}), v)
     for (i, ii) in zip(eachindex(dest), eachindex(B, (:, jj)))
         dest[i] += B[ii,jj]*vj
     end
-end
-</code></pre>
+end</code></pre>
 <p>It&#39;s not too hard to figure out what <code>eachindex&#40;B, Dimension&#123;2&#125;&#41;</code> and <code>eachindex&#40;B, &#40;:, jj&#41;&#41;</code> should do: <code>ii</code>, for example, could be a <code>CartesianInnerIndex</code> &#40;a type that does not yet exist&#41; that for a particular column of <code>B</code> iterates from <code>A&#91;3,7,4&#93;</code> to <code>A&#91;5,8,4&#93;</code>, where the <code>d</code>th index component wraps around at <code>size&#40;A, d&#41;</code>.  The big performance advantage of this strategy is that you only have to compute a <code>div</code> to set the bounds of the iterator on each column; the inner loop doesn&#39;t require a <code>div</code> on each element access. No doubt, given suitable definition of <code>jj</code> one could be even more clever and avoid calculating <code>div</code> altogether.  To the author, this strategy seems promising as a way to resolve the majority of the performance concerns about ReshapedArrays — only if you needed &quot;random access&quot; would you require slow &#40;integer-based&#41; operations.</p>
 <p>However, a big problem is that compared to the &quot;naive&quot; implementation, this is rather ugly.</p>
 <h2 id="row-major_matrices_permuteddimensionarrays_and_quottaking_transposes_seriouslyquot"><a href="/pub/2016-03-27-arrays-iteration.html#row-major_matrices_permuteddimensionarrays_and_quottaking_transposes_seriouslyquot">Row-major matrices, PermutedDimensionArrays, and &quot;taking transposes seriously&quot;</a></h2>
@@ -132,8 +130,7 @@ end
         dest[i] = src[i]  # trouble if `i` means "memory offset"
     end
     dest
-end
-</code></pre>
+end</code></pre>
 <p>would end up taking a transpose if <code>src</code> and <code>dest</code> don&#39;t use the same storage order.  Consequently, a linear index has to be defined in terms of the corresponding cartesian &#40;full-dimensionality&#41; index. This isn&#39;t much of a real problem, because it&#39;s one we know how to solve: use <code>ind2sub</code> &#40;which is slow&#41; when you have to, but for efficiency make row major arrays belong to the category &#40;<code>LinearSlow</code>&#41; of arrays that defaults to iteration with cartesian indexes.  Doing so will ensure that if one uses generic constructs like <code>eachindex&#40;src&#41;</code> rather than <code>1:length&#40;src&#41;</code>, then the loop above can be fast.</p>
 <p>The far more challenging problem concerns cache-efficiency: it&#39;s much slower to access elements of an array in anything other than <a href="http://julialang.org/blog/2013/09/fast-numeric">storage-order</a>.  Some reasonably fast ways to write matrix-vector multiplication are</p>
 <pre><code class="language-julia">for j = 1:size(B, 2)
@@ -141,14 +138,12 @@ end
     for i = 1:size(B, 1)
         dest[i] += B[i,j] * vj
     end
-end
-</code></pre> for a column-major matrix <code>B</code>, and</p>
+end</code></pre> for a column-major matrix <code>B</code>, and</p>
 <pre><code class="language-julia">for i = 1:size(B, 1)
     for j = 1:size(B, 2)
         dest[i] += B[i,j] * v[j]
     end
-end
-</code></pre>
+end</code></pre>
 <p>for a row-major matrix.  &#40;One can do even better than this by using a scalar temporary accumulator, but let&#39;s not worry about that here.&#41; The key point to note is that the order of the loops has been switched.</p>
 <p>One could generalize this by defining a <code>RowMajorRange</code> iterator that&#39;s a lot like our <code>CartesianRange</code> iterator, but traverses the array in row-major order.  <code>eachindex</code> claims to return an &quot;efficient iterator,&quot; and without a doubt the <code>RowMajorRange</code> is a &#40;much&#41; more efficient iterator than a <code>CartesianRange</code> iterator for row-major arrays. So let&#39;s imagine that <code>eachindex</code> does what it says, and returns a <code>RowMajorRange</code> iterator.  Using this strategy, the two algorithms above can be combined into a single generic implementation:</p>
 <pre><code class="language-julia">for I in eachindex(B)
@@ -161,8 +156,7 @@ end</code></pre>
         dest[idest] = src[isrc]
     end
     dest
-end
-</code></pre>
+end</code></pre>
 <p>Up until we introduced our <code>RowMajorRange</code> return-type for <code>eachindex</code>, this implementation would have been fine.  But we just broke it, because now this will incorrectly take a transpose in certain situations.</p>
 <p>In other words, without careful design the goals of &quot;maximally-efficient iteration&quot; and &quot;keeping accesses in-sync&quot; are in conflict.</p>
 <h2 id="offsetarrays_and_the_meaning_of_abstractarray"><a href="/pub/2016-03-27-arrays-iteration.html#offsetarrays_and_the_meaning_of_abstractarray">OffsetArrays and the meaning of AbstractArray</a></h2>

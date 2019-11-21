@@ -83,8 +83,7 @@ julia> f([1,2,3,4,5])
 6
 12
 20
-30
-</code></pre>
+30</code></pre>
 <p>Under the hood, ParallelAccelerator is essentially a compiler – itself implemented in Julia – that intercepts the usual Julia JIT compilation process for <code>@acc</code>-annotated functions.  It compiles <code>@acc</code>-annotated code to C&#43;&#43; OpenMP code, which can then be compiled to a native library by an external C&#43;&#43; compiler such as GCC or ICC. &#40;This intermediate C&#43;&#43; generation step isn&#39;t essential to the design of ParallelAccelerator, though – instead, the compiler could target Julia&#39;s own forthcoming native threading backend. &#91;<a href="#footnote1">1</a>&#93;&#41; On the Julia side, ParallelAccelerator generates a <em>proxy function</em> that calls into that native library, and replaces calls to <code>@acc</code>-annotated functions, like <code>f</code> in the above example, with calls to the appropriate proxy function.</p>
 <p>We&#39;ll say more shortly about the parallel patterns that ParallelAccelerator targets and about how the ParallelAccelerator compiler works, but before we do, let&#39;s look at some code and some performance results.</p>
 <h2 id="a_quick_preview_of_results_black-scholes_option_pricing_benchmark"><a href="/pub/2016-03-01-parallelaccelerator.html#a_quick_preview_of_results_black-scholes_option_pricing_benchmark">A quick preview of results: Black-Scholes option pricing benchmark</a></h2>
@@ -124,14 +123,12 @@ function run(iterations)
     t = toq()
     println("checksum: ", sum(put))
     return t
-end
-</code></pre>
+end</code></pre>
 <p>Here, the <code>blackscholes</code> function takes five arguments, each of which is an array of <code>Float64</code>s.  The <code>run</code> function initializes these five arrays and passes them to <code>blackscholes</code>, which, along with the <code>cndf2</code> &#40;cumulative normal distribution&#41; function that it calls, does several computations involving pointwise addition &#40;<code>.&#43;</code>&#41;, subtraction &#40;<code>.-</code>&#41;, multiplication &#40;<code>.*</code>&#41;, and division &#40;<code>./</code>&#41; on the arrays. It&#39;s not necessary to understand the details of the Black-Scholes formula; the important thing to notice about the code is that we are doing lots of pointwise array arithmetic.  Using Julia 0.4.4-pre on a 4-core Ubuntu 14.04 desktop machine with 8 GB of memory, the <code>run</code> function takes about 11 seconds to run when called with an argument of 40,000,000 &#40;meaning that we are dealing with 40-million-element arrays&#41;:</p>
 <pre><code class="language-julia">julia> @time run(40_000_000)
 checksum: 8.381928525856283e8
  12.885293 seconds (458.51 k allocations: 9.855 GB, 2.95% gc time)
-11.297714183
-</code></pre>
+11.297714183</code></pre>
 <p>Here, the <code>11.297714183</code> being returned from <code>run</code> is the number of seconds it takes the <code>blackscholes</code> call alone to return.  The <code>12.885293</code> seconds reported by <code>@time</code> is a little longer, because it&#39;s the running time of the entire <code>run</code> call.</p>
 <p>The many pointwise array operations in this code make it a great candidate for speeding up with ParallelAccelerator &#40;as we&#39;ll discuss more shortly&#41;.  Doing so requires only minor changes to the code: we import the ParallelAccelerator library with <code>using
 ParallelAccelerator</code>, then wrap the <code>cndf2</code> and <code>blackscholes</code> functions in an <code>@acc</code> block, as follows:</p>
@@ -162,14 +159,12 @@ function blackscholes(sptprice::Array{Float64,1},
     put  = call .- futureValue .+ sptprice
 end
 
-end
-</code></pre>
+end</code></pre>
 <p>The definition of <code>run</code> stays the same.  With the addition of the <code>@acc</code> wrapper, we now have much better performance:</p>
 <pre><code class="language-julia">julia> @time run(40_000_000)
 checksum: 8.381928525856283e8
   4.010668 seconds (1.90 M allocations: 1.584 GB, 2.06% gc time)
-3.503281464
-</code></pre>
+3.503281464</code></pre>
 <p>This time, <code>blackscholes</code> returns in about 3.5 seconds, and the entire <code>run</code> call finishes in about 4 seconds.  This is already an improvement, but on subsequent calls to <code>run</code>, we do even better:</p>
 <pre><code class="language-julia">julia> @time run(40_000_000)
 checksum: 8.381928525856283e8
@@ -179,8 +174,7 @@ checksum: 8.381928525856283e8
 julia> @time run(40_000_000)
 checksum: 8.381928525856283e8
   1.410865 seconds (154 allocations: 1.490 GB, 7.93% gc time)
-1.012813958
-</code></pre>
+1.012813958</code></pre>
 <p>In subsequent calls, <code>run</code> finishes in about a second, with the entire call taking about 1.4 seconds.  The reason for this additional improvement is that ParallelAccelerator has already compiled the <code>blackscholes</code> and <code>cndf2</code> functions and doesn&#39;t need to do so again on subsequent runs.</p>
 <p>These results were collected on an ordinary desktop machine, but we can scale up further.  The following figure reports the time it takes <code>blackscholes</code> to run on arrays of 100 million elements, this time on a 36-core machine with 128 GB of RAM &#91;<a href="#footnote2">2</a>&#93;:</p>
 <p><img src="https://github.com/JuliaLang/www.julialang.org/blob/master/blog/_posts/parallelaccelerator_figures/black-scholes-2016-01-31-blogpost.png?raw&#61;true" alt="Benchmark results for plain Julia and ParallelAccelerator implementations of the Black-Scholes formula" /></p>
@@ -214,8 +208,7 @@ checksum: 8.381928525856283e8
            img[3-2:w-4,3+2:h-0] * 0.0030 + img[3-1:w-3,3+2:h-0] * 0.0133 + img[3:w-2,3+2:h-0] * 0.0219 + img[3+1:w-1,3+2:h-0] * 0.0133 + img[3+2:w,3+2:h-0] * 0.0030
     end
     return img
-end
-</code></pre>
+end</code></pre>
 <p>Here, to compute the value of a pixel in the output image, we use the the corresponding input pixel as well as all its neighboring pixels, to a depth of two pixels out from the input pixel – so, twenty-four neighbors.  In all, there are twenty-five pixel values to examine.  We add all these pixel values together, each multiplied by a weight – in this case <code>0.0030</code> for the cornermost pixels, <code>0.1621</code> for the center pixel, and for all the other pixels, something in between – and the total is the value of the output pixel.  At the borders of the image, we don&#39;t have enough neighboring pixels to compute an output pixel value, so we simply skip those pixels and don&#39;t assign to them. &#91;<a href="#footnote5">5</a>&#93;</p>
 <p>Notice that the <code>blur</code> function explicitly loops over the number of iterations, that is, times to apply the blur to the the image, but it does not explicitly loop over pixels in the image.  Instead, the code is written in array style: it performs just one assignment to the array <code>img</code>, using the ranges <code>3:w-2</code> and <code>3:h-2</code> to avoid assigning to the borders of the image.  On a <a href="https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/example.jpg">large grayscale input image</a> of 7095 by 5322 pixels, this code takes about 10 minutes to run for 100 iterations.</p>
 <p>Using ParallelAccelerator, we can get much better performance.  Let&#39;s look at a version of <code>blur</code> that uses <code>runStencil</code>:</p>
@@ -231,12 +224,10 @@ end
        return a, b
     end
     return img
-end
-</code></pre>
+end</code></pre>
 <p>Here, we again have a function called <code>blur</code> – now annotated with <code>@acc</code> – that takes the same arguments as the original code.  This version of <code>blur</code> allocates a new 2D array called <code>buf</code> that is the same size as the original <code>img</code> array.  The allocation of <code>buf</code> is followed by a call to <code>runStencil</code>.  Let&#39;s take a closer look at the <code>runStencil</code> call.</p>
 <code>runStencil</code> has the following signature:</p>
-<pre><code class="language-julia">runStencil(kernel :: Function, buffer1, buffer2, ..., iteration :: Int, boundaryHandling :: Symbol)
-</code></pre>
+<pre><code class="language-julia">runStencil(kernel :: Function, buffer1, buffer2, ..., iteration :: Int, boundaryHandling :: Symbol)</code></pre>
 <p>In <code>blur</code>, the call to <code>runStencil</code> uses Julia&#39;s <a href="http://docs.julialang.org/en/release-0.4/manual/functions/#do-block-syntax-for-function-arguments"><code>do</code>-block syntax for function arguments</a>, so the <code>do b, a ... end</code> block is actually the first argument to the <code>runStencil</code> call.  The <code>do</code> block creates an anonymous function that binds the variables <code>b</code> and <code>a</code>.  The arguments <code>buffer1, buffer2,
 ...</code> that are passed to <code>runStencil</code> become the arguments to the anonymous function.  In this case, we are passing two buffers, <code>buf</code> and <code>img</code>, to <code>runStencil</code>, and so the anonymous function takes two arguments.</p>
 <p>Aside from the anonymous function and the two buffers, <code>runStencil</code> takes two other arguments.  The first of these is a number of iterations that we want to run the stencil computation for.  In this case, we simply pass along the <code>iterations</code> argument that is passed to <code>blur</code>.  Finally, the last argument to <code>runStencil</code> is a symbol indicating how stencil boundaries are to be handled.  Here, we&#39;re using the <code>:oob_skip</code> symbol, short for &quot;out-of-bounds skip&quot;.  It means that when input indices are out of bounds – for instance, in the situation where the input pixel is one of those on the two-pixel border of the image, and there aren&#39;t enough neighbor pixels to compute the output pixel value – then we simply skip writing to the output pixel.  This has the same effect as the careful indexing in the original version of <code>blur</code>.</p>

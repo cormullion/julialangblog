@@ -118,8 +118,7 @@ xr = Variable(n)
 xi = Variable(n)
 p2 = minimize(sum(xr), real(A)*xr-imag(A)*xi == real(b), imag(A)*xr+real(A)*xi == imag(b), xr>=0, xi>=0)
 solve!(p2)
-x1== xr.value + im*xi.value # should return true
-</code></pre>
+x1== xr.value + im*xi.value # should return true</code></pre>
 <p>List of all the affine atoms are as follows:</p>
 <ol>
 <li><p>addition, substraction, multiplication, division</p>

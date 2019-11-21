@@ -79,12 +79,10 @@
 <pre><code class="language-julia">julia> [1, missing]
 2-element Array{Union{Missing, Int64},1}:
  1
-  missing
-</code></pre>
+  missing</code></pre>
 <p>An interesting property of this approach is that <code>Array&#123;Union&#123;Missing,T&#125;&#125;</code> behaves just like a normal <code>Array&#123;T&#125;</code> as soon as missing values have been replaced or skipped &#40;see below&#41;.</p>
 <p>As can be seen in the example above, promotion rules are defined so that concatenating values of type <code>T</code> and missing values gives an array with element type <code>Union&#123;Missing,T&#125;</code> rather than <code>Any</code> <pre><code class="language-julia">julia> promote_type(Int, Missing)
-Union{Missing, Int64}
-</code></pre>
+Union{Missing, Int64}</code></pre>
 <p>These promotion rules are essential for performance, as we will see below.</p>
 <p>In addition to being generic and efficient, the main design goal of the new <code>missing</code> framework is to ensure safety, in the sense that missing values should never be silently ignored nor replaced with non-missing values. Missing values are a delicate issue in statistical work, and a frequent source of bugs or invalid results. Ignoring missing values amounts to performing data imputation, which should never happen silently without an explicit request. This is unfortunately the case in some major statistical languages: for example, in SAS and Stata, <code>x &lt; 100</code> will silently return <code>true</code> or <code>false</code> even if <code>x</code> is missing<sup id="fnref:lt"><a href="/pub/2018-06-19-missing.html#fndef:lt" class="fnref">[3]</a></sup>. This behavior is known to have caused incorrect results in published scientific work<sup id="fnref:35h"><a href="/pub/2018-06-19-missing.html#fndef:35h" class="fnref">[4]</a></sup>. Sentinel approaches also suffer from bugs in corner cases: for example, in R, <code>NA &#43; NaN</code> returns <code>NA</code> but <code>NaN &#43; NA</code> returns <code>NaN</code> due to floating point computation rules.</p>
 <p>Therefore, passing <code>missing</code> to a function will always return <code>missing</code> or throw an error &#40;except for a few special functions presented below&#41;. For convenience, standard operators and mathematical functions systematically propagate missing values:</p>
@@ -101,15 +99,13 @@ julia> round(missing)
 missing
 
 julia> "a" * missing
-missing
-</code></pre>
+missing</code></pre>
 <p>Reduction operations inherit the propagating behavior of basic operators:</p>
 <pre><code class="language-julia">julia> sum([1, missing, 2])
 missing
 
 julia> mean([1, missing, 2])
-missing
-</code></pre>
+missing</code></pre>
 <p>On the other hand, indexing into a <code>Vector</code> with missing values is an error. Missing values are <em>not</em> silently skipped, which would be equivalent to assuming that they are <code>false</code>.</p>
 <pre><code class="language-julia">julia> x = 1:3
 1:3
@@ -118,8 +114,7 @@ julia> x[[true, missing, false]]
 ERROR: ArgumentError: unable to check bounds for indices of type Missing
 
 julia> x[[1, missing]]
-ERROR: ArgumentError: unable to check bounds for indices of type Missing
-</code></pre>
+ERROR: ArgumentError: unable to check bounds for indices of type Missing</code></pre>
 <p>Convenience functions are provided to get rid of missing values explicitly. First, the <code>skipmissing</code> function returns an iterator over the non-missing values in the passed collection. It is particularly useful to ignore missing values when computing reductions. Call <code>collect</code> to obtain a vector with all non-missing values.</p>
 <pre><code class="language-julia">julia> sum(skipmissing([1, missing, 2]))
 3
@@ -135,8 +130,7 @@ julia> collect(skipmissing([1, missing, 2]))
 julia> x[collect(skipmissing([1, missing, 2]))]
 2-element Array{Int64,1}:
 1
-2
-</code></pre>
+2</code></pre>
 <p>Second, the <code>coalesce</code> function returns the first non-missing argument &#40;as in SQL&#41;, which as a special case allows replacing missing values with a particular value. Combined with the &quot;dot&quot; broadcasting syntax, it allows replacing all missing values in an array:</p>
 <pre><code class="language-julia">julia> coalesce(missing, 0)
 0
@@ -154,8 +148,7 @@ julia> coalesce.([1, missing, 2], [2, 3, missing])
 3-element Array{Int64,1}:
 1
 3
-2
-</code></pre>
+2</code></pre>
 <p>A restricted set of functions and operators follow different semantics than those described above. They can be grouped into four classes:</p>
 <ul>
 <li><p><code>ismissing</code> returns <code>true</code> if the input is <code>missing</code>, and <code>false</code> otherwise.</p>
@@ -204,8 +197,7 @@ julia> coalesce.([1, missing, 2], [2, 3, missing])
         end
     end
     s
-end
-</code></pre>
+end</code></pre>
 <p>On Julia 0.7, this relatively naive implementation generates very efficient native code when the input is an <code>Array&#123;Int&#125;</code> object. In fact, thanks to masked <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> instructions, the presence of missing values <em>does not make any significant difference</em> to performance. In the following benchmark, <code>X1</code> is a vector of random <code>Int32</code> entries, <code>X2</code> holds the same data but also potentially allows for the presence of <code>missing</code> values, and <code>X3</code> actually contains 10&#37; of <code>missing</code> values at random positions. <code>sum_nonmissing</code> takes about the same time for all three arrays &#40;on an Intel Skylake CPU with AVX2 instructions enabled&#41;.</p>
 <pre><code class="language-julia">julia> X1 = rand(Int32, 10_000_000);
 
@@ -222,8 +214,7 @@ julia> @btime sum_nonmissing(X2);
   3.216 ms (1 allocation: 16 bytes)
 
 julia> @btime sum_nonmissing(X3);
-  3.214 ms (1 allocation: 16 bytes)
-</code></pre>
+  3.214 ms (1 allocation: 16 bytes)</code></pre>
 <p>As a reference point, R&#39;s <code>sum&#40;x, na.rm&#61;TRUE&#41;</code> function, which is implemented in C, takes about 7 ms without missing values and 19 ms with missing values &#40;in R, <code>integer</code> arrays always allow for missing values&#41;.</p>
 <h2 id="current_limitations_and_future_developments"><a href="/pub/2018-06-19-missing.html#current_limitations_and_future_developments">Current limitations and future developments</a></h2>
 <p>Everything is not perfect though, and some improvements are still needed. The good news is that the most difficult parts have already been implemented in Julia 0.7.</p>
@@ -241,8 +232,7 @@ julia> @btime sum_nonmissing(Y2);
   13.854 ms (1 allocation: 16 bytes)
 
 julia> @btime sum_nonmissing(Y3);
-  17.780 ms (1 allocation: 16 bytes)
-</code></pre>
+  17.780 ms (1 allocation: 16 bytes)</code></pre>
 <p>However, this is nothing to be ashamed of, as Julia is still faster than R: <code>sum&#40;x, na.rm&#61;TRUE&#41;</code> takes about 11 ms for a <code>numeric</code> array with no missing values, and 21 ms for an array with 10&#37; of missing values. This proves the validity of the <code>Union&#123;Missing,T&#125;</code> approach , even though there is still some room for improvement.</p>
 <p>Compiler improvements are also needed to ensure fast native code is generated like in the examples above even for more complex patterns. In particular, replacing <code>x &#33;&#61;&#61; missing</code> by <code>ismissing&#40;x&#41;</code> in <code>sum_nonmissing</code> <a href="https://github.com/JuliaLang/julia/issues/27681">currently</a> leads to a large performance drop. One can also note that conversion between <code>Array&#123;T&#125;</code> and <code>Array&#123;Union&#123;Missing,T&#125;&#125;</code> <a href="https://github.com/JuliaLang/julia/issues/26681">currently</a> involves a copy, which could in theory be avoided for bits types. Finally, <code>sum&#40;skipmissing&#40;x&#41;&#41;</code> is <a href="https://github.com/JuliaLang/julia/issues/27679">currently</a>  somewhat slower than the custom <code>sum_nonmissing</code> function due to the way the generic <code>mapreduce</code> implementation works. Hopefully these issues will be fixed in a not-too-distant future, as they do not require any fundamental changes.</p>
 <p>Another area which could be improved concerns convenience syntax and functions to deal with missing values. We are fully aware that <code>Union&#123;Missing,T&#125;</code> is quite verbose for those using missing values in daily work. The <code>T?</code> syntax has been discussed as a compact alternative, inspired by languages with <code>Nullable</code> types. However it is not clear yet whether it would be more appropriate to attribute this syntax to <code>Union&#123;Missing,T&#125;</code> or to <code>Union&#123;Nothing,T&#125;</code>. It is therefore currently reserved waiting for a decision. A possible solution would be to introduce one dedicated syntax for each of these types.</p>

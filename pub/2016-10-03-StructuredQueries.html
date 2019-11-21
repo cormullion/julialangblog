@@ -73,8 +73,7 @@
         x += A[i]
     end
     return x
-end
-</code></pre>
+end</code></pre>
 <p>where <code>df&#91;:A&#93;</code> retrieves the column named <code>:A</code> from <code>df</code>. A user might reasonably expect the above to be idiomatic Julia: the work is written in a <code>for</code> loop that is wrapped inside a function. However, this code will not be &#40;ahead-of-time&#41; compiled to efficient machine instructions because the type of the object that <code>df&#91;:A&#93;</code> returns cannot be inferred during static analysis. This is because there is nothing the <code>DataFrame</code> type can do to communicate the <code>eltype</code>s of its columns to the compiler.</p>
 <p>The nullable semantics problem is described throughout a dispersed series of GitHub issues &#40;the interested reader can start <a href="https://github.com/JuliaStats/NullableArrays.jl/issues/95">here</a> and <a href="https://github.com/JuliaStats/NullableArrays.jl/pull/85">here</a>&#41; &#40;and <a href="https://groups.google.com/d/topic/julia-dev/WD7-vQeweJE/discussion">at least one</a> mailing list post&#41;. To my knowledge, a self-contained treatment has not been given &#40;I don&#39;t necessarily claim to be giving one now&#41;. The problem has two parts, which I&#39;ll call the &quot;easy question&quot; and the &quot;hard question&quot;, respectively:</p>
 <ol>
@@ -100,8 +99,7 @@ end
 <p>These desiderata are interrelated. For instance, modularity of collection machinery allows the latter to be re-used in support for different data backends, thereby supporting generality as well.</p>
 <p>In this section we&#39;ll describe how SQ represents query structures. In the following sections we&#39;ll see how SQ&#39;s query representation framework suggests solutions to the column-indexing and nullable semantics problems described above.</p>
 <p>To express a query in SQ, one uses the <code>@query</code> macro:</p>
-<pre><code class="language-julia">@query qry
-</code></pre>
+<pre><code class="language-julia">@query qry</code></pre>
 <p>where <code>qry</code> is Julia code that follows a certain structure that we will describe below. <code>qry</code> is parsed according to what we&#39;ll call a <em>query context</em>. By a <em>context</em> we mean a general semantics for Julia code that may differ from the semantics of the standard Julia environment. That is to say: though <code>qry</code> must be valid Julia syntax, the code is not run as it would were it executed outside of the <code>@query</code> macro. Rather, code such as <code>qry</code> that occurs inside of a query context is subject to a number of transformations before it is run. <code>@query</code> uses these transformations to produce a graphical representation of the structure of <code>qry</code>. An <code>@query qry</code> invocation returns a <code>Query</code> object, which wraps the query graph produced as a result of processing <code>qry</code>.</p>
 <p>We said above that SQ represents queries in terms of their structure but does not itself guarantee any particular semantics. This allows packages to implement their own semantics for a given query structure. To demonstrate this design, I&#39;ve put together &#40;i&#41; an <a href="https://github.com/davidagold/AbstractTables.jl">abstract tabular data type</a>, <code>AbstractTable</code>; &#40;ii&#41; an <a href="https://github.com/davidagold/AbstractTables.jl#column-indexable-interface">interface</a> to support a collection machinery against what I call <em>column-indexable</em> types <code>T &lt;: AbstractTable</code>; and &#40;iii&#41; a <a href="https://github.com/davidagold/TablesDemo.jl">concrete tabular data type</a>, <code>Table &lt;: AbstractTable</code> that satisfies the column-indexable interface and therefore inherits a collection machinery to support SQ queries.</p>
 <p>This following behavior mimics that which one would expect from querying against a <code>DataFrame</code>. The main reason for putting together a demonstration using <code>Table</code>s and not <code>DataFrame</code>s has to do with ease of experimentation. I can more easily modify the <code>AbstractTable</code>/<code>Table</code> types and interfaces more easily than I can the <code>DataFrame</code> type and interface. Indeed, this project has become just as much about designing an in-memory Julia tabular data type that is most compatible with a Julia query framework as it is about designing a query framework compatible with an in-memory Julia tabular data type. Fortunately, the implementation of backend support for <code>Table</code>s will be straightforward to port to support for <code>DataFrame</code>s once we decide where such support should live.</p>
@@ -121,16 +119,13 @@ Tables.Table
 │ 9   │ 4.4          │ 2.9         │ 1.4          │ 0.2         │ "setosa" │
 │ 10  │ 4.9          │ 3.1         │ 1.5          │ 0.1         │ "setosa" │
 ⋮
-with 140 more rows.
-</code></pre>
+with 140 more rows.</code></pre>
 <p>We can then use <code>@query</code> to express a query against this data set – say, filtering rows according to a condition on <code>sepal_length</code>:</p>
 <pre><code class="language-julia">julia> q = @query filter(iris, sepal_length > 5.0)
-Query with Tables.Table source
-</code></pre>
+Query with Tables.Table source</code></pre>
 <p>This produces a <code>Query&#123;S&#125;</code> object, where <code>S</code> is the type of the data source</p>
 <pre><code class="language-julia">julia> typeof(q)
-StructuredQueries.Query{Tables.Table}
-</code></pre>
+StructuredQueries.Query{Tables.Table}</code></pre>
 <p>The structure of the query passed to <code>@query</code> consists of a <em>manipulation verb</em> &#40;e.g. <code>filter</code>&#41; that in turn takes a <em>data source</em> &#40;e.g. <code>iris</code>&#41; for its first argument and any number of <em>query arguments</em> &#40;e.g. <code>sepal_length &gt; 5.0</code>&#41; for its latter arguments. These are the three different &quot;parts&quot; of a query: &#40;1&#41; data sources &#40;or just &quot;sources&quot;&#41;, &#40;2&#41; manipulation verbs &#40;or just &quot;verbs&quot;&#41;, and &#40;3&#41; query arguments.</p>
 <p>Each part of a query induces its own context in which code is evaluated. The most significant aspect of such contexts is name resolution. That is to say, names resolve differently depending on which part of a query they appear in and in what capacity they appear:</p>
 <ol>
@@ -144,15 +139,13 @@ StructuredQueries.Query{Tables.Table}
 </li>
 </ol>
 <p>One can pipe arguments to verbs inside an <code>@query</code> context. For instance, the <code>Query</code> above is equivalent to that produced by</p>
-<pre><code class="language-julia">@query iris |> filter(sepal_length > 5.0)
-</code></pre>
+<pre><code class="language-julia">@query iris |> filter(sepal_length > 5.0)</code></pre>
 <p>In this case, the first argument &#40;<code>sepal_length &gt; 5.0</code>&#41; to the verb <code>filter</code> is not a data source specification &#40;<code>iris</code>&#41;, which is instead the first argument to <code>|&gt;</code>, but is rather a query argument &#40;<code>sepal_length &gt; 5.0</code>&#41;.</p>
 <code>Query</code> objects represent the structure of a query composed of the three building blocks above. To see how, lets take a look at the internals of a <code>Query</code>:</p>
 <pre><code class="language-julia">julia> fieldnames(q)
 2-element Array{Symbol,1}:
  :source
- :graph
-</code></pre>
+ :graph</code></pre>
 <p>The first field, <code>:source</code>, just contains the data source specified in the query – in this case, the <code>Table</code> object that was bound to the name <code>iris</code> when the query was specified. The second field, <code>:graph</code> contains a&#40;n admittedly not very interesting&#41; graphical representation of the query structure:</p>
 <pre><code class="language-julia">julia> q.graph
 FilterNode
@@ -160,8 +153,7 @@ FilterNode
       1)  sepal_length > 5.0
   inputs:
       1)  DataNode
-            source:  unset source
-</code></pre>
+            source:  unset source</code></pre>
 <p>The <code>filter</code> verb from the original <code>qry</code> expression passed to <code>@query</code> is represented in the graph by a <code>FilterNode</code> object and that the data source is represented by a <code>DataNode</code> object. Both <code>FilterNode</code> and <code>DataNode</code> are leaf subtypes of the abstract <code>QueryNode</code> type. The <code>FilterNode</code> is connected to the <code>DataNode</code> via the <code>:input</code> field of the former. In general, these connections constitute directed acyclic graphs. We may refer to such graphs as <code>QueryNode</code> graphs or query graphs.</p>
 <p>SQ currently recognizes the following verbs out of the box – that is, it properly incorporates them into a <code>QueryNode</code> graph:</p>
 <ul>
@@ -221,8 +213,7 @@ Source: Tables.Table
 │ 1   │ "virginica"  │ true   │ 0.428644  │
 │ 2   │ "setosa"     │ true   │ -3.17557  │
 │ 3   │ "versicolor" │ true   │ -0.136551 │
-│ 4   │ "setosa"     │ false  │ -4.7391   │
-</code></pre>
+│ 4   │ "setosa"     │ false  │ -4.7391   │</code></pre>
 <p>We hope to include support for the other verbs in the near future.</p>
 <p>Again we emphasize that this collection machinery is provided by the AbstractTables package, not StructuredQueries. As we see above, the latter provides a framework for representing a query structure, whereas packages such as AbstractTables &#40;i&#41; decide what it means to execute a query with a particular structure against a particular backend, and &#40;ii&#41; provide the implementation of the behavior in &#40;i&#41;.</p>
 <p>We provide a convenience macro, <code>@collect&#40;qry&#41;</code>, which is equivalent to <code>collect&#40;@query&#40;qry&#41;&#41;</code>, for when one wishes to query and collect in the same command:</p>
@@ -232,8 +223,7 @@ Source: Tables.Table
 Tables.Table
 │ Row │ sum       │
 ├─────┼───────────┤
-│ 1   │ 0.0998334 │
-</code></pre>
+│ 1   │ 0.0998334 │</code></pre>
 <p>Again, note the patterns of name resolution: names of functions &#40;e.g. <code>erf</code>&#41; invoked within the context of a query argument are evaluated within the enclosing scope of the <code>@query</code> invocation, whereas names in the arguments of such functions &#40;e.g. <code>petal_length</code>&#41; are taken to be attributes of the data source &#40;i.e., <code>iris</code>&#41;.</p>
 <h3 id="dummy_sources"><a href="/pub/2016-10-03-StructuredQueries.html#dummy_sources">Dummy sources</a></h3>
 <p>We saw above how there are three parts to a query structure: verbs, sources and query arguments. A <code>Query</code> object represents the verbs and query arguments together in the <code>QueryNode</code> graph and wraps the data source separately. This suggests that one ought to be able to generate query graphs using <code>@query</code> even if one does not specify a particular data source. One can do precisely this by using <em>dummy sources</em>, which are essentially placeholders that can be &quot;filled in&quot; with particular data sources later, when one calls <code>collect</code>. To indicate a source as a dummy source, simply prepend it with a <code>:</code>. For instance:</p>
@@ -255,14 +245,12 @@ Tables.Table
 │ 9   │ 8.8                │
 │ 10  │ 9.8                │
 ⋮
-with 140 more rows.
-</code></pre>
+with 140 more rows.</code></pre>
 <p>Whatever the name of the dummy source &#40;minus the <code>:</code>&#41; was in the query must be the key in the kwarg passed to <code>collect</code>. Otherwise, the method will fail:</p>
 <pre><code class="language-julia">julia> collect(q, tbl = iris)
 ERROR: ArgumentError: Undefined source: tbl. Check spelling in query.
  in #collect#5(::Array{Any,1}, ::Function, ::StructuredQueries.Query{Symbol}) at /Users/David/.julia/v0.6/StructuredQueries/src/query/collect.jl:23
- in (::Base.#kw##collect)(::Array{Any,1}, ::Base.#collect, ::StructuredQueries.Query{Symbol}) at ./<missing>:0
-</code></pre>
+ in (::Base.#kw##collect)(::Array{Any,1}, ::Base.#collect, ::StructuredQueries.Query{Symbol}) at ./<missing>:0</code></pre>
 <h2 id="the_two_problems"><a href="/pub/2016-10-03-StructuredQueries.html#the_two_problems">The two problems</a></h2>
 <p>Now that we&#39;ve seen what the SQ query framework itself consists of, we can discuss how such a framework may help to solve the column-indexing and nullable semantics problems.</p>
 <h3 id="type-inferability"><a href="/pub/2016-10-03-StructuredQueries.html#type-inferability">Type-inferability</a></h3>
@@ -274,8 +262,7 @@ ERROR: ArgumentError: Undefined source: tbl. Check spelling in query.
         x += A[i]
     end
     return x
-end
-</code></pre>
+end</code></pre>
 <p>What <em>would</em> make <code>f</code> above amenable to type inference is to pass <code>A &#61; df&#91;:A&#93;</code> above to an inner function that executes the loop, for instance</p>
 <pre><code class="language-julia">f_inner(A)
     x = zero(eltype(A))
@@ -283,8 +270,7 @@ end
         x += A[i]
     end
     return x
-end
-</code></pre>
+end</code></pre>
 <p>As long as <code>f_inner</code> does not get inlined, type inference will run &quot;at&quot; the point at which the body of <code>f</code> calls <code>f_inner</code> and will have access to the <code>eltype</code> of <code>df&#91;:A&#93;</code>, since the latter is passed as an argument to <code>f_inner</code>.</p>
 <p>This strategy of introducing a function barrier also works when one requires multiple columns. For instance, suppose I wanted to generate a new column <code>C</code> where <code>C&#91;i&#93; &#61; g&#40;A&#91;i&#93;, B&#91;i&#93;&#41;</code>. The following solution is type-inferable since the type parameters of the zipped iterator <code>zip&#40;A, B&#41;</code> reflects the <code>eltype</code>s of <code>A</code> and <code>B</code>:</p>
 <pre><code class="language-julia">function f(g, df)
@@ -299,12 +285,10 @@ function f_inner!(C, g, itr) # bang because mutates C
         C[i] = g(a, b)
     end
     return C
-end
-</code></pre>
+end</code></pre>
 <p>In other words: If one intends to iterate over the rows of some subset of columns of a <code>DataFrame</code>, then at some point there must be a function barrier through which is passed an argument whose signature reflects the <code>eltype</code>s of the relevant columns.</p>
 <p>The manipulation described above could be expressed for a column-indexable table &#40;e.g. a <code>Table</code> object&#41; as</p>
-<pre><code class="language-julia">@query select(tbl, C = A * B)
-</code></pre>
+<pre><code class="language-julia">@query select(tbl, C = A * B)</code></pre>
 <p>The <a href="https://github.com/davidagold/AbstractTables.jl/tree/master/src/column_indexable/query">collection machinery</a> that supports this query against, say, a <code>Table</code> source essentially <a href="https://github.com/davidagold/AbstractTables.jl/blob/master/src/column_indexable/query/select.jl">follows</a> the above pattern of <code>f</code> and <code>f_inner</code>. That is, an outer function passes a &quot;scalar kernel&quot; &#40;here, <code>row -&gt; row&#91;1&#93; * row&#91;2&#93;</code>&#41; that reflects the structure of <code>A * B</code> and a &quot;row iterator&quot; &#40;here <code>zip&#40;tbl&#91;:A&#93;, tbl&#91;:B&#93;&#41;</code>&#41; to an inner function that computes the value of the scalar kernel applied to the &quot;rows&quot; returned by iterating over the row iterator. &#40;Note that the argument to the scalar kernel is assumed to be a <code>Tuple</code> whose individual elements assume the positions of named attributes &#40;such as <code>A</code> and <code>B</code>&#41; in the body of the &quot;value expression&quot; &#40;here <code>A * B</code>&#41; from which the scalar kernel is generated&#41;.</p>
 <p>The scalar kernel and the information about which column to extract from <code>tbl</code> and <code>zip</code> together are all stored in the <code>QueryNode</code> graph produced by <code>@query</code>. Much of the work in producing such a graph consists in extracting such information from the <code>qry</code> expression &#40;here <code>select&#40;tbl, C &#61; A * B&#41;</code>&#41; and processing it to produce &#40;i&#41; a lambda that captures the form of the transformation &#40;<code>A * B</code>&#41;, &#40;ii&#41; a <code>Symbol</code> that names the resultant column &#40;<code>C</code>&#41; and a <code>Vector&#123;Symbol&#125;</code> that lists the relevant argument column names &#40;<code>&#91;:A, :B&#93;</code>&#41; in the order they are encountered during the production of the lambda.</p>
 <p>Note that these data &#40;a scalar kernel and result and argument fields&#41; are not necessary to generate SQL code from a raw query argument, say the <code>Expr</code> object <code>:&#40; C &#61; A * B &#41;</code>. Thus, one might argue that it is somewhat wasteful to compute such data and store it in the <code>QueryNode</code> graph when one might be able to compute the data at run-time dispatch of <code>collect</code> on a <code>Query&#123;S&#125;</code> where <code>S</code> is a type that satisfies the column-indexable interface. This is a good point, but there are two considerations to account. The first is that computing the scalar kernel and extracting the result and argument fields from the query argument is probably not prohibitively expensive. The second is that generating the scalar kernel at run-time &#40;i&#41; involves use of <code>eval</code>, which is to be avoided, and &#40;ii&#41; may involve a lot of work to re-incorporate the module information of names appearing in expression to be <code>eval</code>&#39;d into a scalar kernel. For now, it is easiest to generate scalar kernels at macroexpand-time and let them come along for the ride in the <code>QueryNode</code> graph even if the latter is to be collected against a data source &#40;e.g. a SQL connection&#41; that doesn&#39;t need such data.</p>
@@ -318,8 +302,7 @@ end
     else
         return Nullable(f(x.value))
     end
-end
-</code></pre>
+end</code></pre>
 <p>with natural analogues for methods with n-ary arguments. This process is a bit cumbersome, but it would not be difficult to automate with a macro with which one could annotate the original definition <code>f&#40;x::T&#41;</code>. Call this approach the &quot;method extension lifting&quot; approach.</p>
 <p>The method extension lifting approach is very flexible. However, it does face some difficulties. One must somehow decide which functions should be lifted in this manner, and it&#39;s not clear how this line &#40;between lifted and non-lifted functions&#41; ought to be drawn. And if one cannot edit the definition of a function then a macro is of no use; one must manually introduce the lifted variant.</p>
 <p>There is a further problem. If one wants to support lifting over arguments with &quot;mixed&quot; signatures – i.e. signatures in which some argument types are <code>Nullable</code> and some are not – then one has either to extend the promotion machinery or to define methods for mixed signatures, e.g. <code>&#43;&#123;T&#125;&#40;x, y::Nullable&#123;T&#125;&#41;</code>. That may end up being a lot of methods. Even if their definition can be automated with metaprogramming, the compilation costs associated with method proliferation may be considerable &#40;but I haven&#39;t tested this&#41;.</p>
@@ -333,21 +316,17 @@ end
         U = Core.Inference.return_type(f, (typeof(x),))
         return Nullable{U}()
     end
-end
-</code></pre>
+end</code></pre>
 <p>This definition can naturally be extended to methods with more than one argument. The primary advantage of this approach over method extension lifting is its generality: one needs only to define one &#40;two, three&#41; higher-order <code>lift</code> method to support lifting of all functions of one &#40;two, <em>n</em>&#41; argument&#40;s&#41;, as opposed to having to define a lifted version for each such function. Note that as long as <code>hasvalue</code> has some generic fallback method for non-<code>Nullable</code> arguments, such <code>lift</code> functions cover both standard and mixed-signature lifting. &#40;Ideally one would ensure that the code is optimized for when types are non-<code>Nullable</code>; in particular, one would ensure that the dead branch is removed – cf. <a href="https://github.com/JuliaLang/julia/pull/18484">julia#18484</a>.&#41; Call this approach the &quot;higher-order lifting&quot; approach.</p>
 <p>So, with the higher-order lifting approach we might better avoid method proliferation and generality worries, which is nice. However, now we require users to invoke <code>lift</code> everywhere. In particular, to lift <code>f&#40;g&#40;x&#41;&#41;</code> over a <code>Nullable</code> argument <code>x</code>, one needs to write <code>lift&#40;f, lift&#40;g, x&#41;&#41;</code>. The least we could do in this case is provide an <code>@lift</code> macro that, say, traverses the AST of <code>f&#40;g&#40;x&#41;&#41;</code> and replaces each function call <code>f&#40;...&#41;</code> by an invocation of <code>lift&#40;f, ...&#41;</code>. That might be reasonable, but it&#39;s still an artifact of implementation details of support for missing values, and ideally it would not be exposed to users.</p>
 <p>Recall that the present query framework extracts the &quot;value expression&quot; of a query argument &#40;for instance, <code>B * C</code> in the query argument <code>C &#61; A * B</code>&#41; and generates a lambda that mimics the former&#39;s structure &#40;in this case, <code>row -&gt; row&#91;1&#93; * row&#91;2&#93;</code>&#41;. A proposed modification &#40;see <a href="https://github.com/davidagold/_AbstractTables.jl/issues/2">AbstractTables#2</a>&#41; to this process is to modify the AST of the value expression &#40;<code>A * B</code>&#41; by appropriately inserting calls to <code>lift</code>, e.g.</p>
-<pre><code class="language-julia">row -> lift(*, row[1], row[2])
-</code></pre>
+<pre><code class="language-julia">row -> lift(*, row[1], row[2])</code></pre>
 <p>While there is a <a href="https://github.com/davidagold/AbstractTables.jl/blob/2a7771ce865b961fa0e454508ce8b7aa6a85e1fd/src/column_indexable/query/select.jl#L43-L48">simpler way</a> to achieve standard lifting semantics, this approach &#40;which is currently employed by the column-indexing collection machinery&#41; does not easily support non-standard lifting semantics such as three-valued logic.</p>
 <p>The higher-order lifting approach is not without its own drawbacks. Most notably, non-standard lifting semantics, such as three-valued logic, are more difficult to implement and are subject to restrictions that do not apply to the method extension lifting approach. The details of this difficulty is the proper subject of another blog post. The summary of the problem is: higher-order lifting &#40;via code transformation, such as within <code>@query</code>&#41; can only give non-standard lifting semantics to methods called explicitly within the expression passed to <code>@query</code>. That is,</p>
-<pre><code class="language-julia">@query filter(tbl, A | B)
-</code></pre>
+<pre><code class="language-julia">@query filter(tbl, A | B)</code></pre>
 <p>can be given, say, three-valued logic semantics via higher-order lifting, but</p>
 <pre><code class="language-julia">f(x, y) = x | y
-@query filter(tbl, f(A, B))
-</code></pre> cannot.</p>
+@query filter(tbl, f(A, B))</code></pre> cannot.</p>
 <p>Which approach to solving the hard question of <code>Nullable</code> semantics is better? It really is not clear. Right now, the Julia statistics community is trying out both solutions. I am hopeful time and experimentation will yield new insights.</p>
 <h2 id="sql_backends"><a href="/pub/2016-10-03-StructuredQueries.html#sql_backends">SQL backends</a></h2>
 <p>Above we have seen &#40;i&#41; how the implementation of a generic querying interface suggested a solution to the column-indexing and the <code>Nullable</code> semantics problems and &#40;ii&#41; how these latter solutions may be implemented in a manner generic over so-called column-indexable in-memory Julia tabular data structures. But we haven&#39;t said anything about how the interface is generic over tables other than in-memory Julia objects. In particular, we desire that the above framework be applicable to SQL database connections as well.</p>
@@ -356,8 +335,7 @@ end
 <p>There is a general roadmap available at  <a href="https://github.com/davidagold/StructuredQueries.jl/issues/19">structuredQueries.jl#19</a>. I&#39;ll briefly describe some of what I believe are the most pressing/interesting open questions.</p>
 <p>Interpolation syntax and implementation are both significant open questions. Suppose I wish to refer to a name in the enclosing scope of an <code>@query</code> invocation. A straightforward syntax would be to prepend the interpolated variable with <code>&#36;</code>, as in</p>
 <pre><code class="language-julia">c = .5
-q = @query filter(tbl, A > $c)
-</code></pre>
+q = @query filter(tbl, A > $c)</code></pre>
 <p>How should this be implemented? For full generality, we would like to be able to &quot;capture&quot; <code>c</code> from the enclosing scope and store it <code>q</code>. One way to do so is to include <code>c</code> in the closure of a lambda <code>&#40;&#41; -&gt; c</code> that we store in <code>q</code>. However, there is the question of how to deal with <a href="https://github.com/davidagold/StructuredQueries.jl/issues/22#issuecomment-244995697">problems of type-inferability</a>. Solving this problem may either require or strongly suggest some sort of &quot;parametrized queries&quot; API by which one can designate a name inside of a query argument context a <em>parameter</em> that can then be bound after the <code>@query</code> invocation, e.g. specified as kwargs to <code>collect</code> or to a function like <code>bind&#33;&#40;q::Query&#91;; kwargs...&#93;&#41;</code>.</p>
 <p>We are also still deciding what the general syntax within a query context should look like. A big part of this decision concerns how aliasing and related functionality ought to work. See <a href="https://github.com/davidagold/StructuredQueries.jl/issues/21">StructuredQueries.jl#21</a> for more details. This issue is similar to that of interpolation syntax insofar as both involve name resolution within different query contexts &#40;e.g. in a data source specification context vs. a query argument context&#41;.</p>
 <p>Finally, extensibility of not only <code>collect</code> but also of the graph generation facilities is an important issue, of which we hope to say more in a later post.</p>

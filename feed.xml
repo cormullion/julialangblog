@@ -254,6 +254,14 @@
     <pubDate>Tue, 14 Aug 2018 00:00:00 UT</pubDate>
   </item>
   <item>
+    <title>Pkg + BinaryBuilder -- The Next Generation</title>
+    <link>https://julialangblogmirror.netlify.com/pub/2019-11-19-artifacts.html</link>
+    <description><![CDATA[Over the past few months, we have been iterating on and refining a design for <code>Pkg</code> in Julia 1.3&#43; to reason about binary objects that are not Julia packages.  While the motivating application for this work has been improving the installation experience for binaries built with <a href="https://github.com/JuliaPackaging/BinaryBuilder.jl"><code>BinaryBuilder.jl</code></a>, the artifacts subsystem is much more general and is widely applicable to all Julia packages.
+</br><a href="https://julialangblogmirror.netlify.com/pub/2019-11-19-artifacts.html">Read more</a>]]></description>
+    <guid>https://julialangblogmirror.netlify.com/pub/2019-11-19-artifacts.html</guid>
+    <pubDate>Tue, 19 Nov 2019 00:00:00 UT</pubDate>
+  </item>
+  <item>
     <title>JSoC 2015 project: Automatic Differentiation in Julia with ForwardDiff.jl</title>
     <link>https://julialangblogmirror.netlify.com/pub/2015-10-23-auto-diff-in-julia.html</link>
     <description><![CDATA[JSoC 2015 project: Automatic Differentiation in Julia with ForwardDiff.jl | This summer, I&#39;ve had the good fortune to be able to participate in the first ever <strong>Julia Summer of Code &#40;JSoC&#41;</strong>, generously sponsored by the Gordon and Betty Moore Foundation. My JSoC project was to explore the use of Julia for automatic differentiation &#40;AD&#41;, a topic with a wide array of applicati... 

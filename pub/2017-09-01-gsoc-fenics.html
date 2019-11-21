@@ -63,7 +63,7 @@
 
 <div class="jd-content">
 <p>Throughout this Google Summer of Code project I, along with my mentors, aimed to create a Wrapper for the FEniCS Finite Element Toolbox in the Julia Language. Our work done can be found at <a href="https://github.com/JuliaDiffEq/FEniCS.jl">FEniCS.jl</a> . This would allow users to perform FEM calculations directly in Julia, utilizing our <a href="https://github.com/JuliaPy/PyCall.jl">PyCall.jl</a> wrapping functionality. We currently have wrapped the main  functionality, along with providing the necessary instructions to add further components when they are deemed necessary. Members of the Julia community not directly related to the project also contributed small fixes and suggestions throughout the project. The majority of the code produced has already been merged to the GitHub repository &#40;which was created specifically for this project&#41;. One of the main improvements which would greatly increase its usage would be the further integration with the JuliaDiffEq package.</p>
-
+<div class="jd-toc"><ol><li><a href="/pub/2017-09-01-gsoc-fenics.html#what_is_fenics">What is FEniCS?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#but_how_does_it_work">But, how does it work?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#and_internally">And, internally?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#demonstration">Demonstration</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#challenges">Challenges</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#further_improvements">Further Improvements</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#on_the_shoulders_of_giants">On the Shoulders of Giants</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="what_is_fenics"><a href="/pub/2017-09-01-gsoc-fenics.html#what_is_fenics">What is FEniCS?</a></h2>
 <p><strong><a href="https://fenicsproject.org/">FEniCS</a></strong> describes itself as a popular open-source &#40;LGPLv3&#41; computing platform for solving partial differential equations &#40;PDEs&#41;. FEniCS enables users to quickly translate scientific models into efficient finite element code, i.e. it allows us to describe &#40;some&#41; complicated mathematical equations and solve them automatically using computer simulations.</p>
 <h2 id="but_how_does_it_work"><a href="/pub/2017-09-01-gsoc-fenics.html#but_how_does_it_work">But, how does it work?</a></h2>
@@ -93,18 +93,13 @@ errornorm(u_D, U, norm="L2")
 get_array(L) #this returns an array for the stiffness matrix
 get_array(U) #this returns an array for the solution values
 vtkfile = File("poisson/solution.pvd")
-vtkfile << U.pyobject #exports the solution to a vtkfile
-</code></pre>
+vtkfile << U.pyobject #exports the solution to a vtkfile</code></pre>
 <p>Apart from just defining the problem, we can also access and save the arrays corresponding to various variational forms. These return an <a href="https://docs.julialang.org/en/latest/stdlib/arrays/">array type</a> We can do this as follows :</p>
 <pre><code class="language-julia">a = dot(grad(u),grad(v))*dx #this sets up the variatonal form from the previous problem
-variational_matrix = get_array(a)
-
-</code></pre>
+variational_matrix = get_array(a)</code></pre>
 <p>We can also plot the solution &#40;this relies on FEniCS backend for plotting&#41; :</p>
 <pre><code class="language-julia">FEniCS.Plot(mesh)
-FEniCS.Plot(U)
-
-</code></pre>
+FEniCS.Plot(U)</code></pre>
 <p><img src="/assets/images/blog/2017-09-01-gsoc-fenics/mesh.png" alt="Square Mesh" /></p>
 <p><img src="/assets/images/blog/2017-09-01-gsoc-fenics/result.png" alt="Solution" /></p>
 <h2 id="challenges"><a href="/pub/2017-09-01-gsoc-fenics.html#challenges">Challenges</a></h2>

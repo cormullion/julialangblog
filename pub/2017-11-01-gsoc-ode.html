@@ -78,15 +78,13 @@ L = q_1\dot{q_2} - \dot{q_1}q_2.
 H(q,p) = norm(p)^2/2 - inv(norm(q))
 L(q,p) = q[1]*p[2] - p[1]*q[2]
 pdot(dp,p,q,params,t) = ForwardDiff.gradient!(dp, q->-H(q, p), q)
-qdot(dq,p,q,params,t) = ForwardDiff.gradient!(dq, p-> H(q, p), p)
-</code></pre>
+qdot(dq,p,q,params,t) = ForwardDiff.gradient!(dq, p-> H(q, p), p)</code></pre>
 <p>Then, we solve this problem by <code>Ruth3</code> symplectic integrator with appropriate initial conditions.</p>
 <pre><code class="language-julia">initial_position = [.4, 0]
 initial_velocity = [0., 2.]
 tspan = (0,20.)
 prob = DynamicalODEProblem(pdot, qdot, initial_velocity, initial_position, tspan)
-sol = solve(prob, Ruth3(), dt=1//50);
-</code></pre>
+sol = solve(prob, Ruth3(), dt=1//50);</code></pre>
 <p>Finally, we analyze the solution by computing the first integrals and plotting them.</p>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/symplectic_ruth3.svg" alt="first integrals" /></p>
 <p>Note that symplectic integrator doesn&#39;t mean that it has exact conservation. The solutions of a symplectic integrator are on a symplectic manifold, but don&#39;t necessarily conserve the Hamiltonian &#40;energy&#41;. The energy can have fluctuations in a &#40;quasi-&#41;periodic manner, so that the first integrals have small variations. In the above case, the energy varies at most <code>6e-6</code>, and it tends to come back. The variations also decrease as <code>dt</code> is smaller. The angular momentum is conserved perfectly. More details are in this <a href="http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb">notebook</a>.</p>
@@ -109,8 +107,7 @@ function draw_duffing(Γ, α, β, δ, ω)
   y1, x1 = [map(x->x[i], sol.u[end-2000:end]) for i in 1:2]
   scatter(x1, y1, markersize=0.8, leg=false, title="Poincaré surface of duffing oscillator", xlabel="\$x\$", ylabel="\$\\dot{x}\$", color=:black, xlims=(0.5,1.7))
 end
-draw_duffing(8, 1, 5, 0.02, 0.5)
-</code></pre>
+draw_duffing(8, 1, 5, 0.02, 0.5)</code></pre>
 <p>Then, we need to get the solution at \(\omega t \mod 2\pi=0\) to plot the Poincaré section, and we can achieve this by using <a href="http://docs.juliadiffeq.org/latest/basics/common_solver_opts.html#Output-Control-1"><code>saveat</code></a>.</p>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/duffing_poincare_0.svg" alt="duffing Poincaré section" /></p>
 <h4 id="driven_pendulum"><a href="/pub/2017-11-01-gsoc-ode.html#driven_pendulum">Driven pendulum</a></h4>
@@ -130,8 +127,7 @@ function draw_driven_pendulum(f₀,q,ω)
   y1, x1 = [map(x->x[i], sol.u[500:end]) for i in 1:2]
   scatter(x1.%pi, y1, markersize=0.8, leg=false, title="Poincaré surface of driven pendulum", xlabel="\$\\theta\$", ylabel="\$\\dot{\\theta}\$", color=:black)
 end
-draw_driven_pendulum(1.12456789, 0.23456789, 0.7425755501794571)
-</code></pre>
+draw_driven_pendulum(1.12456789, 0.23456789, 0.7425755501794571)</code></pre>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/driven_poincare_0.svg" alt="driven pendulum Poincaré section" /></p>
 <h2 id="boundary_value_problem"><a href="/pub/2017-11-01-gsoc-ode.html#boundary_value_problem">Boundary Value Problem</a></h2>
 <p>The MIRK solver in <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl"><code>BoundaryValueDiffEq</code></a> doesn&#39;t have adaptivity and dense output yet, but with all the things that I have learned from IVPs, most of the pieces have been implemented or understood and so we can expect this to be completed in the near future. Here is an example of using the <code>BoundaryValueDiffEq</code> package. In this example, we will solve the problem</p>
@@ -153,8 +149,7 @@ function bc1(residual, u, p, t)
     residual[2] = u[end][1] - pi/2 # the solution at the end of the time span should be pi/2
 end
 bvp1 = BVProblem(simplependulum, bc1, [pi/2,pi/2], tspan)
-sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)
-</code></pre>
+sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)</code></pre>
 <p><img src="/assets/images/blog/2017-11-01-gsoc-ode/bvp.svg" alt="bvp" /></p>
 <p>More details can be found in <a href="http://docs.juliadiffeq.org/latest/tutorials/bvp_example.html">here</a>.</p>
 <h2 id="acknowledgements"><a href="/pub/2017-11-01-gsoc-ode.html#acknowledgements">Acknowledgements</a></h2>

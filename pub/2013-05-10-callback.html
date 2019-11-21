@@ -68,33 +68,28 @@
 <h2 id="sorting_with_qsort"><a href="/pub/2013-05-10-callback.html#sorting_with_qsort">Sorting with <code>qsort</code></a></h2>
 <p>Perhaps the most well-known example of a callback parameter is provided by the <a href="http://pubs.opengroup.org/onlinepubs/009695399/functions/qsort.html">qsort</a> function, part of the ANSI C standard library and declared in C as:</p>
 <pre><code class="language-julia">void qsort(void *base, size_t nmemb, size_t size,
-           int(*compare)(const void *a, const void *b));
-</code></pre>
+           int(*compare)(const void *a, const void *b));</code></pre>
 <p>The <code>base</code> argument is a pointer to an array of length <code>nmemb</code>, with elements of <code>size</code> bytes each.  <code>compare</code> is a callback function which takes pointers to two elements <code>a</code> and <code>b</code> and returns an integer less/greater than zero if <code>a</code> should appear before/after <code>b</code> &#40;or zero if any order is permitted&#41;.  Now, suppose that we have a 1d array <code>A</code> of values in Julia that we want to sort using the <code>qsort</code> function &#40;rather than Julia&#39;s built-in <code>sort</code> function&#41;.  Before we worry about calling <code>qsort</code> and passing arguments, we need to write a comparison function that works for some arbitrary type <code>T</code>, e.g.</p>
 <pre><code class="language-julia">function mycompare{T}(a_::Ptr{T}, b_::Ptr{T})
     a = unsafe_load(a_)
     b = unsafe_load(b_)
     return a < b ? cint(-1) : a > b ? cint(+1) : cint(0)
 end
-cint(n) = convert(Cint, n)
-</code></pre>
+cint(n) = convert(Cint, n)</code></pre>
 <p>Notice that we use the built-in function <code>unsafe_load</code> to fetch the values pointed to by the arguments <code>a_</code> and <code>b_</code> &#40;which is &quot;unsafe&quot; because it will crash if these are not valid pointers, but <code>qsort</code> will always pass valid pointers&#41;.  Also, we have to be a little careful about return values: <code>qsort</code> expects a function returning a C <code>int</code>, so we must be sure to return <code>Cint</code> &#40;the corresponding type in Julia&#41; via a call to <code>convert</code>.</p>
 <p>Now, how do we pass this to C?  A function pointer in C is essentially just a pointer to the memory location of the machine code implementing that function, whereas a function value <code>mycompare</code> &#40;of type <code>Function</code>&#41; in Julia is quite different.  Thanks to Julia&#39;s <a href="http://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compilation</a> approach,a Julia function may not even be <em>compiled</em> until the first time it is called, and in general the <em>same</em> Julia function may be compiled into <em>multiple</em> machine-code instantiations, which are specialized for arguments of different types &#40;e.g. different <code>T</code> in this case&#41;.  So, you can imagine that <code>mycompare</code> must internally point to a rather complicated data structure &#40;a <code>jl_function_t</code> in <code>julia.h</code>, if you are interested&#41;, which holds information about the argument types, the compiled versions &#40;if any&#41;, and so on.  In general, it must store a <a href="http://en.wikipedia.org/wiki/Closure_&#37;28computer_science&#37;29">closure</a> with information about the environment in which the function was defined; we will talk more about this below.  In any case, it is a very different object than a simple pointer to machine code for one set of argument types.  Fortunately, we can get the latter simply by calling a <a href="https://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/#Closure-cfunctions-1">built-in Julia function</a> called <code>cfunction</code>:</p>
-<pre><code class="language-julia">const mycompare_c = cfunction(mycompare, Cint, (Ptr{Cdouble}, Ptr{Cdouble}))
-</code></pre>
+<pre><code class="language-julia">const mycompare_c = cfunction(mycompare, Cint, (Ptr{Cdouble}, Ptr{Cdouble}))</code></pre>
 <p>Here, we pass <code>cfunction</code> three arguments: the function <code>mycompare</code>, the return type <code>Cint</code>, and a tuple of the argument types, in this case to sort an array of <code>Cdouble</code> &#40;<code>Float64</code>&#41; elements.  Julia compiles a version of <code>mycompare</code> specialized for these argument types &#40;if it has not done so already&#41;, and returns a <code>Ptr&#123;Void&#125;</code> holding the address of the machine code, <em>exactly</em> what we need to pass to <code>qsort</code>.  We are now ready to call <code>qsort</code> on some sample data:</p>
 <pre><code class="language-julia">A = [1.3, -2.7, 4.4, 3.1]
 ccall(:qsort, Void, (Ptr{Cdouble}, Csize_t, Csize_t, Ptr{Void}),
-      A, length(A), sizeof(eltype(A)), mycompare_c)
-</code></pre>
+      A, length(A), sizeof(eltype(A)), mycompare_c)</code></pre>
 <p>After this executes, <code>A</code> is changed to the sorted array <code>&#91; -2.7, 1.3,
 3.1, 4.4&#93;</code>.  Note that Julia knows how to convert an array <code>A::Vector&#123;Cdouble&#125;</code> into a <code>Ptr&#123;Cdouble&#125;</code>, how to compute the <code>sizeof</code> a type in bytes &#40;identical to C&#39;s <code>sizeof</code> operator&#41;, and so on.  For fun, try inserting a <code>println&#40;&quot;mycompare&#40;&#36;a,&#36;b&#41;&quot;&#41;</code> line into mycompare, which will allow you to see the comparisons that <code>qsort</code> is performing &#40;and to verify that it is really calling the Julia function that you passed to it&#41;.</p>
 <h2 id="the_problem_with_closures"><a href="/pub/2013-05-10-callback.html#the_problem_with_closures">The problem with closures</a></h2>
 <p>We aren&#39;t done yet, however.  If you start passing callback functions to C routines, it won&#39;t be long before you discover that <code>cfunction</code> doesn&#39;t always work.  For example, suppose we tried to declare our comparison function inline, via:</p>
 <pre><code class="language-julia">mycomp = cfunction((a_,b_) -> unsafe_load(a_) < unsafe_load(b_) ?
                               cint(-1) : cint(+1),
-                   Cint, (Ptr{Cdouble}, Ptr{Cdouble}))
-</code></pre>
+                   Cint, (Ptr{Cdouble}, Ptr{Cdouble}))</code></pre>
 <p>Julia barfs on this, printing <code>ERROR: function is not yet c-callable</code>.  In general, <code>cfunction</code> only works for &quot;top-level&quot; functions: named functions defined in the top-level &#40;global or module&#41; scope, but <em>not</em> anonymous &#40;<code>args -&gt; value</code>&#41; functions and not functions defined within other functions &#40;&quot;nested&quot; functions&#41;.  The reason for this stems from one important concept in computer science: a <a href="http://en.wikipedia.org/wiki/Closure_&#37;28computer_science&#37;29">closure</a>.</p>
 <p>To understand the need for closures, and the difficulty they pose for callback functions, suppose that we wanted to provide a nicer interface for qsort, one which permitted the user to simply pass a <code>lessthan</code> function returning <code>true</code> or <code>false</code> while hiding all of the low-level business with pointers, <code>Cint</code>, and so on.  We might <em>like</em> to do something of the form:</p>
 <pre><code class="language-julia">function qsort!{T}(A::Vector{T}, lessthan::Function)
@@ -107,8 +102,7 @@ ccall(:qsort, Void, (Ptr{Cdouble}, Csize_t, Csize_t, Ptr{Void}),
     ccall(:qsort, Void, (Ptr{T}, Csize_t, Csize_t, Ptr{Void}),
           A, length(A), sizeof(T), mycompare_c)
     A
-end
-</code></pre>
+end</code></pre>
 <p>Then we could simply call <code>qsort&#33;&#40;&#91;1.3, -2.7, 4.4, 3.1&#93;, &lt;&#41;</code> to sort in ascending order using the built-in <code>&lt;</code> comparison, or any other comparison function we wanted.  Unfortunately <code>cfunction</code> will again barf when you try to call <code>qsort&#33;</code>, and it is no longer so difficult to understand why.  Notice that the nested <code>mycompare</code> function is no longer self-contained: it uses the variable <code>lessthan</code> from the surrounding scope.  This is a common pattern for nested functions and anonymous functions: often, they are parameterized by local variables in the environment where the function is defined.  Technically, the ability to have this kind of dependency is provided by <a href="http://en.wikipedia.org/wiki/Scope_&#37;28computer_science&#37;29">lexical scoping</a> in a programming language like Julia, and is typical of any language in which functions are &quot;<a href="http://en.wikipedia.org/wiki/First-class_function">first-class</a>&quot; objects.  In order to support lexical scoping, a Julia <code>Function</code> object needs to internally carry around a pointer to the variables in the enclosing environment, and this encapsulation is called a <em>closure</em>.</p>
 <p>In contrast, a C function pointer is <em>not</em> a closure.  It doesn&#39;t enclose a pointer to the environment in which the function was defined, or anything else for that matter; it is just the address of a stream of instructions.  This makes it hard, in C, to write functions to transform other functions &#40;<a href="http://en.wikipedia.org/wiki/Higher-order_function">higher-order functions</a>&#41; or to parameterize functions by local variables.  This apparently leaves us with two options, neither of which is especially attractive:</p>
 <ul>
@@ -121,8 +115,7 @@ end
 <h2 id="passing_closures_via_pass-through_pointers"><a href="/pub/2013-05-10-callback.html#passing_closures_via_pass-through_pointers">Passing closures via pass-through pointers</a></h2>
 <p>The <code>qsort</code> interface is nowadays considered rather antiquated.  Years ago, it was supplemented on BSD-Unix systems, and eventually in GNU libc, by a function called <code>qsort_r</code> that solves the problem of passing parameters to the callback in a re-entrant way.  This is how the BSD &#40;e.g. MacOS&#41; <code>qsort_r</code> function <a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/qsort_r.3.html">is defined</a>:</p>
 <pre><code class="language-julia">void qsort_r(void *base, size_t nmemb, size_t size, void *thunk,
-             int (*compare)(void *thunk, const void *a, const void *b));
-</code></pre>
+             int (*compare)(void *thunk, const void *a, const void *b));</code></pre>
 <p>Compared to <code>qsort</code>, there is an extra <code>thunk</code> parameter, and this is <em>passed through</em> to the <code>compare</code> function as its first argument.  In this way, you can pass a pointer to <em>arbitrary</em> data through to your callback, and we can exploit this to pass a closure through for an arbitrary Julia callback.</p>
 <p>All we need is a way to convert a Julia <code>Function</code> into an opaque <code>Ptr&#123;Void&#125;</code> so that we can pass it through to our callback, and then a way to convert the opaque pointer back into a <code>Function</code>.  The former is automatic if we simply declare the <code>ccall</code> argument as type <code>Any</code> &#40;which passes the argument as an opaque Julia object pointer&#41;, and the latter is accomplished by the built-in function <code>unsafe_pointer_to_objref</code>.  &#40;Technically, we could use type <code>Function</code> or an explicit call to <code>pointer_from_objref</code> instead of <code>Any</code>.&#41;  Using these, we can now define a working high-level <code>qsort&#33;</code> function that takes an arbitrary <code>lessthan</code> comparison-function argument:</p>
 <pre><code class="language-julia">function qsort!_compare{T}(lessthan_::Ptr{Void}, a_::Ptr{T}, b_::Ptr{T})
@@ -137,8 +130,7 @@ function qsort!{T}(A::Vector{T}, lessthan::Function=<)
     ccall(:qsort_r, Void, (Ptr{T}, Csize_t, Csize_t, Any, Ptr{Void}),
           A, length(A), sizeof(T), lessthan, compare_c)
     return A
-end
-</code></pre>
+end</code></pre>
 <code>qsort&#33;_compare</code> is a top-level function, so <code>cfunction</code> has no problem with it, and it will only be compiled once per type <code>T</code> to be sorted &#40;rather than once per call to <code>qsort&#33;</code> or per <code>lessthan</code> function&#41;.  We use the explicit <code>::Function</code> assertion to tell the compiler that we will only pass <code>Function</code> pointers in <code>lessthan_</code>. Note that we gave the <code>lessthan</code> argument a default value of <code>&lt;</code> &#40;default arguments being a <a href="https://github.com/JuliaLang/julia/issues/1817">recent feature</a> added to Julia&#41;.</p>
 <p>We can now do <code>qsort&#33;&#40;&#91;1.3, -2.7, 4.4, 3.1&#93;&#41;</code> and it will return the array sorted in ascending order, or <code>qsort&#33;&#40;&#91;1.3, -2.7,
 4.4, 3.1&#93;, &gt;&#41;</code> to sort in descending order.</p>
@@ -146,8 +138,7 @@ end
 <p>The example above has one major problem that has nothing to do with Julia: the <code>qsort_r</code> function is not portable.  The above example won&#39;t work on Windows, since the Windows C library doesn&#39;t define <code>qsort_r</code> &#40;instead, it has a function called <a href="http://msdn.microsoft.com/en-us/library/4xc60xas&#37;28VS.80&#37;29.aspx">qsort_s</a>, which of course uses an argument order incompatible with <em>both</em> the BSD and GNU <code>qsort_r</code> functions&#41;.  Worse, it will crash on GNU/Linux systems, which <em>do</em> provide <code>qsort_r</code> but with an <a href="http://www.memoryhole.net/kyle/2009/11/qsort_r.html">incompatible</a> <a href="http://www.cygwin.com/ml/libc-alpha/2008-12/msg00008.html">calling convention</a>. And as a result it is difficult to use <code>qsort_r</code> in a way that does not crash either on GNU/Linux or BSD &#40;e.g. MacOS&#41; systems.  This is how glibc&#39;s <code>qsort_r</code> is defined:</p>
 <pre><code class="language-julia">void qsort_r(void *base, size_t nmemb, size_t size,
              int (*compare)(const void *a, const void *b, void *thunk),
-              void *thunk);
-</code></pre>
+              void *thunk);</code></pre>
 <p>Note that the position of the <code>thunk</code> argument is moved, both in <code>qsort_r</code> itself and in the comparison function.   So, the corresponding <code>qsort&#33;</code> Julia code on GNU/Linux systems should be:</p>
 <pre><code class="language-julia">function qsort!_compare{T}(a_::Ptr{T}, b_::Ptr{T}, lessthan_::Ptr{Void})
     a = unsafe_load(a_)
@@ -161,8 +152,7 @@ function qsort!{T}(A::Vector{T}, lessthan::Function=<)
     ccall(:qsort_r, Void, (Ptr{T}, Csize_t, Csize_t, Ptr{Void}, Any),
           A, length(A), sizeof(T), compare_c, lessthan)
     return A
-end
-</code></pre>
+end</code></pre>
 <p>If you really needed to call <code>qsort_r</code> from Julia, you could use the above definitions if <code>OS_NAME &#61;&#61; :Linux</code> and the BSD definitions otherwise, with a third version using <code>qsort_s</code> on Windows, but fortunately there is not much need as Julia comes with its own perfectly adequate <code>sort</code> and <code>sort&#33;</code> routines.</p>
 <h2 id="passing_closures_in_data_structures"><a href="/pub/2013-05-10-callback.html#passing_closures_in_data_structures">Passing closures in data structures</a></h2>
 <p>As another example that is oriented more towards numerical computations, we&#39;ll examine how we might call the numerical integration routines in the <a href="http://www.gnu.org/software/gsl/">GNU Scientific Library &#40;GSL&#41;</a>.  There is already a <a href="https://github.com/jiahao/GSL.jl">GSL package</a> that handles the wrapper work below for you, but it is instructive to look at how this is implemented because GSL simulates closures in a slightly different way, with data structures.</p>
@@ -183,8 +173,7 @@ type GSL_Function
     func::Ptr{Void}
     params::Any
     GSL_Function(f::Function) = new(gsl_function_wrap_c, f)
-end
-</code></pre>
+end</code></pre>
 <p>One subtlety with the above code is that we need to explicitly <code>convert</code> the return value of <code>f</code> to a <code>Cdouble</code> &#40;in case the caller&#39;s code returns some other numeric type for some <code>x</code>, such as an <code>Int</code>&#41;. Moreover, we need to explicitly assert &#40;<code>::Cdouble</code>&#41; that the result of the <code>convert</code> was a <code>Cdouble</code>.  As with the <code>qsort</code> example, this is because <code>cfunction</code> only works if Julia can guarantee that <code>gsl_function_wrap</code> returns the specified <code>Cdouble</code> type, and Julia cannot infer the return type of <code>convert</code> since it does not know the return type of <code>f&#40;x&#41;</code>.</p>
 <p>Given the above definitions, it is a simple matter to pass this to the <a href="http://www.gnu.org/software/gsl/manual/html_node/QAG-adaptive-integration.html">GSL adaptive-integration</a> routines in a wrapper function <code>gsl_integration_qag</code>:</p>
 <pre><code class="language-julia">function gsl_integration_qag(f::Function, a::Real, b::Real, epsrel::Real=1e-12,
@@ -199,8 +188,7 @@ end
           &GSL_Function(f), a, b, epsrel, maxintervals, 1, s, result, abserr)
     ccall((:gsl_integration_workspace_free,:libgsl), Void, (Ptr{Void},), s)
     return (result[1], abserr[1])
-end
-</code></pre>
+end</code></pre>
 <p>Note that <code>&amp;GSL_Function&#40;f&#41;</code> passes a pointer to a <code>GSL_Function</code> &quot;struct&quot; containing a pointer to <code>gsl_function_wrap_c</code> and <code>f</code>, corresponding to the <code>gsl_function*</code> argument in C.  The return value is a tuple of the estimated integral and an estimated error.</p>
 <p>For example, <code>gsl_integration_qag&#40;cos, 0, 1&#41;</code> returns <code>&#40;0.8414709848078965,9.34220461887732e-15&#41;</code>, which computes the correct integral <code>sin&#40;1&#41;</code> to machine precision.</p>
 <h2 id="taking_out_the_trash_or_not"><a href="/pub/2013-05-10-callback.html#taking_out_the_trash_or_not">Taking out the trash &#40;or not&#41;</a></h2>
@@ -218,12 +206,10 @@ end
                                Void, (Ptr{Void},), p.m))
        p
     end
-end
-</code></pre>
+end</code></pre>
 <p>This wraps around a <code>gsl_min_fminimizer</code> object of type <code>t</code>, with a placeholder <code>f</code> to store a reference to the objective function &#40;once it is set below&#41;, including a <code>finalizer</code> to deallocate the GSL object when the <code>GSL_Minimizer</code> is garbage-collected.  The parameter <code>t</code> is used to specify the minimization algorithm, which could default to Brent&#39;s algorithm via:</p>
 <pre><code class="language-julia">const gsl_brent = unsafe_load(cglobal((:gsl_min_fminimizer_brent,:libgsl), Ptr{Void}))
-GSL_Minimizer() = GSL_Minimizer(gsl_brent)
-</code></pre>
+GSL_Minimizer() = GSL_Minimizer(gsl_brent)</code></pre>
 <p>&#40;The call to <code>cglobal</code> yields a pointer to the <code>gsl_min_fminimizer_brent</code> global variable in GSL, which we then dereference to get the <em>actual</em> pointer via <code>unsafe_load</code>.&#41;</p>
 <p>Then, when we set the function to minimize &#40;the &quot;objective&quot;&#41;, we store an extra reference to it in the <code>GSL_Minimizer</code> to prevent garbage-collection for the lifetime of the <code>GSL_Minimizer</code>, again using the <code>GSL_Function</code> type defined above to wrap the callback:</p>
 <pre><code class="language-julia">function gsl_minimizer_set!(m::GSL_Minimizer, f, x0, xmin, xmax)
@@ -232,8 +218,7 @@ GSL_Minimizer() = GSL_Minimizer(gsl_brent)
           m.m, &GSL_Function(f), x0, xmin, xmax)
     m.f = f
     m
-end
-</code></pre>
+end</code></pre>
 <p>There are then various GSL routines to iterate the minimizer and to check the current <code>x</code>, objective value, or bounds on the minimum, which are convenient to wrap:</p>
 <pre><code class="language-julia">gsl_minimizer_iterate!(m::GSL_Minimizer) =
     ccall((:gsl_min_fminimizer_iterate,:libgsl), Cint, (Ptr{Void},), m.m)
@@ -247,8 +232,7 @@ gsl_minimizer_f(m::GSL_Minimizer) =
 gsl_minimizer_xmin(m::GSL_Minimizer) =
     ccall((:gsl_min_fminimizer_x_lower,:libgsl), Cdouble, (Ptr{Void},), m.m)
 gsl_minimizer_xmax(m::GSL_Minimizer) =
-    ccall((:gsl_min_fminimizer_x_upper,:libgsl), Cdouble, (Ptr{Void},), m.m)
-</code></pre>
+    ccall((:gsl_min_fminimizer_x_upper,:libgsl), Cdouble, (Ptr{Void},), m.m)</code></pre>
 <p>Putting all of these together, we can minimize a simple function <code>sin&#40;x&#41;</code> in the interval &#91;-3,1&#93;, with a starting guess -1, via:</p>
 <pre><code class="language-julia">m = GSL_Minimizer()
 gsl_minimizer_set!(m, sin, -1, -3, 1)
@@ -256,8 +240,7 @@ while gsl_minimizer_xmax(m) - gsl_minimizer_xmin(m) > 1e-6
     println("iterating at x = $(gsl_minimizer_x(m))")
     gsl_minimizer_iterate!(m)
 end
-println("found minimum $(gsl_minimizer_f(m)) at x = $(gsl_minimizer_x(m))")
-</code></pre>
+println("found minimum $(gsl_minimizer_f(m)) at x = $(gsl_minimizer_x(m))")</code></pre>
 <p>After a few iterations, it prints <code>found minimum -1.0 at x &#61;
 -1.5707963269964016</code>, which is the correct minimum &#40;&minus;&pi;/2&#41; to about 10 digits.</p>
 <p>At this point, I will shamelessly plug my own <a href="https://github.com/stevengj/NLopt.jl">NLopt package</a> for Julia, which wraps around my free/open-source <a href="http://ab-initio.mit.edu/nlopt">NLopt</a> library to provide many more optimization algorithms than GSL, with perhaps a nicer interface.   However, the techniques used to pass callback functions to NLopt are actually quite similar to those used for GSL.</p>
