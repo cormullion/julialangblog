@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Hello @DiffEqBot</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Hello @DiffEqBot</h1>
     
@@ -59,9 +59,9 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Hi&#33; Today we all got a new member to the DiffEq family. Say hi to our own <a href="https://github.com/DiffEqBot">DiffEqBot</a> - A bot which helps run benchmarks and compares with the current master of a given package. It also generates and stores the Reports generated in a <a href="https://github.com/DiffEqBot/Reports">repository</a>. What&#39;s special about this is that it is completely stateless &#40;no databases involved at all, just juggling between repositories&#33;&#41; and it has no exposed public URLs. Even though highly inspired by Nanosoldier, this has a completely unique workflow.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2019-06-18-diffeqbot.html#how_do_you_make_it_work">How do you make it work?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#how_does_diffeqbot_work_internally">How does DiffEqBot work internally?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#configuring_the_bot">Configuring the Bot</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#access_control_and_security">Access Control and Security</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#shortcomings_and_road_ahead">Shortcomings and Road ahead</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-06-18-diffeqbot.html#how_do_you_make_it_work">How do you make it work?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#how_does_diffeqbot_work_internally">How does DiffEqBot work internally?</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#configuring_the_bot">Configuring the Bot</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#access_control_and_security">Access Control and Security</a></li><li><a href="/pub/2019-06-18-diffeqbot.html#shortcomings_and_road_ahead">Shortcomings and Road ahead</a></li></ol></div>
 <h2 id="how_do_you_make_it_work"><a href="/pub/2019-06-18-diffeqbot.html#how_do_you_make_it_work">How do you make it work?</a></h2>
 <p>So what all you need to do is call <code>@DiffEqBot runbenchmarks</code> in a comment in a PR of a JuliaDiffEq repository and it will do all the work for you.  It will benchmark your pull request against the current master and post the link of report when the job gets completed. Found a bug in PR and now you don&#39;t need to complete previous job? Just comment <code>@DiffEqBot abort</code> and it won&#39;t run now. You also need to maintain two folders <code>diagrams</code> &#40;For diagrams generation of the report&#41; and <code>benchmark</code>&#40;for comparing the results with master&#41; &#40;like <code>test</code> folder&#41; in the root of your repository. <code>benchmark</code> folder should have <code>benchmark/runbenchmarks.jl</code> &#40;it uses the package <code>PkgBenchmark</code>&#41; and <code>diagrams</code> should have <code>diagrams/diagrams.jl</code>. You can store <code>REQUIRE</code>/<code>Project.toml</code> in the <code>diagrams</code> folder to define the dependencies specifically for <code>diagrams</code> generation.</p>
 <p>For collecting diagrams, all you have to do is to make a dictionary called <code>DIAGRAMS</code> and save all the plot references in that dictionary. For eg -</p>
@@ -182,7 +182,7 @@ failed_job:
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

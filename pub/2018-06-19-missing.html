@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>First-Class Statistical Missing Values Support in Julia 0.7</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>First-Class Statistical Missing Values Support in Julia 0.7</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>The 0.7 release of Julia will soon introduce first-class support for statistical missing values. Being essential for statistical analyses and data management, this feature is common among specialized languages, such as <a href="https://en.wikipedia.org/wiki/Null_&#40;SQL&#41;">SQL</a> &#40;with the <code>NULL</code> value&#41;, <a href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html#NA-handling">R</a> &#40;<code>NA</code>&#41;, <a href="https://support.sas.com/documentation/cdl/en/lrcon/62955/HTML/default/viewer.htm#a001292604.htm">SAS</a> &#40;<code>.</code>, <code>&#39; &#39;</code>, etc.&#41; or <a href="https://www.stata.com/support/faqs/data-management/logical-expressions-and-missing-values/">Stata</a> &#40;<code>.</code>, etc.&#41;. It is however quite rare among general-purpose languages, where <a href="https://en.wikipedia.org/wiki/Nullable_type"><code>Nullable</code></a> or <a href="https://en.wikipedia.org/wiki/Option_type"><code>Option</code></a> types generally do not allow implicit propagation of null values &#40;they require <a href="https://blogs.msdn.microsoft.com/ericlippert/2007/06/27/what-exactly-does-lifted-mean/">lifting</a>&#41; and do not provide an efficient representation of arrays with missing values<sup id="fnref:nullable"><a href="/pub/2018-06-19-missing.html#fndef:nullable" class="fnref">[1]</a></sup>.</p>
 <p>Starting from Julia 0.7, missing values are represented using the new <code>missing</code> object. Resulting from intense design discussions, experimentations and language improvements developed over several years, it is the heir of the <code>NA</code> value implemented in the <a href="https://github.com/JuliaStats/DataArrays.jl">DataArrays</a> package, which used to be the standard way of representing missing data in Julia. <code>missing</code> is actually very similar to its predecessor <code>NA</code>, but it benefits from many improvements in the Julia compiler and language which make it fast, making it possible to drop the <code>DataArray</code> type and using the standard <code>Array</code> type instead<sup id="fnref:PDA"><a href="/pub/2018-06-19-missing.html#fndef:PDA" class="fnref">[2]</a></sup>. Drawing from the experience of existing languages, the design of <code>missing</code> closely follows that of SQL&#39;s <code>NULL</code> and R&#39;s <code>NA</code>, which can be considered as the most consistent implementations with regard to the support of missing values. Incidentally, this makes it easy to generate SQL requests from Julia code or to have R and Julia interoperate.</p>
 <p>This framework is used by <a href="https://discourse.julialang.org/t/dataframes-0-11-released/7296/">version 0.11</a> of the <a href="https://github.com/JuliaStats/DataFrames.jl/">DataFrames</a> package, which already works on Julia 0.6 via the <a href="https://github.com/JuliaData/Missings.jl">Missings</a> package, even if performance improvements are only available on Julia 0.7.</p>
@@ -289,7 +289,7 @@ In <a href="http://www.johnmyleswhite.com/notebook/2014/11/29/whats-wrong-with-s
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

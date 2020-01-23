@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017 Project: Hamiltonian Indirect Inference</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2017 Project: Hamiltonian Indirect Inference</h1>
     
@@ -61,9 +61,9 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017. See also <a href="https://github.com/DoriszAlbrecht/Bayesian_Examples.jl">Bayesian_Examples.jl</a>.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#parametric_bayesian_indirect_likelihood_for_the_full_data">Parametric Bayesian Indirect Likelihood for the Full Data</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#first_stage_of_my_project">First stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#second_stage_of_my_project">Second stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#stochastic_volatility_model">Stochastic Volatility model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#problems_that_i_have_faced_during_gsoc">Problems that I have faced during GSOC</a><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#1_difficult_auxiliary_model">1 Difficult auxiliary model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#2_type-stability_issues">2 Type-stability issues</a></li></ol></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#future_work">Future work</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#references">References</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#parametric_bayesian_indirect_likelihood_for_the_full_data">Parametric Bayesian Indirect Likelihood for the Full Data</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#first_stage_of_my_project">First stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#second_stage_of_my_project">Second stage of my project</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#stochastic_volatility_model">Stochastic Volatility model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#problems_that_i_have_faced_during_gsoc">Problems that I have faced during GSOC</a><ol><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#1_difficult_auxiliary_model">1 Difficult auxiliary model</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#2_type-stability_issues">2 Type-stability issues</a></li></ol></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#future_work">Future work</a></li><li><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#references">References</a></li></ol></div>
 <h2 id="gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood"><a href="/pub/2017-09-19-Hamiltonian-Indirect-Inference.html#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></h2>
 <p>This summer I have had the opportunity to participate in the Google Summer of Code program. My project was in the Julia language and the main goal was to implement Indirect Inference &#40;A. A. Smith 1993; A. Smith 2008&#41; to overcome the typically arising issues &#40;such as intractable or costly to compute likelihoods&#41; when estimating models using likelihood-based methods. Hamiltonian Monte Carlo was expected to result in a more efficient sampling process.</p>
 <p>Under the mentorship of Tamás K. Papp, I completed a major revision of Bayesian estimation methods using Indirect Inference &#40;II&#41; and Hamiltonian Monte Carlo. I also got familiar with using git, opening issues, creating a repository among others.</p>
@@ -261,7 +261,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

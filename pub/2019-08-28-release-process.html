@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -20,17 +21,16 @@
   
   
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Julia’s Release Process</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Julia’s Release Process</h1>
     
@@ -57,7 +57,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>People involved in the day-to-day development of a project tend to become so familiar with its rhythm and process that they internalize it and it feels like everyone must just <em>know</em> how each stage unfolds. Of course, from the outside looking in it&#39;s not so obvious. So I thought it might be helpful to the broader Julia community—and maybe even for other programming language communities—to actually write down Julia&#39;s release process, including the details of:</p>
 <ul>
 <li><p>what kinds of releases there are</p>
@@ -72,7 +72,7 @@
 </li>
 </ul>
 <p>This information is collected from a small set of posts on <a href="https://discourse.julialang.org/">discourse</a> and conversations on <a href="https://slackinvite.julialang.org/">Slack</a>, so the information exists &quot;out there&quot;, but this blog post brings it all together in a single place. We may turn this post into an official document if it&#39;s well received. Julia follows &quot;semantic versioning&quot; as specified in the <a href="https://semver.org/">SemVer</a> standard, but SemVer leaves a fair amount of room for interpretation and says very little about process, so this post aims to fill in those details.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2019-08-28-release-process.html#patch_releases">Patch releases</a></li><li><a href="/pub/2019-08-28-release-process.html#minor_releases">Minor releases</a></li><li><a href="/pub/2019-08-28-release-process.html#major_releases">Major releases</a></li><li><a href="/pub/2019-08-28-release-process.html#long_term_support">Long term support</a></li><li><a href="/pub/2019-08-28-release-process.html#risk_tolerance_personas">Risk Tolerance Personas</a></li><li><a href="/pub/2019-08-28-release-process.html#the_release_process">The release process</a></li><li><a href="/pub/2019-08-28-release-process.html#why_pre-release_versions">Why pre-release versions?</a></li><li><a href="/pub/2019-08-28-release-process.html#release_maintenance">Release maintenance</a></li><li><a href="/pub/2019-08-28-release-process.html#conclusion">Conclusion</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-08-28-release-process.html#patch_releases">Patch releases</a></li><li><a href="/pub/2019-08-28-release-process.html#minor_releases">Minor releases</a></li><li><a href="/pub/2019-08-28-release-process.html#major_releases">Major releases</a></li><li><a href="/pub/2019-08-28-release-process.html#long_term_support">Long term support</a></li><li><a href="/pub/2019-08-28-release-process.html#risk_tolerance_personas">Risk Tolerance Personas</a></li><li><a href="/pub/2019-08-28-release-process.html#the_release_process">The release process</a></li><li><a href="/pub/2019-08-28-release-process.html#why_pre-release_versions">Why pre-release versions?</a></li><li><a href="/pub/2019-08-28-release-process.html#release_maintenance">Release maintenance</a></li><li><a href="/pub/2019-08-28-release-process.html#conclusion">Conclusion</a></li></ol></div>
 <h2 id="patch_releases"><a href="/pub/2019-08-28-release-process.html#patch_releases">Patch releases</a></h2>
 <ul>
 <li><p>Patch releases increment the last digit of Julia&#39;s version number, e.g. going from <code>1.2.3</code> to <code>1.2.4</code>.</p>
@@ -255,7 +255,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

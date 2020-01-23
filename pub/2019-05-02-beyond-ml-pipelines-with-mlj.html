@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Beyond machine learning pipelines with MLJ</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Beyond machine learning pipelines with MLJ</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 
 <p float="left" align="middle">
   <img style="width:40%;padding:0;" src="/assets/images/blog/2019-05-02-MLJ/learningcurves.png"/>
@@ -71,7 +71,7 @@
   <img style="width:40%;padding-left:15px;" src="/assets/images/blog/2019-05-02-MLJ/MLPackages.png"/>
 </p>
 
-<div class="jd-toc"><ol><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#mlj_features">MLJ features</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#learning_networks">Learning networks</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#building_a_simple_network">Building a simple network</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#mlj_features">MLJ features</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#learning_networks">Learning networks</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#building_a_simple_network">Building a simple network</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#exporting_and_retraining">Exporting and retraining</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#just_quotwrite_the_mathquot">Just &quot;Write the math&#33;&quot;</a></li><li><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#invitation_to_the_community">Invitation to the community</a></li></ol></div>
 <h2 id="introduction"><a href="/pub/2019-05-02-beyond-ml-pipelines-with-mlj.html#introduction">Introduction</a></h2>
 <p><a href="https://github.com/alan-turing-institute/MLJ.jl">MLJ</a> is an open-source machine learning toolbox written in pure Julia. It provides a uniform interface for interacting with supervised and unsupervised learning models currently scattered in different Julia packages.</p>
 <p>Building on a earlier proof-of-concept, development began in earnest at <a href="https://www.turing.ac.uk">The Alan Turing Institute</a> in December 2018. In a short time interest grew and the project is now the Institute&#39;s most starred software repository.</p>
@@ -180,7 +180,7 @@ fit!(yhat, rows=1:1300)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

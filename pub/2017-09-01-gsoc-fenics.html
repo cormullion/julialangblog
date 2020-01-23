@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017 : A Wrapper for the FEniCS Finite Element Toolbox</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2017 : A Wrapper for the FEniCS Finite Element Toolbox</h1>
     
@@ -61,9 +61,9 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Throughout this Google Summer of Code project I, along with my mentors, aimed to create a Wrapper for the FEniCS Finite Element Toolbox in the Julia Language. Our work done can be found at <a href="https://github.com/JuliaDiffEq/FEniCS.jl">FEniCS.jl</a> . This would allow users to perform FEM calculations directly in Julia, utilizing our <a href="https://github.com/JuliaPy/PyCall.jl">PyCall.jl</a> wrapping functionality. We currently have wrapped the main  functionality, along with providing the necessary instructions to add further components when they are deemed necessary. Members of the Julia community not directly related to the project also contributed small fixes and suggestions throughout the project. The majority of the code produced has already been merged to the GitHub repository &#40;which was created specifically for this project&#41;. One of the main improvements which would greatly increase its usage would be the further integration with the JuliaDiffEq package.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-09-01-gsoc-fenics.html#what_is_fenics">What is FEniCS?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#but_how_does_it_work">But, how does it work?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#and_internally">And, internally?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#demonstration">Demonstration</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#challenges">Challenges</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#further_improvements">Further Improvements</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#on_the_shoulders_of_giants">On the Shoulders of Giants</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#acknowledgements">Acknowledgements</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-09-01-gsoc-fenics.html#what_is_fenics">What is FEniCS?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#but_how_does_it_work">But, how does it work?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#and_internally">And, internally?</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#demonstration">Demonstration</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#challenges">Challenges</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#further_improvements">Further Improvements</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#on_the_shoulders_of_giants">On the Shoulders of Giants</a></li><li><a href="/pub/2017-09-01-gsoc-fenics.html#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="what_is_fenics"><a href="/pub/2017-09-01-gsoc-fenics.html#what_is_fenics">What is FEniCS?</a></h2>
 <p><strong><a href="https://fenicsproject.org/">FEniCS</a></strong> describes itself as a popular open-source &#40;LGPLv3&#41; computing platform for solving partial differential equations &#40;PDEs&#41;. FEniCS enables users to quickly translate scientific models into efficient finite element code, i.e. it allows us to describe &#40;some&#41; complicated mathematical equations and solve them automatically using computer simulations.</p>
 <h2 id="but_how_does_it_work"><a href="/pub/2017-09-01-gsoc-fenics.html#but_how_does_it_work">But, how does it work?</a></h2>
@@ -126,7 +126,7 @@ FEniCS.Plot(U)</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

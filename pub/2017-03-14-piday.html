@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Some fun with &#928; in Julia</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Some fun with &#928; in Julia</h1>
     
@@ -61,10 +61,10 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p><img src="/assets/images/blog/2017-03-14-piday/pi.png" alt="pi" /> <sup id="fnref:credit"><a href="/pub/2017-03-14-piday.html#fndef:credit" class="fnref">[1]</a></sup>
 <p><em>This post is available as a Jupyter notebook <a href="https://github.com/simonbyrne/Pi.jl/blob/master/pi.ipynb">here</a></em></p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></li><li><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></li><li><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a><ol><li><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></li><li><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a><ol><li><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></li><li><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></li><li><a href="/pub/2017-03-14-piday.html#pi_via_inline_assembly_instructions">&pi; via inline assembly instructions</a></li><li><a href="/pub/2017-03-14-piday.html#pi_using_a_taylor_series_expansions">&pi; using a Taylor series expansions</a><ol><li><a href="/pub/2017-03-14-piday.html#madhavas_formula">Madhava&#39;s formula</a></li><li><a href="/pub/2017-03-14-piday.html#machins_approach">Machin&#39;s approach</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#finding_guaranteed_bounds_on_pi">Finding guaranteed bounds on &pi;</a><ol><li><a href="/pub/2017-03-14-piday.html#using_standard_floating-point_arithmetic">Using standard floating-point arithmetic</a></li></ol></li><li><a href="/pub/2017-03-14-piday.html#summing_a_series_using_interval_arithmetic">Summing a series using interval arithmetic</a></li><li><a href="/pub/2017-03-14-piday.html#calculating_an_area">Calculating an area</a></li></ol></div>
 <h2 id="pi_in_julia"><a href="/pub/2017-03-14-piday.html#pi_in_julia">&pi; in Julia</a></h2>
 <p>by <a href="https://github.com/simonbyrne">Simon Byrne</a></p>
 <p>Like most technical languages, Julia provides a variable constant for &pi;. However Julia&#39;s handling is a bit special.</p>
@@ -1028,7 +1028,7 @@ N 	 area interval 	 	 diameter
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2018: Adding Newer Features and Speeding up Convolutions in Flux</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2018: Adding Newer Features and Speeding up Convolutions in Flux</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Over the summer I have been working at improving the Computer Vision capabilities of Flux. My specific line of work was to <strong>add newer models to the Flux model-zoo</strong>, <strong>implement some new features</strong> and also <strong>improve the speed of the previous layers</strong>. Specifically, I achieved a <strong>18-fold</strong> speed up for the <strong>Convolutions</strong> and around <strong>3-fold</strong> for <strong>BatchNorm</strong>.</p>
 <h2 id="a_short_summary_of_my_work_during_gsoc_2018"><a href="/pub/2018-08-13-adding-newer-features-and-speeding-up-convolutions-in-flux.html#a_short_summary_of_my_work_during_gsoc_2018">A Short Summary of my work during GSoC 2018</a></h2>
 <p>I am listing all the essential PRs I had made during this project. Some of them are merged, some are unmerged, and some are even a work in progress. We discuss only major PRs, leaving out bug fixes and small patches. So here they are</p>
@@ -196,7 +196,7 @@ trained(VGG11)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>JSoC 2015 project: Automatic Differentiation in Julia with ForwardDiff.jl</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>JSoC 2015 project: Automatic Differentiation in Julia with ForwardDiff.jl</h1>
     
@@ -61,7 +61,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This summer, I&#39;ve had the good fortune to be able to participate in the first ever <strong>Julia Summer of Code &#40;JSoC&#41;</strong>, generously sponsored by the Gordon and Betty Moore Foundation. My JSoC project was to explore the use of Julia for automatic differentiation &#40;AD&#41;, a topic with a wide array of applications in the field of optimization.</p>
 <p>Under the mentorship of Miles Lubin and Theodore Papamarkou, I completed a major overhaul of <strong><a href="https://github.com/JuliaDiff/ForwardDiff.jl">ForwardDiff.jl</a></strong>, a Julia package for calculating derivatives, gradients, Jacobians, Hessians, and higher-order derivatives of native Julia functions &#40;or any callable Julia type, really&#41;.</p>
 <p>By the end of this post, you&#39;ll hopefully know a little bit about how ForwardDiff.jl works, why it&#39;s useful, and why Julia is uniquely well-suited for AD compared to other languages.</p>
@@ -237,7 +237,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

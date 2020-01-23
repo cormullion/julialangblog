@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>NeuralNetDiffEq.jl: A Neural Network solver for ODEs</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>NeuralNetDiffEq.jl: A Neural Network solver for ODEs</h1>
     
@@ -61,7 +61,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>My GSoC 2017 <a href="https://summerofcode.withgoogle.com/projects/#5850956641075200">project</a> was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks. The purpose of the project was to provide an additional DE solver using Neural Networks which has parallelism in time as the key advantage over other solvers which are iterative in nature. The project was based on research paper of <a href="https://arxiv.org/pdf/physics/9705023.pdf">Lagaris et al. 1997</a> which proposed the function approximation capabilities of neural networks &#40;NNs&#41; for solving differential equations. The project was a mixture of research as well as implementation aspects and still has a few parts left to work upon. I chose to work on this project as I have interest in mathematics and machine learning and it involved concepts of both the fields. The package uses <a href="https://github.com/JuliaDiffEq/DifferentialEquations.jl">DifferentialEquations.jl</a> for the solver interface and <a href="https://github.com/denizyuret/Knet.jl">KNet.jl</a> for NN solver implementation.</p>
 <h2 id="how_to_use_neural_network_for_solving_differential_equations"><a href="/pub/2017-10-13-gsoc-NeuralNetDiffEq.html#how_to_use_neural_network_for_solving_differential_equations">How to use Neural Network for solving Differential Equations?</a></h2>  The concept of this solver is based on the UAT &#40;Universal Approximation Theorem&#41; which says that a NN with at least one hidden layer can approximate any continuous function. The neural network is made to minimize a loss function, defined as the difference between the NN&#39;s derivative and the derivative of the differential equation, which then results in the convergence of our trial solution towards the actual &#40;analytical&#41; solution of the differential equation. To know more about UAT <a href="http://neuralnetworksanddeeplearning.com/chap4.html">click here</a>.</p>
 <h2 id="research_aspect_of_the_project_and_the_challenge"><a href="/pub/2017-10-13-gsoc-NeuralNetDiffEq.html#research_aspect_of_the_project_and_the_challenge">Research aspect of the project and the challenge</a></h2>  The research paper we referred to on the topic is quite old and understanding the examples as well as explanations was quite challenging. Not much research has been done on using NNs for this purpose and thus we were not able to get much help from the research papers related to the topic. The initial task was to read and understand the mathematics behind solving differential equations. Also the computational methods used to solve differential equations on computers are quite different from the ones we use on paper so it took quite some time to get familiar with them. The structure and type of NN to be used so that the solver advantages &#40;parallelism in time&#41; are retained without compromising the performance was a research subdomain as well was a challenge.</p>
@@ -158,7 +158,7 @@ plot(sol3)</code></pre> <img src="/assets/images/blog/2017-09-04-gsoc-NeuralNetD
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

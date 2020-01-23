@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Generalizing AbstractArrays: opportunities and challenges</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Generalizing AbstractArrays: opportunities and challenges</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <h1 id="introduction_generic_algorithms_with_abstractarrays"><a href="/pub/2016-03-27-arrays-iteration.html#introduction_generic_algorithms_with_abstractarrays">Introduction: generic algorithms with AbstractArrays</a></h1>
 <p>Somewhat unusually, this blog post is future-looking: it mostly focuses on things that don&#39;t yet exist. Its purpose is to lay out the background for community discussion about possible changes to the core API for <code>AbstractArray</code>s, and serves as background reading and reference material for a more focused &quot;julep&quot; &#40;a julia enhancement proposal&#41;.  Here, often I&#39;ll use the shorthand &quot;array&quot; to mean <code>AbstractArray</code>, and use <code>Array</code> if I explicitly mean julia&#39;s concrete <code>Array</code> type.</p>
 <p>As the reader is likely aware, in julia it&#39;s possible to write algorithms for which one or more inputs are only assumed to be <code>AbstractArray</code>s.  This is &quot;generic&quot; code, meaning it should work &#40;i.e., produce a correct result&#41; on any specific concrete array type. In an ideal world — which julia approaches rather well in many cases — generality of code should not have a negative impact on its performance: a generic implementation should be approximately as fast as one restricted to specific array type&#40;s&#41;.  This implies that generic algorithms should be written using lower-level operations that give good performance across a wide variety of array types.</p>
@@ -183,7 +183,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

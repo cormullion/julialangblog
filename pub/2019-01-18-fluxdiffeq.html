@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>DiffEqFlux.jl – A Julia Library for Neural Differential Equations</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>DiffEqFlux.jl – A Julia Library for Neural Differential Equations</h1>
     
@@ -61,7 +61,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Translations:  <a href="https://julialang.org/blog/2019/04/fluxdiffeq-zh_tw">Traditional Chinese</a>
 <p>In this blog post we will show you how to easily, efficiently, and robustly use differential equation &#40;DiffEq&#41; solvers with neural networks in Julia.</p>
 <p><img src="https://user-images.githubusercontent.com/1814174/51399500-1f4dd080-1b14-11e9-8c9d-144f93b6eac2.gif" alt="Flux ODE Training Animation" /></p>
@@ -69,7 +69,7 @@
 <p>The advantages of the Julia <a href="https://github.com/JuliaDiffEq/DifferentialEquations.jl">DifferentialEquations.jl</a> library for numerically solving differential equations have been <a href="http://www.stochasticlifestyle.com/comparison-differential-equation-solver-suites-matlab-r-julia-python-c-fortran/">discussed in detail in other posts</a>. Along with its <a href="https://github.com/JuliaDiffEq/DiffEqBenchmarks.jl">extensive benchmarking against classic Fortran methods</a>, it includes other modern features such as <a href="http://www.stochasticlifestyle.com/solving-systems-stochastic-pdes-using-gpus-julia/">GPU acceleration</a>, <a href="http://docs.juliadiffeq.org/latest/features/monte_carlo.html">distributed &#40;multi-node&#41; parallelism</a>, and <a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html">sophisticated event handling</a>. Recently, these native Julia differential equation solvers have successfully been embedded into the <a href="https://github.com/FluxML/Flux.jl/">Flux</a> deep learning package, to allow the use of a full suite of highly tested and optimized DiffEq methods within neural networks. Using the new package <a href="https://github.com/JuliaDiffEq/DiffEqFlux.jl/">DiffEqFlux.jl</a>, we will show the reader how to easily add differential equation layers to neural networks using a range of differential equations models, including stiff ordinary differential equations, stochastic differential equations, delay differential equations, and hybrid &#40;discontinuous&#41; differential equations.</p>
 <p>This is the first toolbox to combine a fully-featured differential equations solver library and neural networks seamlessly together. The blog post will also show why the flexibility of a full differential equation solver suite is necessary. With the ability to fuse neural networks with ODEs, SDEs, DAEs, DDEs, stiff equations, and different methods for adjoint sensitivity calculations, this is a large generalization of the neural ODEs work and will allow researchers to better explore the problem domain.</p>
 <p>&#40;Note: If you are interested in this work and are an undergraduate or graduate student, we have <a href="https://julialang.org/soc/ideas-page">Google Summer of Code projects available in this area</a>. This <a href="https://developers.google.com/open-source/gsoc/help/student-stipends">pays quite well over the summer</a>. Please join the <a href="https://slackinvite.julialang.org/">Julia Slack</a> and the #jsoc channel to discuss in more detail.&#41;</p>
-<div class="jd-toc"><ol><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_do_differential_equations_have_to_do_with_machine_learning">What do differential equations have to do with machine learning?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_is_the_neural_ordinary_differential_equation_ode">What is the Neural Ordinary Differential Equation &#40;ODE&#41;?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#how_do_you_solve_an_ode">How do you solve an ODE?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#lets_put_an_ode_into_a_neural_net_framework">Let&#39;s Put an ODE Into a Neural Net Framework&#33;</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#why_is_a_full_ode_solver_suite_necessary_for_doing_this_well">Why is a full ODE solver suite necessary for doing this well?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_kinds_of_differential_equations_are_there">What kinds of differential equations are there?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#implementing_the_neural_ode_layer_in_julia">Implementing the Neural ODE layer in Julia</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#understanding_the_neural_ode_layer_behavior_by_example">Understanding the Neural ODE layer behavior by example</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#the_core_technical_challenge_backpropagation_through_differential_equation_solvers">The core technical challenge: backpropagation through differential equation solvers</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#conclusion">Conclusion</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_do_differential_equations_have_to_do_with_machine_learning">What do differential equations have to do with machine learning?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_is_the_neural_ordinary_differential_equation_ode">What is the Neural Ordinary Differential Equation &#40;ODE&#41;?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#how_do_you_solve_an_ode">How do you solve an ODE?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#lets_put_an_ode_into_a_neural_net_framework">Let&#39;s Put an ODE Into a Neural Net Framework&#33;</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#why_is_a_full_ode_solver_suite_necessary_for_doing_this_well">Why is a full ODE solver suite necessary for doing this well?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#what_kinds_of_differential_equations_are_there">What kinds of differential equations are there?</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#implementing_the_neural_ode_layer_in_julia">Implementing the Neural ODE layer in Julia</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#understanding_the_neural_ode_layer_behavior_by_example">Understanding the Neural ODE layer behavior by example</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#the_core_technical_challenge_backpropagation_through_differential_equation_solvers">The core technical challenge: backpropagation through differential equation solvers</a></li><li><a href="/pub/2019-01-18-fluxdiffeq.html#conclusion">Conclusion</a></li></ol></div>
 <h2 id="what_do_differential_equations_have_to_do_with_machine_learning"><a href="/pub/2019-01-18-fluxdiffeq.html#what_do_differential_equations_have_to_do_with_machine_learning">What do differential equations have to do with machine learning?</a></h2>
 <p>The first question someone not familiar with the field might ask is, why are differential equations important in this context? The simple answer is that a differential equation is a way to specify an arbitrary nonlinear transform by mathematically encoding prior structural assumptions.</p>
 <p>Let&#39;s unpack that statement a bit. There are three common ways to define a nonlinear transform: direct modeling, machine learning, and differential equations. Directly writing down the nonlinear function only works if you know the exact functional form that relates the input to the output. However, in many cases, such exact relations are not known <em>a priori</em>. So how do you do nonlinear modeling if you don&#39;t know the nonlinearity?</p>
@@ -351,7 +351,7 @@ sol = solve(prob,CVODE_Adams(),reltol=1e-12,abstol=1e-12)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

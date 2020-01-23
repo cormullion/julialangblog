@@ -376,7 +376,7 @@
   <item>
     <title>Technical preview: Native GPU programming with CUDAnative.jl</title>
     <link>https://julialangblogmirror.netlify.com/pub/2017-03-14-cudanative.html</link>
-    <description><![CDATA[Technical preview: Native GPU programming with CUDAnative.jl | could use JuDoc&#39;s commands to allow this as variable?... 
+    <description><![CDATA[Technical preview: Native GPU programming with CUDAnative.jl | could use Franklin&#39;s commands to allow this as variable?... 
 </br><a href="https://julialangblogmirror.netlify.com/pub/2017-03-14-cudanative.html">Read more</a>]]></description>
     <guid>https://julialangblogmirror.netlify.com/pub/2017-03-14-cudanative.html</guid>
     <pubDate>Tue, 14 Mar 2017 00:00:00 UT</pubDate>
@@ -526,6 +526,14 @@
     <pubDate>Tue, 23 Jul 2019 00:00:00 UT</pubDate>
   </item>
   <item>
+    <title>为 Julia 包设计的可靠、可复现的二进制工件系统</title>
+    <link>https://julialangblogmirror.netlify.com/pub/2019-12-18-artifacts-zh_cn.html</link>
+    <description><![CDATA[为 Julia 包设计的可靠、可复现的二进制工件系统 
+</br><a href="https://julialangblogmirror.netlify.com/pub/2019-12-18-artifacts-zh_cn.html">Read more</a>]]></description>
+    <guid>https://julialangblogmirror.netlify.com/pub/2019-12-18-artifacts-zh_cn.html</guid>
+    <pubDate>Wed, 18 Dec 2019 00:00:00 UT</pubDate>
+  </item>
+  <item>
     <title>Julia 1.0 正式發佈 (Simplified Chinese)</title>
     <link>https://julialangblogmirror.netlify.com/pub/2018-08-08-one-point-zero-zh_cn.html</link>
     <description><![CDATA[Julia 1.0 正式發佈 &#40;Simplified Chinese&#41; | 备受期待的Julia语言 &#40;https://julialang.org&#41;的1.0版本积累了富有野心的程序员们的十年心血。... 
@@ -652,6 +660,14 @@
 </br><a href="https://julialangblogmirror.netlify.com/pub/2015-10-25-datastreams.html">Read more</a>]]></description>
     <guid>https://julialangblogmirror.netlify.com/pub/2015-10-25-datastreams.html</guid>
     <pubDate>Sun, 25 Oct 2015 00:00:00 UT</pubDate>
+  </item>
+  <item>
+    <title>Yao.jl - Differentiable Quantum Programming In Julia</title>
+    <link>https://julialangblogmirror.netlify.com/pub/2019-12-28-yao-differentiable-quantum-programming.html</link>
+    <description><![CDATA[Yao.jl - Differentiable Quantum Programming In Julia
+</br><a href="https://julialangblogmirror.netlify.com/pub/2019-12-28-yao-differentiable-quantum-programming.html">Read more</a>]]></description>
+    <guid>https://julialangblogmirror.netlify.com/pub/2019-12-28-yao-differentiable-quantum-programming.html</guid>
+    <pubDate>Sat, 28 Dec 2019 00:00:00 UT</pubDate>
   </item>
   <item>
     <title>Julia 0.3 Release Announcement</title>

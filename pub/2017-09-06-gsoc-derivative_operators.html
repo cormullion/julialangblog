@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017: Efficient Discretizations of PDE Operators</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2017: Efficient Discretizations of PDE Operators</h1>
     
@@ -61,10 +61,10 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This project is an attempt towards building a PDE solver for JuliaDiffEq using the <a href="https://en.wikipedia.org/wiki/Finite_difference_method">Finite Difference Method</a>&#40;FDM&#41; approach. We take up the FDM approach instead of <a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a> and <a href="https://en.wikipedia.org/wiki/Finite_volume_method">FVM</a> as there are many toolboxes which already exist for FEM and FVM but not for FDM. Also, there are many use cases where the geometry of the problem is simple enough to be solved by FDM methods which are much faster due to their being able to avoid the bottleneck step of matrix multiplication by using Linear transformations to mimic the effect of a matrix multiplication. Since matrix multiplication basically transforms a vector element to a weighted sum of the neighbouring elements, this can be easily acheived using a special function which acts on the vector in optimal \(\mathcal{O}(n)\) time.</p>
 <p>The result is a new package called <a href="https://github.com/JuliaDiffEq/DiffEqOperators.jl">DiffEqOperators.jl</a> which creates efficient discretizations of partial differential operators thereby converting PDEs to ODEs which can be solved efficiently by existing ODE solvers. The <code>DerivativeOperator</code> is based on central differencing schemes of approximating derivatives at a point whereas the <code>UpwindOperators</code> are based on one-sided differencing schemes where the solution is typically a wave moving in a particular direction. The package also supports a variety of boundary conditions like <a href="https://en.wikipedia.org/wiki/Dirichlet_boundary_condition">Dirichlet</a>, <a href="https://en.wikipedia.org/wiki/Neumann_boundary_condition">Neumann</a>, <a href="https://en.wikipedia.org/wiki/Periodic_boundary_conditions">Periodic</a> and the <a href="https://en.wikipedia.org/wiki/Robin_boundary_condition">Robin</a> <a href="https://en.wikipedia.org/wiki/Boundary_value_problem">boundary condition</a>.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#solving_the_heat_equation_using_diffeqoperators">Solving the Heat equation using DiffEqOperators</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#where_do_central_derivatives_fail">Where do central derivatives fail?</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#future_work">Future Work</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#acknowledgments">Acknowledgments</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#solving_the_heat_equation_using_diffeqoperators">Solving the Heat equation using DiffEqOperators</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#where_do_central_derivatives_fail">Where do central derivatives fail?</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#future_work">Future Work</a></li><li><a href="/pub/2017-09-06-gsoc-derivative_operators.html#acknowledgments">Acknowledgments</a></li></ol></div>
 <h2 id="motivation"><a href="/pub/2017-09-06-gsoc-derivative_operators.html#motivation">Motivation</a></h2>
 <p>The general idea of finite difference methods is to generate finite difference weights corresponding to a differential operator allowing a certain level of approximation. The time and space variable are divided to form a grid where \(h = \Delta x = \frac{1}{N+1}\) and \(x_i = ih\) for \(i = 0, 1,...,N+1\) and \(k = \Delta t = \frac{T}{M+1}\) and \(t_j = jk\) for \(j = 0, 1,...,M+1\). <br/> The discrete unknowns are scalars \(u_i^j\) for the above values of i and j, and it is hoped that \(u_i^j\) will be an approximation of \(u(x_i, t_j)\). The right-hand side of the equation is discretized by setting \(f_i^j = f(x_i, t_j)\). We also use the notation</p>
 \[ U^{j} = \begin{pmatrix}
@@ -191,7 +191,7 @@ julia> plot(x, [sol1(i) for i in 0:1:10])</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

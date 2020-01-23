@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Writing Iterators in Julia 0.7</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Writing Iterators in Julia 0.7</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <h3 id="with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface"><a href="/pub/2018-07-08-iterators-in-julia-0.7.html#with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface">With the upcoming 0.7 release, Julia has simplified its iteration interface.</a></h3>
 <p>This post originally appeared on the <a href="https://invenia.github.io/blog/2018/07/06/iteratorsinjulia07/">Invenia blog</a>.</p>
 <p>With the upcoming 0.7 release, Julia has simplified its iteration interface. The <a href="http://julialang.org/downloads">0.7-beta</a> release is available for download. This was a <a href="https://github.com/JuliaLang/julia/pull/25261">huge undertaking</a> which mostly fell to the prolific <a href="https://github.com/Keno">Keno Fischer</a>, who wrote an entirely new optimizer for the language to accomplish it&#33; As the most active maintainer of the <a href="https://github.com/JuliaCollections/IterTools.jl">IterTools</a> package, I decided to spend a week rewriting its iterators for the new interface. I&#39;d like to share that experience with you to introduce the new interface and assist in transitioning to Julia 0.7.</p>
@@ -338,7 +338,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 09, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 09, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

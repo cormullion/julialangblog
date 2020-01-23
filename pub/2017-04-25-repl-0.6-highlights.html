@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Upgrades to the REPL in Julia 0.6</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Upgrades to the REPL in Julia 0.6</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Since version 0.3, Julia has come with a command-line interface — a <a href="https://en.wikipedia.org/wiki/Read&#37;E2&#37;80&#37;93eval&#37;E2&#37;80&#37;93print_loop">REPL</a>  — that is completely written in Julia &#40;<a href="https://github.com/JuliaLang/julia/pull/6270">PR #6270</a>&#41;. Among other features, the REPL provides code completion, history with reverse search, and a rich set of customizable key bindings. &#40;See the <a href="http://docs.julialang.org/en/stable/manual/interacting-with-julia/">Interacting with Julia</a> part of the manual for the REPL documentation.&#41; Even so, the REPL in Julia 0.6 includes quite a few new visual tweaks and features. In this blog post, we look into some of these changes and customizations to the Julia REPL, available in 0.6.</p>
 <h2 id="prompt_pasting"><a href="/pub/2017-04-25-repl-0.6-highlights.html#prompt_pasting">Prompt pasting</a></h2>
 <p>It is quite common &#40;as in the Julia manual and in subsequent code blocks of this blog post&#41; to write snippets of Julia code like they were copied straight from a REPL session, for example:</p>
@@ -103,7 +103,7 @@ julia> ENV["JULIA_STACKFRAME_FUNCTION_COLOR"] = :yellow;</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Union-splitting: what it is, and why you should care</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Union-splitting: what it is, and why you should care</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Among those who follow Julia&#39;s development closely, one of the &#40;many&#41; new features causing great excitement is something called &quot;Union-splitting.&quot; Here at JuliaCon 2018 I&#39;ve found myself explaining this feature repeatedly, so I thought I&#39;d write this blog post to help disseminate this important information more widely. Let me start by saying that I&#39;m not the expert here—this is a feature added by Jameson Nash and Jacob Quinn, and enhanced by optimizer improvements by Keno Fisher—but I am one of the many people truly excited about how this is already changing how I write Julia code.</p>
 <p>Here&#39;s the background: in the old days, you had to take great care to make sure that nearly every function you wrote returned a predictable type. Experienced Julia programmers regularly reached for a tool, <code>@code_warntype</code>, to check whether code exhibited the dreaded &quot;type instability.&quot; This was code that returned &#40;as determined by Julia&#39;s inference engine&#41; objects either of type <code>Any</code> or objects of type <code>Union&#123;Type1, Type2, ...&#125;</code>. The first meant that the inference engine was unable to make any specific statements about the return type; the latter meant that inference was able to determine a specific list of possible return types. Unfortunately, the compiler wasn&#39;t particularly good at taking advantage of this partial knowledge, and so in practice either of these outcomes predictably implied very bad things for the performance of your code.</p>
 <p>Fast forward to 0.7 and 1.0, and the landscape is both &quot;the same&quot; and &quot;completely different.&quot; By this I mean that <code>Any</code> still indicates a likely problem, as the compiler can&#39;t do anything to optimize the code. But often, <code>Union&#123;Type1, Type2, ...&#125;</code> is nothing to worry about, because it causes little or no performance hit of any kind.</p>
@@ -89,7 +89,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

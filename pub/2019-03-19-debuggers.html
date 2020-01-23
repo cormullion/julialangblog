@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>A Julia interpreter and debugger</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>A Julia interpreter and debugger</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>The authors are pleased to announce the release of a fully-featured debugger for Julia. You can now easily debug and introspect Julia code in a variety of ways:</p>
 <ul>
 <li><p>Step into functions and manually walk through your code while inspecting its state</p>
@@ -72,7 +72,7 @@
 </li>
 </ul>
 <p>The debugger is itself a collection of tools that enable those features. The core is powered by <a href="https://github.com/JuliaDebug/JuliaInterpreter.jl">an interpreter</a> that can faithfully run Julia code while allowing various front-ends to control its execution. Each front-end is its own package: <a href="http://junolab.org/">Juno</a> incorporates the debugger into its IDE, <a href="https://github.com/timholy/Rebugger.jl">Rebugger</a> provides a REPL text UI, and the traditional step/next/continue command-line interface is provided by <a href="https://github.com/JuliaDebug/Debugger.jl">Debugger</a>. All these new debugging capabilities seamlessly integrate with <a href="https://github.com/timholy/Revise.jl">Revise</a>, so that you can continuously analyze and modify code in a single session.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2019-03-19-debuggers.html#a_brief_user-level_introduction_to_the_front_end_debuggers">A brief user-level introduction to the front end debuggers</a><ol><li><a href="/pub/2019-03-19-debuggers.html#juno">Juno</a></li><li><a href="/pub/2019-03-19-debuggers.html#debugger_and_rebugger">Debugger and Rebugger</a></li></ol></li><li><a href="/pub/2019-03-19-debuggers.html#an_overview_of_the_packages">An overview of the packages</a><ol><li><a href="/pub/2019-03-19-debuggers.html#juliainterpreter">JuliaInterpreter</a></li><li><a href="/pub/2019-03-19-debuggers.html#loweredcodeutils">LoweredCodeUtils</a></li><li><a href="/pub/2019-03-19-debuggers.html#codetracking">CodeTracking</a></li><li><a href="/pub/2019-03-19-debuggers.html#revise_and_rebugger">Revise and Rebugger</a></li></ol></li><li><a href="/pub/2019-03-19-debuggers.html#summary">Summary</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-03-19-debuggers.html#a_brief_user-level_introduction_to_the_front_end_debuggers">A brief user-level introduction to the front end debuggers</a><ol><li><a href="/pub/2019-03-19-debuggers.html#juno">Juno</a></li><li><a href="/pub/2019-03-19-debuggers.html#debugger_and_rebugger">Debugger and Rebugger</a></li></ol></li><li><a href="/pub/2019-03-19-debuggers.html#an_overview_of_the_packages">An overview of the packages</a><ol><li><a href="/pub/2019-03-19-debuggers.html#juliainterpreter">JuliaInterpreter</a></li><li><a href="/pub/2019-03-19-debuggers.html#loweredcodeutils">LoweredCodeUtils</a></li><li><a href="/pub/2019-03-19-debuggers.html#codetracking">CodeTracking</a></li><li><a href="/pub/2019-03-19-debuggers.html#revise_and_rebugger">Revise and Rebugger</a></li></ol></li><li><a href="/pub/2019-03-19-debuggers.html#summary">Summary</a></li></ol></div>
 <h2 id="a_brief_user-level_introduction_to_the_front_end_debuggers"><a href="/pub/2019-03-19-debuggers.html#a_brief_user-level_introduction_to_the_front_end_debuggers">A brief user-level introduction to the front end debuggers</a></h2>
 <p>To orient potential users to the debugger front-ends, here we include a couple of screen shots that highlight the new capabilities.</p>
 <h3 id="juno"><a href="/pub/2019-03-19-debuggers.html#juno">Juno</a></h3>
@@ -128,7 +128,7 @@ A = rand(1:10, 5)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 11, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 11, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

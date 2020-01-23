@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017: Native Julia second order ODE and BVP solvers</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2017: Native Julia second order ODE and BVP solvers</h1>
     
@@ -61,7 +61,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>My original GSoC project was about implementing native Julia solvers for solving boundary value problems &#40;BVPs&#41; that were determined from second order ordinary differential equations &#40;ODEs&#41;. I started down the BVP path, built a shooting method to solve BVPs from initial value problems &#40;IVPs&#41;, and then built the beginning of the mono-implicit Runge-Kutta &#40;MIRK&#41; method. Those solvers are in the <a href="https://github.com/JuliaDiffEq/BoundaryValueDiffEq.jl">BoundaryValueDiffEq.jl</a> repository. Instead of trying to jump directly to the end point, and talk about how to do every detail in MIRK, I went to explore how those details naturally arise in second order ODEs. I implemented many solvers for dynamical IVPs. Although I didn’t fully complete my original goal by the end of GSoC, I am almost there.</p>
 <h2 id="symplecticity"><a href="/pub/2017-11-01-gsoc-ode.html#symplecticity">Symplecticity</a></h2>
 <p>First, there the idea of symplecticity, because the Labatto &#40;Lobatto IIIA-IIIB&#41; MIRK tableaux are actually symplectic. Basically, symplecticity is another way to say that first integrals &#40;energy, angular momentum and etc.&#41; are conserved, so symplectic integrators are specialized for solving second order ODEs that are raised from dynamic systems which require energy conservation. It is easier to see what symplecticity actually entails on dynamical IVPs. For instance, the Hamiltonian \(\mathcal{H}\) and the angular momentum \(L\) for the Kepler problem are</p>
@@ -158,7 +158,7 @@ sol1 = solve(bvp1, GeneralMIRK4(), dt=0.05)</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

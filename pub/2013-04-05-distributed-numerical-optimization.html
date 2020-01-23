@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Distributed Numerical Optimization</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Distributed Numerical Optimization</h1>
     
@@ -61,7 +61,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This post walks through the parallel computing functionality of Julia to implement an asynchronous parallel version of the classical <em>cutting-plane</em> algorithm for convex &#40;nonsmooth&#41; optimization, demonstrating the complete workflow including running on both Amazon EC2 and a large multicore server. I will quickly review the cutting-plane algorithm and will be focusing primarily on parallel computation patterns, so don&#39;t worry if you&#39;re not familiar with the optimization side of things.</p>
 <h3 id="cutting-plane_algorithm"><a href="/pub/2013-04-05-distributed-numerical-optimization.html#cutting-plane_algorithm">Cutting-plane algorithm</a></h3>
 <p>The cutting-plane algorithm is a method for solving the optimization problem</p>
@@ -297,7 +297,7 @@ master process is run on an m3.xlarge instance.
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

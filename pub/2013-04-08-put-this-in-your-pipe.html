@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Put This In Your Pipe</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Put This In Your Pipe</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>In a <a href="http://julialang.org/blog/2012/03/shelling-out-sucks">previous post</a>, I talked about why &quot;shelling out&quot; to spawn a pipeline of external programs via an intermediate shell is a common cause of bugs, security holes, unnecessary overhead, and silent failures. But it&#39;s so convenient&#33; Why can&#39;t running pipelines of external programs be convenient <em>and</em> safe? Well, there&#39;s no real reason, actually. The shell itself manages to construct and execute pipelines quite well. In principle, there&#39;s nothing stopping high-level languages from doing it at least as well as shells do – the common ones just don&#39;t by default, instead requiring users to make the extra effort to use external programs safely and correctly. There are two major impediments:</p>
 <ul>
 <li><p>Some moderately tricky low-level UNIX plumbing using the <a href="&#123;&#123;page.manurl&#125;&#125;/man2/pipe.2.html"><code>pipe</code></a>, <a href="&#123;&#123;page.manurl&#125;&#125;/man2/dup2.2.html"><code>dup2</code></a>, <a href="&#123;&#123;page.manurl&#125;&#125;/man2/fork.2.html"><code>fork</code></a>, <a href="&#123;&#123;page.manurl&#125;&#125;/man2/close.2.html"><code>close</code></a>, and <a href="&#123;&#123;page.manurl&#125;&#125;/man2/execve.2.html"><code>exec</code></a> system calls;</p>
@@ -276,12 +276,12 @@ julia> `cat $dir/$names.$exts`
 <p>This is the same Cartesian product expansion that the shell does if multiple <code>&#123;...&#125;</code> expressions are used in the same word.</p>
 <h2 id="further_reading"><a href="/pub/2013-04-08-put-this-in-your-pipe.html#further_reading">Further Reading</a></h2>
 <p>You can read more in Julia&#39;s <a href="http://docs.julialang.org/en/release-0.1/manual/running-external-programs/">online manual</a>, including how to construct complex pipelines, and how shell-compatible quoting and interpolation rules in Julia&#39;s backtick syntax make it both simple and safe to cut-and-paste shell commands into Julia code. The whole system is designed on the principle that the easiest thing to do should also be the right thing. The end result is that starting and interacting with external processes in Julia is both convenient and safe.</p>
-<code>pipe</code>&#93;:  &#123;&#123;page.manurl&#125;&#125;/man2/pipe.2.html <code>dup2</code>&#93;:  &#123;&#123;page.manurl&#125;&#125;/man2/dup2.2.html <code>fork</code>&#93;:  &#123;&#123;page.manurl&#125;&#125;/man2/fork.2.html <code>close</code>&#93;: &#123;&#123;page.manurl&#125;&#125;/man2/close.2.html </p>
+</p>
 
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Building a Language and Compiler for Machine Learning</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Building a Language and Compiler for Machine Learning</h1>
     
@@ -59,11 +59,11 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Since we <a href="https://julialang.org/blog/2017/12/ml&amp;pl">originally proposed</a> the need for a first-class language, compiler and ecosystem for machine learning &#40;ML&#41;, there have been plenty of interesting developments in the field. Not only have the tradeoffs in existing systems, such as TensorFlow and PyTorch, not been resolved, but they are clearer than ever now that both frameworks contain distinct <a href="https://pytorch.org/docs/master/jit.html">“static graph”</a> and <a href="https://www.tensorflow.org/guide/eager">“eager execution”</a> interfaces. Meanwhile, the idea of ML models fundamentally being differentiable algorithms – often called <a href="https://www.facebook.com/yann.lecun/posts/10155003011462143">differentiable programming</a> – has caught on.</p>
 <p>Where current frameworks fall short, several exciting new projects have sprung up that dispense with graphs entirely, to bring differentiable programming to the mainstream. <a href="https://github.com/mila-udem/myia">Myia</a>, by the Theano team, differentiates and compiles a subset of Python to high-performance GPU code. <a href="https://github.com/tensorflow/swift">Swift for TensorFlow</a> extends Swift so that compatible functions can be compiled to TensorFlow graphs. And finally, the <a href="https://github.com/FluxML/Flux.jl">Flux</a> ecosystem is extending Julia’s compiler with a number of ML-focused tools, including first-class gradients, just-in-time CUDA kernel compilation, automatic batching and support for new hardware such as TPUs.</p>
 <p>All of these projects have enormous potential, but we think Julia has an edge. This post, based on our <a href="https://arxiv.org/abs/1811.01457">paper to be presented at NeurIPS MLSys</a>, will explore how we have used Julia to re-think ML tooling from the ground up, and provides some insight into the work that modern ML tools need to do.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2018-12-03-ml-language-compiler.html#enter_flux">Enter Flux</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#taking_gradients">Taking Gradients</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#compiling_julia_for_gpus">Compiling Julia for GPUs</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#julia_on_tpus">Julia on TPUs</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#automatic_batching">Automatic Batching</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#conclusion">Conclusion</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2018-12-03-ml-language-compiler.html#enter_flux">Enter Flux</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#taking_gradients">Taking Gradients</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#compiling_julia_for_gpus">Compiling Julia for GPUs</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#julia_on_tpus">Julia on TPUs</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#automatic_batching">Automatic Batching</a></li><li><a href="/pub/2018-12-03-ml-language-compiler.html#conclusion">Conclusion</a></li></ol></div>
 <h2 id="enter_flux"><a href="/pub/2018-12-03-ml-language-compiler.html#enter_flux">Enter Flux</a></h2>
 <p>We need a language to write differentiable algorithms, and Flux takes Julia to be this language. Being designed from the ground up for mathematical and numerical computing, Julia is unusually well-suited for expressing ML algorithms.  Meanwhile, its mix of modern design and new ideas in the compiler makes it easier to address the high performance needs of cutting edge ML.</p>
 <p>Where typical frameworks are all-encompassing monoliths in hundreds of thousands of lines of C&#43;&#43;, Flux is only a thousand lines of straightforward Julia code. Simply take <a href="https://github.com/FluxML/Zygote.jl">one package for gradients &#40;Zygote.jl&#41;</a>, <a href="https://github.com/JuliaGPU/CuArrays.jl/">one package for GPU support &#40;CuArrays.jl&#41;</a>, sprinkle with some light convenience functions, bake for fifteen minutes and out pops a fully-featured ML stack.</p>
@@ -95,7 +95,7 @@ end</code></pre> However, Julia&#39;s type specialization enables a powerful set
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

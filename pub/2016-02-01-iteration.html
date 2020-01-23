@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Multidimensional algorithms and iteration</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Multidimensional algorithms and iteration</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p><strong>Note: updated December 2018 for Julia 1.1</strong></p>
 <p>Julia makes it easy to write elegant and efficient multidimensional algorithms. The new capabilities rest on two foundations: an iterator called <code>CartesianIndices</code>, and sophisticated array indexing mechanisms.  Before I explain, let me emphasize that developing these capabilities was a collaborative effort, with the bulk of the work done by Matt Bauman &#40;@mbauman&#41;, Jutho Haegeman &#40;@Jutho&#41;, and myself &#40;@timholy&#41;.</p>
 <p>These iterators are deceptively simple, so much so that I&#39;ve never been entirely convinced that this blog post is necessary: once you learn a few principles, there&#39;s almost nothing to it.  However, like many simple concepts, the implications can take a while to sink in. It&#39;s also possible to confuse these techniques with <a href="https://docs.julialang.org/en/latest/devdocs/cartesian/"><code>Base.Cartesian</code></a>, which is a completely different &#40;and more painful&#41; approach to solving the same problem.  There are still a few occasions where <code>Base.Cartesian</code> is helpful or necessary, but for many problems these new capabilities represent a vastly simplified approach.</p>
@@ -278,7 +278,7 @@ julia> R .+ CartesianIndex(2, 17)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

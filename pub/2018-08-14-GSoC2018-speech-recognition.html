@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -24,17 +25,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2018 and Speech Recognition for the Flux Model Zoo: The Conclusion</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2018 and Speech Recognition for the Flux Model Zoo: The Conclusion</h1>
     
@@ -61,10 +61,10 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn&#39;t have it any other way. I am thankful to the Julia community, and especially my mentor <a href="https://github.com/mikeinnes">@MikeInnes</a>, for supporting me through this. I&#39;ve learned a lot and become even more familiar with neural nets than I was before, and I learned how to do basic GPU programming, which will be incredibly useful for my academic career.</p>
 <p>The rest of this blog post will summarize my project and the work I&#39;ve done over the whole summer, remark on what work remains to be done, and conclude with a brief tutorial of how to run the code I&#39;ve written to try it out for yourself.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_ctc_network">Results of the CTC network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_framewise_network">Results of the framewise network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#what_remains_to_be_done">What remains to be done</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#running_the_models">Running the models</a><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#ctc_model">CTC model</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#framewise_model">Framewise model</a></li></ol></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#get_the_code">Get the code</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#references">References</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_ctc_network">Results of the CTC network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#results_of_the_framewise_network">Results of the framewise network</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#what_remains_to_be_done">What remains to be done</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#running_the_models">Running the models</a><ol><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#ctc_model">CTC model</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#framewise_model">Framewise model</a></li></ol></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#get_the_code">Get the code</a></li><li><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#references">References</a></li></ol></div>
 <h1 id="have_you_ever_wanted_your_computer_to_understand_speech"><a href="/pub/2018-08-14-GSoC2018-speech-recognition.html#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></h1>
 <p>Speech recognition is currently in vogue among many tech companies. Google and Amazon, for example, are heavily pushing their standalone digital assistant devices, Google Home and Alexa, respectively. Without functional speech recognition, these products would be dead in the water.</p>
 <p>Unfortunately for many researchers and potential users of speech recognition, there doesn&#39;t seem to be as much documentation available for speech recognition systems as there is for image recognition, for example. The goal of this Google Summer of Code 2018 project was to contribute some speech recognition models to the <a href="https://github.com/FluxML/model-zoo">Flux model zoo</a> so that there would be some freely available models for others to work from.</p>
@@ -133,7 +133,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

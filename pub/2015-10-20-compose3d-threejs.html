@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>JSoC 2015 project: Interactive 3D Graphics in the Browser with Compose3D</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>JSoC 2015 project: Interactive 3D Graphics in the Browser with Compose3D</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Over the last three months, I&#39;ve been working on <a href="https://github.com/rohitvarkey/Compose3D.jl">Compose3D</a>, which is an extension of the amazing <a href="https://github.com/dcjones/Compose.jl">Compose</a> package to 3D. My work on Compose3D began as a project for my Computer Graphics course along with <a href="https://github.com/pranavtbhat">Pranav T Bhat</a>, and by the end of the course, we had a working prototype for Compose3D with support for contexts and geometries and a very basic WebGL backend.</p>
 <p>It has been my pleasure to have been able to continue this work under the guidance of <a href="https://github.com/shashi">Shashi Gowda</a> and <a href="https://github.com/SimonDanisch">Simon Danisch</a> as a part of the first ever Julia Summer of Code, generously sponsored by the <a href="https://www.moore.org/">Gordon and Betty Moore Foundation</a>. While I&#39;ve been able to add quite a lot of functionality to Compose3D, it isn&#39;t totally ready for release yet. Hopefully, in some time it will be ready. But as a happy side effect, I have been able to abstract out the WebGL rendering functionality provided by the original prototype &#40;and a lot more&#33;&#41; to a separate package called <a href="https://github.com/rohitvarkey/ThreeJS.jl">ThreeJS.jl</a>, which can now be used to render 3D graphics in browsers using Julia, opening up possibilities of displaying such scenes in <a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a> notebooks and <a href="https://github.com/shashi/Escher.jl">Escher</a>.</p>
 <h2 id="threejsjl"><a href="/pub/2015-10-20-compose3d-threejs.html#threejsjl">ThreeJS.jl</a></h2>
@@ -203,7 +203,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

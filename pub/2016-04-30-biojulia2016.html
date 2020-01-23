@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -20,17 +21,16 @@
   
   
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>BioJulia Project in 2016</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>BioJulia Project in 2016</h1>
     
@@ -57,7 +57,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>I am pleased to announce that the next phase of BioJulia is starting&#33; In the next several months, I&#39;m going to implement many crucial features for bioinformatics that will motivate you to use Julia and BioJulia libraries in your work. But before going to the details of the project, let me briefly introduce you what the BioJulia project is. This project is supported by the Moore Foundation and the Julia project.</p>
 <p><a href="https://github.com/BioJulia">The BioJulia project</a> is a collaborative open source project to create an infrastructure for bioinformatics in the Julia programming language. It aims to provide fast and accessible software libraries. Julia&#39;s Just-In-Time &#40;JIT&#41; compiler enables this greedy goal without resorting to other compiled languages like C/C&#43;&#43;. The central package developed under the project is <a href="https://github.com/BioJulia/Bio.jl">Bio.jl</a>, which provides fundamental features including biological symbols/sequences, file format parsers, alignment algorithms, wrappers for external softwares, etc. It also supports several common file formats such as FASTA, FASTQ, BED, PDB, and so on. Last year I made the <a href="https://github.com/BioJulia/FMIndexes.jl">FMIndexes.jl</a> package to build a full-text search index for large genomes as a Julia Summer of Code &#40;JSoC&#41; student, and we released the first development version of Bio.jl. While the BioJulia project is getting more active and the number of contributors are growing, we still lack some important features for realistic applications. Filling in gaps between our current libraries and actual use cases is the purpose of my new project.</p>
 <p>So, what will be added in it? Here is the summary of my plan:</p>
@@ -101,7 +101,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

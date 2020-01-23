@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>More Dots: Syntactic Loop Fusion in Julia</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>More Dots: Syntactic Loop Fusion in Julia</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>After a <a href="https://github.com/JuliaLang/julia/issues/8450">lengthy design process</a> and <a href="http://julialang.org/blog/2016/10/julia-0.5-highlights#vectorized-function-calls">preliminary foundations in Julia 0.5</a>, Julia 0.6 includes new facilities for writing code in the &quot;vectorized&quot; style &#40;familiar from Matlab, Numpy, R, etcetera&#41; while avoiding the overhead that this style of programming usually imposes: multiple vectorized operations can now be &quot;fused&quot; into a single loop, without allocating any extraneous temporary arrays.</p>
 <p>This is best illustrated with an example &#40;in which we get <em>order-of-magnitude</em> savings in memory and time, as demonstrated below&#41;.  Suppose we have a function <code>f&#40;x&#41; &#61; 3x^2 &#43; 5x &#43; 2</code> that evaluates a polynomial, and we want to evaluate <code>f&#40;2x^2 &#43; 6x^3 - sqrt&#40;x&#41;&#41;</code> for a whole array <code>X</code>, storing the result in-place in <code>X</code>.  You can now do:</p>
 <pre><code class="language-julia">X .= f.(2 .* X.^2 .+ 6 .* X.^3 .- sqrt.(X))</code></pre>
@@ -207,7 +207,7 @@ julia> s .= replace.(lowercase.(s), r"\s+", "-")
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -6,14 +6,11 @@
 the config file by setting hasmath = false for instance and just setting it to true
 where appropriate -->
 
-<!-- I can't understand what they're doing over in julialang.org/blog's jekyll-land
-so let's go with a simple CSS grid -->
-
 The Julia blog discusses issues of numerical, technical, distributed and parallel computing, as well as programming language design, and how these issues touch upon the design and implementation of the Julia programming language. Also see the [Julia Computing blog](http://juliacomputing.com/blog/) for another source of information regarding ongoing Julia development.
 
 Blogs from the broader Julia community can be found at [Julia Bloggers](http://www.juliabloggers.com/).
 
-This is a mirror of the official Julia blog, a playground useful when developing with  [JuDoc](https://github.com/tlienart/JuDoc.jl). The JuDoc source for this is [here](https://github.com/cormullion/julialangblog).
+This is a mirror of the official Julia blog, a playground useful when developing with  Thibaut Lienart's [Franklin](https://github.com/tlienart/Franklin.jl) website generator (written in Julia). The Franklin source files for this is [here](https://github.com/cormullion/julialangblog).
 
 ~~~
 <style>
@@ -38,8 +35,11 @@ This is a mirror of the official Julia blog, a playground useful when developing
 <div class="grid">
 ~~~
 
+[Yao.jl - Differentiable Quantum Programming In Julia](/pub/2019-12-28-yao-differentiable-quantum-programming.html) 2019-12-28
 
-[Pkg + BinaryBuilder — The Next Generation](/pub/2019-11-19-artifacts.html) 2019-11-19
+[Artifacts: 为 Julia 包设计的可靠、可复现的二进制工件系统](/pub/2019-12-18-artifacts-zh_cn.html) 2019-11-19
+
+[Artifacts: Pkg + BinaryBuilder — The Next Generation](/pub/2019-11-19-artifacts.html) 2019-11-19
 
 [Profiling tool wins and woes](/pub/2019-09-16-profilers.html) 2019-09-16
 

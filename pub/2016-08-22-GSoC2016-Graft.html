@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Graft.jl - General purpose graph analytics for Julia</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Graft.jl - General purpose graph analytics for Julia</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This blog post describes my work on <a href="https://github.com/pranavtbhat/Graft.jl">Graft.jl</a>, a general purpose graph analysis package for Julia. For those unfamiliar with graph algorithms, a quick <a href="https://www.cl.cam.ac.uk/teaching/1011/PrincComm/slides/graph_theory_1-11.pdf">introduction</a> might help.</p>
 <h1 id="proposal"><a href="/pub/2016-08-22-GSoC2016-Graft.html#proposal">Proposal</a></h1>
 <p>My proposal, titled <a href="https://github.com/pranavtbhat/Gsoc2016/blob/master/Proposal.md">ParallelGraphs</a>, was to develop a parallelized/distributed graph algorithms library. However, in the first month or so, we decided to work towards a more general framework that supports data analysis on networks &#40;graphs with attributes defined on vertices and edges&#41;. Our change in direction was mainly motivated by:</p>
@@ -209,7 +209,7 @@ julia&gt; @query g |&gt; eachedge&#40;e.mutualcount&#41;</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: November 21, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: November 21, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

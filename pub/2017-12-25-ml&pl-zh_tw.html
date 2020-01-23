@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>機器學習以及程式語言(Traditional Chinese)</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>機器學習以及程式語言(Traditional Chinese)</h1>
     
@@ -59,13 +59,13 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <blockquote>
 <p>任何足夠複雜的機器學習系統都包含一個特別設置、不符規範、充滿 bug 又緩慢實作的程式語言半成品。<sup id="fnref:greenspun"><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#fndef:greenspun" class="fnref">[1]</a></sup>
 </blockquote>
 <p>作為一個設計程式語言（PL）的人，我們抱持莫大的興趣看著機器學習（ML）迅速竄升 - 而且有了它，人們用來建立更複雜的 ML 模型與框架。極致（State-of-the-art）的模型正不斷增加，有了程式的構造元素像是迴圈及遞迴，這為我們的建造工具帶來了很多有趣的議題 - 那也就是，程式語言。</p>
 <p>然而機器學習還沒有一個可靠的語言，許多人正在努力有效地創造隱藏在 Python API 底下的新語言（像是 TensorFlow），也有其他則是再利用 Python 當作一個建模語言（像是 PyTorch）。於是我們想問 —— 一個為機器學習量身定做的新語言是否有其必要的？如果是，為什麼？還有更重要的是，一個理想中未來的機器學習語言會是長什麼樣子？</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#pig_latin">兒童暗語（Pig Latin），及其他隱藏語言</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#3194135214700645157">為什麼要創造新語言？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#python">我們可以只用 Python 嗎？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#ml">那量身訂製的 ML 語言長什麼樣子？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#an_inference_about_machine_learning">結論：An Inference about Machine Learning</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#pig_latin">兒童暗語（Pig Latin），及其他隱藏語言</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#3194135214700645157">為什麼要創造新語言？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#python">我們可以只用 Python 嗎？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#ml">那量身訂製的 ML 語言長什麼樣子？</a></li><li><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#an_inference_about_machine_learning">結論：An Inference about Machine Learning</a></li></ol></div>
 <h2 id="pig_latin"><a href="/pub/2017-12-25-ml&amp;pl-zh_tw.html#pig_latin">兒童暗語（Pig Latin），及其他隱藏語言</a></h2>
 <blockquote>
 <p>譯者註：Pig Latin 是指是在英語上加上一點規則使發音改變的暗語。由在德國的英國戰俘發明來瞞混德軍守衛的，多半被兒童用來瞞著大人秘密溝通，有時則只是說著好玩。</p>
@@ -150,7 +150,7 @@ eval(z) // 6</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

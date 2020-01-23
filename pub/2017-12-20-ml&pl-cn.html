@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>机器学习与编程语言 (Simplified Chinese)</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>机器学习与编程语言 (Simplified Chinese)</h1>
     
@@ -59,13 +59,13 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <blockquote>
 <p>任何足够复杂的机器学习系统，里面都拼凑了半个不规范，处处错误，且运行缓慢的编程语言。<sup id="fnref:greenspun"><a href="/pub/2017-12-20-ml&amp;pl-cn.html#fndef:greenspun" class="fnref">[1]</a></sup>
 </blockquote>
 <p>器学习（ML）已如烈火烹油般火热。身处编程语言（PL）领域，我们饶有兴趣地关注着机器学习模型的复杂度和构造这些模型所用的框架。当今最前沿的模型越来越像<em>程序</em>：里面有循环和递归这样的编程结构；这对制造机器学习模型的工具本身，即编程语言，提出了许多有趣的挑战。</p>
 <p>虽然目前还没有一个机器学习专属的语言，但实事求是地说，已有几种新语言（比如 TensorFlow）藏身于 Python 语言接口之后；也有一些（比如 PyTorch）则直接用 Python 作为自己的建模语言。我们要问这样一个问题——需不需要专门为机器学习定制一个全新的语言？如果是，为什么？更重要地，如果将来出现一个理想的机器学习语言，它会长什么样？</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#a_hrefhttpszhwikipediaorgzh-hk"><a href="https://zh.wikipedia.org/zh-hk/兒童黑話">儿童黑话</a>及其它隐匿语言</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#9946866670296762781">为什么要创造一个新语言？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#python">直接用 Python 不行吗？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#2623452099155470300">机器学习的专属语言可能长什么样？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#15392021977672209913">结论：一个关于机器学习的推断</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#a_hrefhttpszhwikipediaorgzh-hk"><a href="https://zh.wikipedia.org/zh-hk/兒童黑話">儿童黑话</a>及其它隐匿语言</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#9946866670296762781">为什么要创造一个新语言？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#python">直接用 Python 不行吗？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#2623452099155470300">机器学习的专属语言可能长什么样？</a></li><li><a href="/pub/2017-12-20-ml&amp;pl-cn.html#15392021977672209913">结论：一个关于机器学习的推断</a></li></ol></div>
 <h2 id="a_hrefhttpszhwikipediaorgzh-hk"><a href="/pub/2017-12-20-ml&amp;pl-cn.html#a_hrefhttpszhwikipediaorgzh-hk"><a href="https://zh.wikipedia.org/zh-hk/兒童黑話">儿童黑话</a>及其它隐匿语言</a></h2>
 <p>TensorFlow（TF）等框架<sup id="fnref:tf"><a href="/pub/2017-12-20-ml&amp;pl-cn.html#fndef:tf" class="fnref">[2]</a></sup><a href="https://dl.acm.org/citation.cfm?doid&#61;3088525.3088527">已被公认属于编程语言</a>，尽管它们在某些方面还有局限。这多少有些意料之外，毕竟大家 TF 编程时用的是 Python。然而琢磨一下就会发现，TF 只是让你用 Python 代码<a href="https://www.tensorflow.org/programmers_guide/graphs">构造了一个表达式树</a>，这个表达式树是用其内部语言表示的，之后再进行计算。</p>
 <p>实际上，可以在任何语言上实现 TensorFlow 这种“延迟”计算的风格。如下 JavaScript 代码就用此风格写了一个 <code>add</code> 函数:</p>
@@ -141,7 +141,7 @@ eval(z) // 6</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>StructuredQueries.jl - A generic data manipulation framework</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>StructuredQueries.jl - A generic data manipulation framework</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>This post describes my work conducted this summer at the <a href="http://julia.mit.edu/">Julia Lab</a> to develop <a href="https://github.com/davidagold/StructuredQueries.jl/">StructuredQueries.jl</a>, a generic data manipulation framework for <a href="http://julialang.org/">Julia</a>.</p>
 <p>Our initial vision for this work was much inspired by Hadley Wickham&#39;s <a href="https://github.com/hadley/dplyr">dplyr</a> R package, which provides data manipulation verbs that are generic over in-memory R tabular data structures and SQL databases, and <a href="https://github.com/JuliaStats/DataFramesMeta.jl">DataFramesMeta</a> &#40;begun by <a href="https://github.com/tshort">Tom Short</a>&#41;, which provides metaprogramming facilities for working with Julia <code>DataFrame</code>s.</p>
 <p>While a generic querying interface is a worthwhile end in itself &#40;and has been discussed <a href="https://groups.google.com/d/topic/julia-dev/jL2FSL4EneE/discussion">elsewhere</a>&#41;, it may also be useful for solving problems specific to in-memory Julia tabular data structures. We will discuss how a query interface suggests solutions to two important problems facing the development of tabular data structures in Julia: the <em>column-indexing</em> and <em>nullable semantics</em> problems. So, the present post will describe both the progress of my work and also discuss a wider scope of issues concerning support for tabular data structures in Julia. I will provide some context for these issues; the reader should feel free to skip over any uninteresting details.</p>
@@ -348,7 +348,7 @@ q = @query filter(tbl, A > $c)</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

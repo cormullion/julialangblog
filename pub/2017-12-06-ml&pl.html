@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>On Machine Learning and Programming Languages</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>On Machine Learning and Programming Languages</h1>
     
@@ -59,13 +59,13 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <blockquote>
 <p>Any sufficiently complicated machine learning system contains an ad-hoc, informally-specified, bug-ridden, slow implementation of half of a programming language.<sup id="fnref:greenspun"><a href="/pub/2017-12-06-ml&amp;pl.html#fndef:greenspun" class="fnref">[1]</a></sup>
 </blockquote>
 <p>As programming languages &#40;PL&#41; people, we have watched with great interest as machine learning &#40;ML&#41; has exploded – and with it, the complexity of ML models and the frameworks people are using to build them. State-of-the-art models are increasingly <em>programs</em>, with support for programming constructs like loops and recursion, and this brings out many interesting issues in the tools we use to create them – that is, programming languages.</p>
 <p>While machine learning does not yet have a dedicated language, several efforts are effectively creating hidden new languages underneath a Python API &#40;like TensorFlow&#41; while others are reusing Python as a modelling language &#40;like PyTorch&#41;. We’d like to ask – are new ML-tailored languages required, and if so, why? More importantly, what might the ideal ML language of the future look like?</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-12-06-ml&amp;pl.html#pig_latin_and_other_hidden_languages">Pig Latin, and Other Hidden Languages</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#why_create_a_new_language">Why create a new language?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#can_we_just_use_python">Can we just use Python?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#what_might_a_tailor-made_ml_language_look_like">What might a tailor-made ML language look like?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#conclusion_an_inference_about_machine_learning">Conclusion: An Inference about Machine Learning</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#footnotes">Footnotes</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-12-06-ml&amp;pl.html#pig_latin_and_other_hidden_languages">Pig Latin, and Other Hidden Languages</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#why_create_a_new_language">Why create a new language?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#can_we_just_use_python">Can we just use Python?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#what_might_a_tailor-made_ml_language_look_like">What might a tailor-made ML language look like?</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#conclusion_an_inference_about_machine_learning">Conclusion: An Inference about Machine Learning</a></li><li><a href="/pub/2017-12-06-ml&amp;pl.html#footnotes">Footnotes</a></li></ol></div>
 <h2 id="pig_latin_and_other_hidden_languages"><a href="/pub/2017-12-06-ml&amp;pl.html#pig_latin_and_other_hidden_languages">Pig Latin, and Other Hidden Languages</a></h2>
 <p>TensorFlow &#40;TF&#41; and its ilk<sup id="fnref:tf"><a href="/pub/2017-12-06-ml&amp;pl.html#fndef:tf" class="fnref">[2]</a></sup> are <a href="https://dl.acm.org/citation.cfm?doid&#61;3088525.3088527">already programming languages</a>, albeit limited ones. This may seem surprising given that one uses Python to program TF. However, consider that TF requires you to write Python code to <a href="https://www.tensorflow.org/programmers_guide/graphs">build an expression tree</a> in its internal language, which it then evaluates.</p>
 <p>In fact, you can program in &quot;lazy&quot; TensorFlow style in any language. Consider the following JavaScript code, which implements a trivial function &#40;<code>add</code>&#41; in this style:</p>
@@ -153,7 +153,7 @@ eval(z) // 6</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

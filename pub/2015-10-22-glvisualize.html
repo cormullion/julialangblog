@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -20,17 +21,16 @@
   
   
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>JSoC 2015 project: Interactive Visualizations in Julia with GLVisualize.jl</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>JSoC 2015 project: Interactive Visualizations in Julia with GLVisualize.jl</h1>
     
@@ -57,7 +57,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>GLVisualize is an interactive visualization library that supports 2D and 3D rendering as well as building of basic GUIs. It&#39;s written entirely in Julia and OpenGL. I&#39;m really glad that I could continue working on this project with the support of Julia Summer of Code.</p>
 <p>During <strong>JSoC</strong>, my main focus was on advancing <a href="https://github.com/JuliaGL/GLVisualize.jl">GLVisualize</a>, but also improving the surrounding infrastructure like <a href="https://github.com/JuliaGeometry/GeometryTypes.jl">GeometryTypes</a>, <a href="https://github.com/JuliaIO/FileIO.jl">FileIO</a>, <a href="https://github.com/JuliaIO/ImageMagick.jl">ImageMagick</a>, <a href="https://github.com/JuliaIO/MeshIO.jl">MeshIO</a> and <a href="https://github.com/SimonDanisch/FixedSizeArrays.jl">FixedSizeArrays</a>. All recorded gifs in this blog post suffer from lossy compression. You can click on most of them to see the code that produced them.</p>
 <p>One of the most interesting parts of <strong>GLVisualize</strong> is, that it&#39;s combining GUIs and visualizations, instead of relying on a 3rd party library like <strong>QT</strong> for GUIs. This has many advantages and disadvantages. The main advantage is, that interactive visualization share a lot of infrastructure with GUI libraries. By combining these two, new features are possible, e.g. text editing of labels in 3D space, or making elements of a visualization work like a button. These features should end up being pretty snappy, since <strong>GLVisualize</strong> was created with <a href="http://randomfantasies.com/2015/05/glvisualize-benchmark/">high performance</a> in mind.</p>
@@ -86,7 +86,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

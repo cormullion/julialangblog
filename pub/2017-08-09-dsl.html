@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Creating domain-specific languages in Julia using macros</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Creating domain-specific languages in Julia using macros</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Since the beginning of Julia, it has been tempting to use macros to write <strong>domain-specific languages</strong> &#40;DSLs&#41;, i.e. to <em>extend</em> Julia syntax to provide a simpler interface to create Julia objects with complicated behaviour. The first, and still most extensive, example is <a href="https://github.com/JuliaOpt/JuMP.jl">JuMP</a>.</p>
 <p>Since the fix for the infamous early <a href="https://github.com/JuliaLang/julia/issues/265">Julia issue #265</a>, which was incorporated in Julia 0.6, some previous methods for creating DSLs in Julia, mainly involving <code>eval</code>, ceased to work.</p>
 <p>In this post, we will describe a recommended pattern &#40;i.e., a reusable structure&#41; for creating DSLs <em>without</em> the use of <code>eval</code>, using syntax suitable for Julia 0.6 and later versions; it is strongly recommended to upgrade to Julia 0.6.</p>
@@ -258,7 +258,7 @@ julia> m8(10)
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

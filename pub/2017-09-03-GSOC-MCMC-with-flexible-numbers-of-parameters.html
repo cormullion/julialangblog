@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -20,17 +21,16 @@
   
   
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>GSoC 2017 Project: MCMC with flexible numbers of parameters</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>GSoC 2017 Project: MCMC with flexible numbers of parameters</h1>
     
@@ -57,10 +57,10 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>My <a href="https://docs.google.com/document/d/1yY5VhucSRW4IHSDurvPsoSBeGQQLaqoyKyYKgVW0J8Q/edit">original GSOC proposal</a> was to implement modify Mamba.jl to enable it to fit Crosscat, a general-purpose Bayesian model which fits tabular data using row-wise Dirichlet cluster models nested inside a column-wise Dirichlet cluster. This model is in itself broadly useful, but the real reason I chose this project was to work on something even more general: improving the tools for doing MCMC on models with a mix of discrete and continuous parameters.</p>
 <p>In the end, I was unable to complete the full original plan. However, I did implement a simple Dirichlet 1D Gaussian mixture model in Mamba. Though this model itself is extremely basic, it did require successfully reworking Mamba to enable variable numbers of parameters — a significant amount of work. Based on that work, more-sophisticated Dirichlet mixture models involving multiple dimensions and/or Dirichlet processes would be almost trivial, and even something more heavy-duty such as Crosscat &#40;or improved versions thereof&#41; would be far easier to implement in the future. I estimate that, while the practical usefulness of the demo model I&#39;m delivering is a small fraction of a full-blown Crosscat, the actual work I&#39;ve done is about 75&#37; of what it would take to get there.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#project_motivation">Project motivation</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#hurdles">Hurdles</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#so_wheres_the_model">So, where&#39;s the model?</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#further_work">Further work</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#acknowledgements">Acknowledgements</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#project_motivation">Project motivation</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#hurdles">Hurdles</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#so_wheres_the_model">So, where&#39;s the model?</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#further_work">Further work</a></li><li><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="project_motivation"><a href="/pub/2017-09-03-GSOC-MCMC-with-flexible-numbers-of-parameters.html#project_motivation">Project motivation</a></h2>
 <p>Bayesian MCMC is a powerful all-purpose tool in the toolkit of statistics, and thus of almost all science. It allows one to flexibly build models which capture the interplay of known dynamics and unknown parameters, of measurable data and uncertain noise, thus extracting meaning from data.</p>
 <p>The great power of this idea lies in its flexibility. If you can write a likelihood model, you can at least attempt to do MCMC. Of course, issues of computation and convergence might make things hard in practice, but at least in theory, the idea is straightforward enough to be susceptible to automation.</p>
@@ -107,7 +107,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

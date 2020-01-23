@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -20,17 +21,16 @@
   
   
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>A Personal Perspective On JuliaCon 2016</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>A Personal Perspective On JuliaCon 2016</h1>
     
@@ -57,7 +57,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>The gentle breeze brushed my face and the mild sunshine warmed an otherwise chilly morning. I was standing in front of a large building that can only be described as unique: a series of metal plates jutting out at odd angles, whose dull resplendence cast an instant impression. It was the Ray and Maria Stata Centre, a towering monolith and the venue for an event that people from all over the world came to attend and participate in. I was in town for the <a href="https://www.youtube.com/watch?v&#61;EZD3Scuv02g&amp;list&#61;PLP8iPy9hna6SQPwZUDtAM59-wPzCPyD_S">third edition of JuliaCon</a>, the annual Julia Conference at MIT.</p>
 <p>On the eve of JuliaCon, a series of workshops were organised on some important areas people use Julia for. I was conducting the <a href="https://www.youtube.com/watch?v&#61;euZkvgx0fG8">Parallel Computing workshop</a> along with some other members of the <a href="http://julia.mit.edu/">JuliaLab</a>. The key idea in our workshop was to show users the many different ways of writing and executing parallel code in Julia. I was talking about easy GPU computing using my package called ArrayFire and achieving acceleration using Julia’s multi-threading.</p>
 <p>Day 1 started off with the first keynote speaker - Guy Steele, a stalwart in the software industry and an expert in programming language design. He <a href="https://www.youtube.com/watch?v&#61;EZD3Scuv02g">spoke</a> about his adventures designing Fortress, a language that was intended to be good at mathematical programming. He went through the key design principles and tradeoffs: from the type hierarchy, to their model for parallelism &#40;automatic work-stealing&#41;, and interesting choices &#40;such as non-transitive operator precedence&#41;. My colleague Keno Fischer was up next with a <a href="https://www.youtube.com/watch?v&#61;e6-hcOHO0tc">tour</a> of the new Julia Debugger: Gallium&#33; Gallium was quite breathtaking in its complexity and versatility, so much so that Keno himself uses it to debug code in C and C&#43;&#43;&#33; A powerful debugger becomes even better with GUI-integration, which Mike Innes very usefully <a href="https://www.youtube.com/watch?v&#61;yDwUL3aRSRc">pitched in</a> with during his demo of Juno-Gallium integration. Stepping, printing and breakpoints promised a powerful package development experience.</p>
@@ -77,7 +77,7 @@
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 

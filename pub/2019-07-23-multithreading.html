@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <base href="/pub/">
+  <link rel="icon"       href="/assets/infra/favicon.ico">
 
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
 
@@ -22,17 +23,16 @@
 <link rel="stylesheet" href="/libs/highlight/github.min.css">
    
 
-  <link rel="stylesheet" href="/css/judoc.css">
   <link rel="stylesheet" href="/css/basic.css">
+  <link rel="stylesheet" href="/css/franklin.css">
   <link rel="stylesheet" href="/css/julialangblog.css">
-  <link rel="icon"       href="/assets/infra/favicon.ico">
 
    <title>Announcing composable multi-threaded parallelism in Julia</title>  
 </head>
 
 <body>
   <header>
-    <div class="blog-name">The <a href="https://julialang.org/blog/">Julia language blog</a> (mirror)</div>
+    <div class="blog-name">The Julia language blog (mirror)</div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <div class="jd-content">
+  <div class="franklin-content">
     
     <h1>Announcing composable multi-threaded parallelism in Julia</h1>
     
@@ -59,7 +59,7 @@
 
 <!-- Content appended here -->
 
-<div class="jd-content">
+<div class="franklin-content">
 <p>Software performance depends more and more on exploiting multiple processor cores. The <a href="http://www.gotw.ca/publications/concurrency-ddj.htm">free lunch</a> from Moore&#39;s Law is still over. Well, we here in the Julia developer community have something of a reputation for caring about performance. In pursuit of it, we have already built a lot of functionality for multi-process, distributed programming and GPUs, but we&#39;ve known for years that we would also need a good story for composable multi-threading. Today we are happy to announce a major new chapter in that story. We are releasing a preview of an entirely new threading interface for Julia programs: general task parallelism, inspired by parallel programming systems like <a href="http://cilk.mit.edu/">Cilk</a>, <a href="https://software.intel.com/en-us/intel-tbb/">Intel Threading Building Blocks</a><a href="TBB"></a> and <a href="https://tour.golang.org/concurrency/1">Go</a>. Task parallelism is now available in the v1.3.0-alpha release, an early preview of Julia version 1.3.0 likely to be released in a couple months. You can find binaries with this feature on the <a href="https://julialang.org/downloads/">downloads page</a>, or build the <a href="https://github.com/JuliaLang/julia">master branch</a> from source.</p>
 <p>In this paradigm, any piece of a program can be marked for execution in parallel, and a &quot;task&quot; will be started to run that code automatically on an available thread. A dynamic scheduler handles all the decisions and details for you. Here&#39;s an example of parallel code you can now write in Julia:</p>
 <pre><code class="language-julia">import Base.Threads.@spawn
@@ -76,7 +76,7 @@ end</code></pre>
 <p>The model is portable and free from low-level details. You don&#39;t need to explicitly start and stop threads, and you don&#39;t even need to know how many processors or threads there are &#40;though you can find out if you want&#41;.</p>
 <p>The model is nestable and composable: you can start parallel tasks that call library functions that themselves start parallel tasks, and everything works. Your CPUs will not be over-subscribed with threads. This property is crucial for a high-level language where a lot of work is done by library functions. You need to be free to write whatever code you need — including parallel code — without worrying about how the libraries it calls are implemented &#40;currently only for Julia code, but in the future we plan to extend this to native libraries such as BLAS&#41;.</p>
 <p>This is, in fact, the main reason we are excited about this announcement: from this point on, the capability of adding multi-core parallelism is unleashed over the entire Julia package ecosystem.</p>
-<div class="jd-toc"><ol><li><a href="/pub/2019-07-23-multithreading.html#some_history">Some history</a></li><li><a href="/pub/2019-07-23-multithreading.html#how_to_use_it">How to use it</a></li><li><a href="/pub/2019-07-23-multithreading.html#how_to_move_to_a_parallel_world">How to move to a parallel world</a><ol><li><a href="/pub/2019-07-23-multithreading.html#task_scheduling_and_synchronization">Task scheduling and synchronization</a></li><li><a href="/pub/2019-07-23-multithreading.html#thread-local_state">Thread-local state</a></li><li><a href="/pub/2019-07-23-multithreading.html#random_number_generation">Random number generation</a></li></ol></li><li><a href="/pub/2019-07-23-multithreading.html#under_the_hood">Under the hood</a><ol><li><a href="/pub/2019-07-23-multithreading.html#allocating_and_switching_task_stacks">Allocating and switching task stacks</a></li><li><a href="/pub/2019-07-23-multithreading.html#io">I/O</a></li><li><a href="/pub/2019-07-23-multithreading.html#task_migration_across_system_threads">Task migration across system threads</a></li><li><a href="/pub/2019-07-23-multithreading.html#sleeping_idle_threads">Sleeping idle threads</a></li><li><a href="/pub/2019-07-23-multithreading.html#where_does_the_scheduler_run">Where does the scheduler run?</a></li><li><a href="/pub/2019-07-23-multithreading.html#classic_bugs">Classic bugs</a></li></ol></li><li><a href="/pub/2019-07-23-multithreading.html#looking_forward">Looking forward</a></li><li><a href="/pub/2019-07-23-multithreading.html#acknowledgements">Acknowledgements</a></li></ol></div>
+<div class="franklin-toc"><ol><li><a href="/pub/2019-07-23-multithreading.html#some_history">Some history</a></li><li><a href="/pub/2019-07-23-multithreading.html#how_to_use_it">How to use it</a></li><li><a href="/pub/2019-07-23-multithreading.html#how_to_move_to_a_parallel_world">How to move to a parallel world</a><ol><li><a href="/pub/2019-07-23-multithreading.html#task_scheduling_and_synchronization">Task scheduling and synchronization</a></li><li><a href="/pub/2019-07-23-multithreading.html#thread-local_state">Thread-local state</a></li><li><a href="/pub/2019-07-23-multithreading.html#random_number_generation">Random number generation</a></li></ol></li><li><a href="/pub/2019-07-23-multithreading.html#under_the_hood">Under the hood</a><ol><li><a href="/pub/2019-07-23-multithreading.html#allocating_and_switching_task_stacks">Allocating and switching task stacks</a></li><li><a href="/pub/2019-07-23-multithreading.html#io">I/O</a></li><li><a href="/pub/2019-07-23-multithreading.html#task_migration_across_system_threads">Task migration across system threads</a></li><li><a href="/pub/2019-07-23-multithreading.html#sleeping_idle_threads">Sleeping idle threads</a></li><li><a href="/pub/2019-07-23-multithreading.html#where_does_the_scheduler_run">Where does the scheduler run?</a></li><li><a href="/pub/2019-07-23-multithreading.html#classic_bugs">Classic bugs</a></li></ol></li><li><a href="/pub/2019-07-23-multithreading.html#looking_forward">Looking forward</a></li><li><a href="/pub/2019-07-23-multithreading.html#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="some_history"><a href="/pub/2019-07-23-multithreading.html#some_history">Some history</a></h2>
 <p>One of the most surprising aspects of this new feature is just how long it has been in the works. From the very beginning — prior even to the 0.1 release — Julia has had the <code>Task</code> type providing symmetric coroutines, which we&#39;ve used for event-based I/O. So we have always had a unit of <em>concurrency</em> &#40;independent streams of execution&#41; in the language, it just wasn&#39;t <em>parallel</em> &#40;simultaneous streams of execution&#41; yet. We knew we needed thread-based parallelism though, so in 2014 &#40;roughly the version 0.3 timeframe&#41; we set about the long process of making our code thread-safe. Yichao Yu put in some particularly impressive work on the garbage collector and thread-local-storage performance. One of the authors &#40;Kiran&#41; designed some basic infrastructure for scheduling multiple threads and managing atomic datastructures.</p>
 <p>In version 0.5 about two years later, we released the <code>@threads for</code> macro with &quot;experimental&quot; status which could handle simple parallel loops running on all cores. Even though that wasn&#39;t the final design we wanted, it did two important jobs: it let Julia programmers start taking advantage of multiple cores, and provided test cases to shake out thread-related bugs in our runtime. That initial <code>@threads</code> had some huge limitations, however: <code>@threads</code> loops could not be nested: if the functions they called used <code>@threads</code> recursively, those inner loops would only occupy the CPU that called them. It was also incompatible with our <code>Task</code> and I/O system: you couldn&#39;t do any I/O or switch among <code>Task</code>s inside a threaded loop.</p>
@@ -266,7 +266,7 @@ end</code></pre>
 <div class="page-foot">
   <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
   <div class="copyright">
-    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/JuDoc.jl">JuDoc.jl</a>.
+    &copy; Last modified: October 08, 2019. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>.
   </div>
 </div>
 
