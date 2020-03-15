@@ -1,3 +1,13 @@
+.smalllogo
+
+{
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    transform: matrix(-0.5, 0, 0, 0.5, 0, 0);
+}
+
+
 @font-face {
 	font-family: JuliaMono-Regular;
 	src: url("https://cormullion.github.io/assets/fonts/JuliaMono-Regular.woff2");
