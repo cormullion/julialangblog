@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>This is the first of two blog posts designed to walk users through the process of creating GUIs in Julia. Those following Julia development will know that plotting in Julia is still evolving, and one could therefore expect that it might be premature to build GUIs with Julia. My own recent experience has taught me that this expectation is wrong: compared with building GUIs in Matlab &#40;my only previous GUI-writing experience&#41;, Julia already offers a number of quite compelling advantages. We&#39;ll see some of these advantages on display below.</p>
+<div class="container"><p>This is the first of two blog posts designed to walk users through the process of creating GUIs in Julia. Those following Julia development will know that plotting in Julia is still evolving, and one could therefore expect that it might be premature to build GUIs with Julia. My own recent experience has taught me that this expectation is wrong: compared with building GUIs in Matlab &#40;my only previous GUI-writing experience&#41;, Julia already offers a number of quite compelling advantages. We&#39;ll see some of these advantages on display below.</p>
 <p>We&#39;ll go through the highlights needed to create an image viewer GUI. Before getting into how to write this GUI, first let&#39;s play with it to get a sense for how it works. It&#39;s best if you just try these commands yourself, because it&#39;s difficult to capture things like interactivity with static text and pictures.</p>
 <p>You&#39;ll need the <code>ImageView</code> package:</p>
 <pre><code class="language-julia">Pkg.add("ImageView")</code></pre>
@@ -360,10 +379,7 @@ state = NavigationState(40, 1000, 2, 5)</code></pre>
 <p><img src="/assets/blog/GUI_figures/navigation_repl.jpg?raw&#61;true" alt="GUI snapshot" /></p>
 <p>Hopefully this demonstrates another nice feature of developing GUIs in Julia: it&#39;s straightforward to build re-usable components. This navigation frame can be added as an element to any window, and the grid layout manager takes care of the rest. All you need to do is to include <code>ImageView/src/navigation.jl</code> into your module, and you can make use of it with just a few lines of code.</p>
 <p>Not too hard, right? The next step is to render the image, which brings us into the domain of Cairo.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

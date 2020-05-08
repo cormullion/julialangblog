@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>备受期待的<a href="https://julialang.org">Julia语言</a>的1.0版本积累了富有野心的程序员们的十年心血。 在 JuliaCon2018 发布会上，Julia 社区正式将该版本<a href="https://www.youtube.com/watch?v&#61;1jN5wKvN-Uk#t&#61;3850">设置为1.0.0</a>。</p>
+<div class="container"><p>备受期待的<a href="https://julialang.org">Julia语言</a>的1.0版本积累了富有野心的程序员们的十年心血。 在 JuliaCon2018 发布会上，Julia 社区正式将该版本<a href="https://www.youtube.com/watch?v&#61;1jN5wKvN-Uk#t&#61;3850">设置为1.0.0</a>。</p>
 <p>Julia项目<a href="/blog/2012/02/why-we-created-julia">起初</a>是因为这些强烈的需求而公开发起的开源项目：</p>
 <blockquote>
 <p>我们想要的是一个自由开源的语言，并且它同时拥有C的速度和Ruby的动态性；我们想要一个具有同像性（可以将语言的脚本本身当作数据进行处理）的语言， 它有着真正的和lisp一样的宏，但是却像Matlab一样有着显然的，类似于数学表达式的标记；我们想要一个既可以像Python一样作为通用编程语言的工具， 又可以像R那样适用于统计分析，能像Perl那样自然地处理字符串，能像Matlab那样给力地处理矩阵运算，它还要能像shell一样作为胶水将各种程序粘 合在一起；我们想要一个简单易学的语言，同时它还能让最苛刻的魔法师们（hackers）开心。我们希望它是交互式的，但我们也希望它能被编译。</p>
@@ -235,10 +254,7 @@
 <p>它还没有完工——但是已经可以发布一个1.0版本了（其实等了6年才要发布）——我们创造的这个语言叫做Julia。</p>
 </blockquote>
 <p>虽然对于1.0的发布我们放了大家好几次鸽子，但是这一次我们终于正式发布了。 我们真心为所有为这个真正为数值计算和通用编程设计的现代语言的各种形式的贡献的人感到自豪和高兴。</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

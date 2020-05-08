@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -52,6 +73,7 @@
 
   <!-- Franklin stylesheets for generated pages -->
   
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
   
    <title>Platform Specific Instructions for Official Binaries</title>   
 
@@ -67,13 +89,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,9 +139,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="platform_specific_instructions_for_official_binaries"><a href="#platform_specific_instructions_for_official_binaries">Platform Specific Instructions for Official Binaries</a></h1>
+<div class="container"><h1 id="platform_specific_instructions_for_official_binaries"><a href="#platform_specific_instructions_for_official_binaries">Platform Specific Instructions for Official Binaries</a></h1>
 <p>All official Julia binaries produce portable installations. Once installed, the directory in which Julia was installed can be moved to a different location on the same computer, or even to a different computer.</p>
 <h2 id="windows"><a href="#windows">Windows</a></h2>
 <p>Julia is available for Windows 7 and later, both 32 bit and 64 bit.</p>
@@ -225,13 +245,14 @@ sudo yum install julia</code></pre>
 <pre><code class="language-julia">sudo apt install julia</code></pre>
 <h2 id="freebsd_ports"><a href="#freebsd_ports">FreeBSD Ports</a></h2>
 <p>Julia is available in the <a href="https://svnweb.freebsd.org/ports/head/lang/julia/">Ports Collection</a>. To install from the FreeBSD binary package manager, <code>pkg</code>, run</p>
-<pre><code class="language-julia">pkg install julia</code></pre>
-
-</div>
-<br><br>
+<pre><code class="language-julia">pkg install julia</code></pre></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
     
 
     <footer class="container-fluid footer-copy">

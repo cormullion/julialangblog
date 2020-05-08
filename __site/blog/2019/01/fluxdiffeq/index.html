@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Translations: <a href="/blog/2019/04/fluxdiffeq-zh_tw/&#93;Traditional Chinese">Traditional Chinese</a></p>
+<div class="container"><p>Translations: <a href="/blog/2019/04/fluxdiffeq-zh_tw/&#93;Traditional Chinese">Traditional Chinese</a></p>
 <p>In this blog post we will show you how to easily, efficiently, and robustly use differential equation &#40;DiffEq&#41; solvers with neural networks in Julia.</p>
 <p><img src="https://user-images.githubusercontent.com/1814174/51399500-1f4dd080-1b14-11e9-8c9d-144f93b6eac2.gif" alt="Flux ODE Training Animation" /></p>
 <p>The <a href="https://arxiv.org/abs/1806.07366">Neural Ordinary Differential Equations</a> paper has attracted significant attention even before it was awarded one of the Best Papers of NeurIPS 2018. The paper already gives many exciting results combining these two disparate fields, but this is only the beginning: neural networks and differential equations were born to be together. This blog post, a collaboration between authors of <a href="https://github.com/FluxML/Flux.jl">Flux</a>, <a href="https://github.com/JuliaDiffEq/DifferentialEquations.jl">DifferentialEquations.jl</a> and the Neural ODEs paper, will explain why, outline current and future directions for this work, and start to give a sense of what&#39;s possible with state-of-the-art tools.</p>
@@ -165,19 +184,23 @@
 <p>First, how do you numerically specify and solve an ODE? If you&#39;re new to solving ODEs, you may want to watch our <a href="https://www.youtube.com/watch?v&#61;KPEqYtEd-zY">video tutorial on solving ODEs in Julia</a> and look through the <a href="https://docs.juliadiffeq.org/latest/tutorials/ode_example.html">ODE tutorial of the DifferentialEquations.jl documentation</a>. The idea is that you define an <code>ODEProblem</code> via a derivative equation <code>u&#39;&#61;f&#40;u,p,t&#41;</code>, and provide an initial condition <code>u0</code>, and a timespan <code>tspan</code> to solve over, and specify the parameters <code>p</code>.</p>
 <p>For example, the <a href="https://en.wikipedia.org/wiki/Lotka&#37;E2&#37;80&#37;93Volterra_equations">Lotka-Volterra equations describe the dynamics of the population of rabbits and wolves</a>. They can be written as:</p>
 \[x^\prime = \alpha x + \beta x y\] \[y^\prime = -\delta y + \gamma x y\]
-<p>and encoded in Julia like: <pre><code class="language-julia">using DifferentialEquations
-function lotka_volterra(du,u,p,t)
-  x, y = u
-  α, β, δ, γ = p
-  du[1] = dx = α*x - β*x*y
-  du[2] = dy = -δ*y + γ*x*y
+<p>and encoded in Julia like:</p>
+<p>using DifferentialEquations
+function lotka_volterra&#40;du,u,p,t&#41;
+  x, y &#61; u
+  α, β, δ, γ &#61; p
+  du&#91;1&#93; &#61; dx &#61; α*x - β*x*y
+  du&#91;2&#93; &#61; dy &#61; -δ*y &#43; γ*x*y
 end
-u0 = [1.0,1.0]
-tspan = (0.0,10.0)
-p = [1.5,1.0,3.0,1.0]
-prob = ODEProblem(lotka_volterra,u0,tspan,p)</code></pre> Then to solve the differential equations, you can simply call <code>solve</code> on the <code>prob</code>: <pre><code class="language-julia">sol = solve(prob)
+u0 &#61; &#91;1.0,1.0&#93;
+tspan &#61; &#40;0.0,10.0&#41;
+p &#61; &#91;1.5,1.0,3.0,1.0&#93;
+prob &#61; ODEProblem&#40;lotka_volterra,u0,tspan,p&#41;</p>
+<p>Then to solve the differential equations, you can simply call <code>solve</code> on the <code>prob</code>:</p>
+<p>sol &#61; solve&#40;prob&#41;
 using Plots
-plot(sol)</code></pre> <img src="https://user-images.githubusercontent.com/1814174/51388169-9a07f300-1af6-11e9-8c6c-83c41e81d11c.png" alt="LV Solution Plot" /></p>
+plot&#40;sol&#41;</p>
+<p><img src="https://user-images.githubusercontent.com/1814174/51388169-9a07f300-1af6-11e9-8c6c-83c41e81d11c.png" alt="LV Solution Plot" /></p>
 <p>One last thing to note is that we can make our initial condition &#40;<code>u0</code>&#41; and time spans &#40;<code>tspans</code>&#41; to be functions of the parameters &#40;the elements of <code>p</code>&#41;. For example, we can define the <code>ODEProblem</code>:</p>
 <pre><code class="language-julia">u0_f(p,t0) = [p[2],p[4]]
 tspan_f(p) = (0.0,10*p[4])
@@ -422,10 +445,7 @@ sol = solve(prob,CVODE_Adams(),reltol=1e-12,abstol=1e-12)
   biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1902-02376},
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }</code></pre></p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

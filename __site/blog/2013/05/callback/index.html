@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>One of the great strengths of Julia is that it is so easy to <a href="https://docs.julialang.org/en/latest/manual/calling-c-and-fortran-code.html">call C code</a> natively, with no special &quot;glue&quot; routines or overhead to marshal arguments and convert return values.  For example, if you want to call <a href="https://www.gnu.org/software/gsl/">GNU GSL</a> to compute a special function like a <a href="https://linux.math.tifr.res.in/manuals/html/gsl-ref-html/gsl-ref_7.html">Debye integral</a>, it is as easy as:</p>
+<div class="container"><p>One of the great strengths of Julia is that it is so easy to <a href="https://docs.julialang.org/en/latest/manual/calling-c-and-fortran-code.html">call C code</a> natively, with no special &quot;glue&quot; routines or overhead to marshal arguments and convert return values.  For example, if you want to call <a href="https://www.gnu.org/software/gsl/">GNU GSL</a> to compute a special function like a <a href="https://linux.math.tifr.res.in/manuals/html/gsl-ref-html/gsl-ref_7.html">Debye integral</a>, it is as easy as:</p>
 <pre><code class="language-julia">debye_1(x) = ccall((:gsl_sf_debye_1,:libgsl), Cdouble, (Cdouble,), x)</code></pre>
 <p>at which point you can compute <code>debye_1&#40;2&#41;</code>, <code>debye_1&#40;3.7&#41;</code>, and so on.  &#40;Even easier would be to use Jiahao Chen&#39;s <a href="https://github.com/jiahao/GSL.jl">GSL package</a> for Julia, which has already created such wrappers for you.&#41;  This makes a vast array of existing C libraries accessible to you in Julia &#40;along with Fortran libraries and other languages with C-accessible calling conventions&#41;.</p>
 <p>In fact, you can even go the other way around, passing Julia routines to C, so that C code is calling Julia code in the form of <em>callback</em> functions.   For example, a C library for numerical integration might expect you to pass the integrand as a <em>function</em> argument, which the library will then call to evaluate the integrand as many times as needed to estimate the integral.  Callback functions are also natural for optimization, root-finding, and many other numerical tasks, as well as in many non-numerical problems.  The purpose of this blog post is to illustrate the techniques for passing Julia functions as callbacks to C routines, which is straightforward and efficient but requires some lower-level understanding of how functions and other values are passed as arguments.</p>
@@ -321,10 +340,7 @@ println("found minimum $(gsl_minimizer_f(m)) at x = $(gsl_minimizer_x(m))")</cod
 -1.5707963269964016</code>, which is the correct minimum &#40;&minus;&pi;/2&#41; to about 10 digits.</p>
 <p>At this point, I will shamelessly plug my own <a href="https://github.com/stevengj/NLopt.jl">NLopt package</a> for Julia, which wraps around my free/open-source <a href="https://ab-initio.mit.edu/nlopt">NLopt</a> library to provide many more optimization algorithms than GSL, with perhaps a nicer interface.   However, the techniques used to pass callback functions to NLopt are actually quite similar to those used for GSL.</p>
 <p>An even more complicated version of these techniques can be found in the <a href="https://github.com/stevengj/PyCall.jl">PyCall package</a> to call Python from Julia.  In order to pass a Julia function to Python, we again use <code>cfunction</code> on a wrapper function that handles the type conversions and so on, and pass the actual Julia closure through via a pass-through pointer.  But in that case, the pass-through pointer consists of a Python object that has been created with a new type that allows it to wrap a Julia object, and garbage-collection is deferred by storing the Julia object in a global dictionary of saved objects &#40;removing it via the Python destructor of the new type&#41;.  That is all somewhat tricky stuff and beyond the scope of this blog post; I only mention it to illustrate the fact that it is possible to implement quite complex inter-language calling behaviors purely in Julia by building on the above techniques.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

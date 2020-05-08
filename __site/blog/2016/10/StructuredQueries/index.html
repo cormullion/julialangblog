@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>This post describes my work conducted this summer at the <a href="https://julia.mit.edu/">Julia Lab</a> to develop <a href="https://github.com/davidagold/StructuredQueries.jl/">StructuredQueries.jl</a>, a generic data manipulation framework for <a href="/">Julia</a>.</p>
+<div class="container"><p>This post describes my work conducted this summer at the <a href="https://julia.mit.edu/">Julia Lab</a> to develop <a href="https://github.com/davidagold/StructuredQueries.jl/">StructuredQueries.jl</a>, a generic data manipulation framework for <a href="/">Julia</a>.</p>
 <p>Our initial vision for this work was much inspired by Hadley Wickham&#39;s <a href="https://github.com/hadley/dplyr">dplyr</a> R package, which provides data manipulation verbs that are generic over in-memory R tabular data structures and SQL databases, and <a href="https://github.com/JuliaStats/DataFramesMeta.jl">DataFramesMeta</a> &#40;begun by <a href="https://github.com/tshort">Tom Short</a>&#41;, which provides metaprogramming facilities for working with Julia <code>DataFrame</code>s.</p>
 <p>While a generic querying interface is a worthwhile end in itself &#40;and has been discussed <a href="https://groups.google.com/d/topic/julia-dev/jL2FSL4EneE/discussion">elsewhere</a>&#41;, it may also be useful for solving problems specific to in-memory Julia tabular data structures. We will discuss how a query interface suggests solutions to two important problems facing the development of tabular data structures in Julia: the <em>column-indexing</em> and <em>nullable semantics</em> problems. So, the present post will describe both the progress of my work and also discuss a wider scope of issues concerning support for tabular data structures in Julia. I will provide some context for these issues; the reader should feel free to skip over any uninteresting details.</p>
 <p>Recall that the primary shortcoming of <a href="https://travis-ci.org/JuliaStats/DataArrays.jl">DataArrays.jl</a> is that it does not allow for type-inferable indexing. That is, the means by which missing values are represented in <code>DataArray</code>s – i.e. with a token <code>NA::NAtype</code> object – entails that the most specific return type inferable from <code>Base.getindex&#40;df::DataArray&#123;T&#125;, i&#41;</code> is <code>Union&#123;T, NAtype&#125;</code>. This means that until Julia&#39;s compiler can better handle small <code>Union</code> types, code that naively indexes into a <code>DataArray</code> will perform unnecessarily poorly.</p>
@@ -420,10 +439,7 @@ q = @query filter(tbl, A > $c)</code></pre>
 <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 <p>The foregoing post has described a work in progress. Not just the StructuredQueries package, but also the Julia statistical ecosystem. Though it will likely take a while for this ecosystem to mature, the general trend I&#39;ve observed over the past two years is encouraging. It&#39;s also worth noting that much of what is described above would have been difficult to conceive without developments of the Julia language. In particular, performant higher-order functions and type-inferable map have both allowed us to explore solutions that were previously made difficult by the amount of metaprogramming required to ensure type-inferability. It will be interesting to see what we can come up with given the improvements to Julia in 0.6 and beyond.</p>
 <p>I&#39;m very grateful to John Myles White for his guidance on this project, to Yeesian Ng at MIT for his collaboration, to Viral Shah and Alan Edelman for arranging this opportunity, and to many others at Julia Central and elsewhere for their help and insight.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

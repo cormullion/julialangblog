@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>My GSoC 2017 <a href="https://summerofcode.withgoogle.com/projects/#5850956641075200">project</a> was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks. The purpose of the project was to provide an additional DE solver using Neural Networks which has parallelism in time as the key advantage over other solvers which are iterative in nature. The project was based on research paper of <a href="https://arxiv.org/pdf/physics/9705023.pdf">Lagaris et al. 1997</a> which proposed the function approximation capabilities of neural networks &#40;NNs&#41; for solving differential equations. The project was a mixture of research as well as implementation aspects and still has a few parts left to work upon. I chose to work on this project as I have interest in mathematics and machine learning and it involved concepts of both the fields. The package uses <a href="https://github.com/JuliaDiffEq/DifferentialEquations.jl">DifferentialEquations.jl</a> for the solver interface and <a href="https://github.com/denizyuret/Knet.jl">KNet.jl</a> for NN solver implementation.</p>
+<div class="container"><p>My GSoC 2017 <a href="https://summerofcode.withgoogle.com/projects/#5850956641075200">project</a> was to implement a package for Julia to solve Ordinary Differential Equations using Neural Networks. The purpose of the project was to provide an additional DE solver using Neural Networks which has parallelism in time as the key advantage over other solvers which are iterative in nature. The project was based on research paper of <a href="https://arxiv.org/pdf/physics/9705023.pdf">Lagaris et al. 1997</a> which proposed the function approximation capabilities of neural networks &#40;NNs&#41; for solving differential equations. The project was a mixture of research as well as implementation aspects and still has a few parts left to work upon. I chose to work on this project as I have interest in mathematics and machine learning and it involved concepts of both the fields. The package uses <a href="https://github.com/JuliaDiffEq/DifferentialEquations.jl">DifferentialEquations.jl</a> for the solver interface and <a href="https://github.com/denizyuret/Knet.jl">KNet.jl</a> for NN solver implementation.</p>
 <h2 id="how_to_use_neural_network_for_solving_differential_equations"><a href="#how_to_use_neural_network_for_solving_differential_equations">How to use Neural Network for solving Differential Equations?</a></h2>  The concept of this solver is based on the UAT &#40;Universal Approximation Theorem&#41; which says that a NN with at least one hidden layer can approximate any continuous function. The neural network is made to minimize a loss function, defined as the difference between the NN&#39;s derivative and the derivative of the differential equation, which then results in the convergence of our trial solution towards the actual &#40;analytical&#41; solution of the differential equation. To know more about UAT <a href="https://neuralnetworksanddeeplearning.com/chap4.html">click here</a>.</p>
 <h2 id="research_aspect_of_the_project_and_the_challenge"><a href="#research_aspect_of_the_project_and_the_challenge">Research aspect of the project and the challenge</a></h2>  The research paper we referred to on the topic is quite old and understanding the examples as well as explanations was quite challenging. Not much research has been done on using NNs for this purpose and thus we were not able to get much help from the research papers related to the topic. The initial task was to read and understand the mathematics behind solving differential equations. Also the computational methods used to solve differential equations on computers are quite different from the ones we use on paper so it took quite some time to get familiar with them. The structure and type of NN to be used so that the solver advantages &#40;parallelism in time&#41; are retained without compromising the performance was a research subdomain as well was a challenge.</p>
 <p>After implementing the solver for ODEs &#40;Ordinary Differential Equations&#41; and systems of ODEs, the difficult part was to make the NN converge for the systems of ODEs on longer time domains. As there are a lot of factors involved in neural networks, like hidden layer width, number of hidden neurons, activations, weights etc., I relied on my machine learning background as well as the help from my mentors to experiment with most of the feasible settings of NN hyper-parameters and recording the accuracy of convergence and performance of the solver. Making the NNs converge for systems of ODEs is not as easy as it seems and took up most of the time for experimentation and tuning. Predicting the system of DEs solution with larger domain is still a challenge which needs to be worked upon.</p>
@@ -229,10 +248,7 @@ plot(sol3)</code></pre> <img src="/assets/blog/2017-09-04-gsoc-NeuralNetDiffEq/p
 <h2 id="future_work"><a href="#future_work">Future Work</a></h2>  More of research on how to optimize the NN for speed and better convergence is required. For systems of ODEs with larger domains the current Neural Network fails to converge. An optimization algorithm can be used for one time NN hyperparameter optimization so that it can work better for systems of ODEs. We tried many approaches like biasing the cost function to prioritize earlier timepoints but this failed as well. Similar problems were found in an <a href="https://github.com/JuliaDiffEq/TensorFlowDiffEq.jl">alternative implementation using TensorFlow &#40;TensorFlowDiffEq.jl&#41;</a>, which suggests this may just be a problem with the solving method.</p>
 <h2 id="acknowledgements"><a href="#acknowledgements">Acknowledgements</a></h2>
 <p>I would really want to thank my GSoC mentors Chris Rackauckas and Lyndon White for the help they provided in understanding mathematical as well as coding parts of the project. Also I would like to thank the Julia community in general for giving me opportunity to contribute and for sponsoring my JuliaCon 2017 trip which was awesome.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

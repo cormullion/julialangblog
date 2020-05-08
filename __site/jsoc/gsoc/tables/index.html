@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,9 +142,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="tabular_data_summer_of_code"><a href="#tabular_data_summer_of_code">Tabular Data – Summer of Code</a></h1>
+<div class="container"><h1 id="tabular_data_summer_of_code"><a href="#tabular_data_summer_of_code">Tabular Data – Summer of Code</a></h1>
 <h2 id="parquetjl_enhancements_and_juliadb"><a href="#parquetjl_enhancements_and_juliadb">Parquet.jl enhancements and JuliaDB</a></h2>
 <p><a href="https://parquet.apache.org/">Apache Parquet</a> is a binary data format for tabular data. It has features for compression and memory-mapping of datasets on disk. A decent implementation of Parquet in Julia is likely to be highly performant. It will be useful as a standard format for distributing tabular data in a binary format. JuliaDB &#40;submodule <a href="https://github.com/JuliaComputing/MemPool.jl/blob/master/src/io.jl">MemPool</a>&#41; currently requires a binary format for efficient storage and data transfer, but right now resorts to a custom but fast implementation. Users are asked not to take it seriously because it breaks from release to release. Having a Parquet reader and writer will solve this problem by standardizing the format. Prior work includes <a href="https://github.com/JuliaIO/Parquet.jl">Parquet.jl</a> which only has a Parquet reader. Having written a basic Parquet reader and writer, you will need to shift your focus to performance-oriented array types in JuliaDB: namely PooledArrays, and StringArrays &#40;from WeakRefStrings.jl&#41;, StructArrays, and finally tables. You will also need to make sure that bits-types such as Dates, Rational numbers etc. are efficiently stored and memory-mapped on load. Then you will make Parquet the default format for loading, saving and &#40;possibly&#41; <em>communicating data between processes</em> in JuliaDB. By doing this project you will learn about the performance engineering a distributed, out-of-core analytical database.</p>
 <p><strong>Mentors:</strong> <a href="https://github.com/shashi">Shashi Gowda</a>, <a href="https://github.com/tanmaykm">Tanmay Mohapatra</a></p>
@@ -156,10 +175,7 @@
 <p>The Queryverse has a large number of file IO packages: <a href="https://github.com/queryverse/CSVFiles.jl">CSVFiles.jl</a>, <a href="https://github.com/queryverse/ExcelFiles.jl">ExcelFiles.jl</a>, <a href="https://github.com/queryverse/FeatherFiles.jl">FeatherFiles.jl</a>, <a href="https://github.com/queryverse/StatFiles.jl">StatFiles.jl</a>, <a href="https://github.com/queryverse/ParquetFiles.jl">ParquetFiles</a> and <a href="https://github.com/queryverse/FstFiles.jl">FstFiles.jl</a>. This project will a&#41; do serious performance work across all of the existing packages and b&#41; add write capabilities  to a number of them.</p>
 <p><strong>Recommended Skills</strong>: Experience with file formats, writing performant julia code.</p>
 <p><strong>Expected Results</strong>: Write capabilities across the packages listed above, competitive performance for all the packages listed above.</p>
-<p><strong>Mentors</strong>: <a href="https://github.com/davidanthoff">David Anthoff</a>
-
-</div>
-<br><br>
+<p><strong>Mentors</strong>: <a href="https://github.com/davidanthoff">David Anthoff</a></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

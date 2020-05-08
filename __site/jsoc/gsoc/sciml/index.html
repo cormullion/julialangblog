@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,9 +142,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="scientific_machine_learning"><a href="#scientific_machine_learning">Scientific Machine Learning</a></h1>
+<div class="container"><h1 id="scientific_machine_learning"><a href="#scientific_machine_learning">Scientific Machine Learning</a></h1>
 <h3 id="physics-informed_neural_networks_pinns_and_solving_differential_equations_with_deep_learning"><a href="#physics-informed_neural_networks_pinns_and_solving_differential_equations_with_deep_learning">Physics-Informed Neural Networks &#40;PINNs&#41; and Solving Differential Equations with Deep Learning</a></h3>
 <p>Neural networks can be used as a method for efficiently solving difficult partial differential equations. Recently this strategy has been dubbed <a href="https://www.sciencedirect.com/science/article/pii/S0021999118307125">physics-informed neural networks</a> and has seen a resurgence because of its efficiency advantages over classical deep learning. Efficient implementations from recent papers are being explored as part of the <a href="https://github.com/JuliaDiffEq/NeuralNetDiffEq.jl">NeuralNetDiffEq.jl</a> package. The <a href="https://github.com/JuliaDiffEq/NeuralNetDiffEq.jl/issues">issue tracker</a> contains links to papers which would be interesting new neural network based methods to implement and benchmark against classical techniques. Project work in this area includes:</p>
 <ul>
@@ -180,10 +199,7 @@
 <p>While standard machine learning can be shown to be &quot;safe&quot; for local optimization, scientific machine learning can sometimes require the use of globalizing techniques to improve the optimization process. Hybrid methods, known as multistart optimization methods, glue together a local optimization technique together with a parameter search over a large space of possible initial points. The purpose of this project would be to take a <a href="https://github.com/tpapp/MultistartOptimization.jl">MultistartOptimization.jl</a> as a starting point and create a fully featured set of multistart optimization tools for use with <a href="https://github.com/JuliaNLSolvers/Optim.jl">Optim.jl</a></p>
 <p><strong>Recommended Skills</strong>: A basic background in optimization. Having previous Julia knowledge is preferred but not strictly required.</p>
 <p><strong>Expected Results</strong>: Efficient and high-quality implementations of multistart optimization methods.</p>
-<p><strong>Mentors</strong>: <a href="https://github.com/ChrisRackauckas">Chris Rackauckas</a> and <a href="https://github.com/pkofod">Patrick Kofod Mogensen</a>
-
-</div>
-<br><br>
+<p><strong>Mentors</strong>: <a href="https://github.com/ChrisRackauckas">Chris Rackauckas</a> and <a href="https://github.com/pkofod">Patrick Kofod Mogensen</a></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

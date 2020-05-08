@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>I am pleased to announce the support for complex-domain linear programs &#40;LPs&#41; in Convex.jl. As one of the <em>Google Summer of Code</em> students under <em>The Julia Language</em>, I had proposed to implement the support for complex semidefinite programming. In the first phase of project, I started by tackling the problem of complex-domain LPs where in first subphase, I had announced the support for complex coefficients during <a href="https://www.youtube.com/watch?v&#61;fHG4uEOlMbY">JuliaCon&#39;16</a> and now I take this opportunity to announce the support for complex variables in LPs.</p>
+<div class="container"><p>I am pleased to announce the support for complex-domain linear programs &#40;LPs&#41; in Convex.jl. As one of the <em>Google Summer of Code</em> students under <em>The Julia Language</em>, I had proposed to implement the support for complex semidefinite programming. In the first phase of project, I started by tackling the problem of complex-domain LPs where in first subphase, I had announced the support for complex coefficients during <a href="https://www.youtube.com/watch?v&#61;fHG4uEOlMbY">JuliaCon&#39;16</a> and now I take this opportunity to announce the support for complex variables in LPs.</p>
 <p>Complex-domain LPs consist of a real linear objective function, real linear inequality constraints, and real and complex linear equality constraints.</p>
 <p>In order to enable complex-domain LPs, we came up with these ideas:</p>
 <ol>
@@ -221,10 +240,7 @@ x1== xr.value + im*xi.value # should return true</code></pre>
 <p>Now, I am working towards implementing complex-domain second order conic programming. Meanwhile, I invite the Julia community to play around with the complex-domain LPs. The link to the development branch is <a href="https://github.com/Ayush-iitkgp/Convex.jl/tree/gsoc2">here</a>.</p>
 <p>Looking forward to your suggestions&#33;</p>
 <p>Special thanks to my mentors Madeleine Udell and Dvijotham Krishnamurthy&#33;</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

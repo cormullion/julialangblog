@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p><img src="/assets/blog/2018-09-11-juliacon2018/JuliaCon2018_group_photo.jpg" alt="JuliaCon2018 group photo" /></p>
+<div class="container"><p><img src="/assets/blog/2018-09-11-juliacon2018/JuliaCon2018_group_photo.jpg" alt="JuliaCon2018 group photo" /></p>
 <h4 id="so_much_went_well"><a href="#so_much_went_well">So much went well&#33;</a></h4>
 <p>As the venue of the Julia 1.0 release and the largest meeting of the Julia community yet, JuliaCon 2018 was remarkable in multiple ways. It brought together almost 350 attendees representing users and developers of the Julia language who hailed from Africa, Asia, Europe, North America, Australia, and South America.</p>
 <p>With an eye to quality over quantity, we&#39;re happy to report that our attendees were overwhelmingly pleased with the conference: Of the attendees who have responded to our post-conference feedback survey, 98.8&#37; reported they were happy with their decision to come to JuliaCon. On a scale of 1 to 5, 88.3&#37; of responding attendees ranked their feeling of being welcome and included at JuliaCon as a 4 or a 5 &#40;where 5 is the best score&#41;; on the same scale, 0&#37; of attendees responded with a 1.</p>
@@ -155,10 +174,7 @@
 <h4 id="conclusion"><a href="#conclusion">Conclusion</a></h4>
 <p>For most of us &#40;myself included&#33;&#41;, JuliaCon 2018 was a blast. JuliaCon provides an opportunity for our community to learn about fantastic advances in both the tools provided within the Julia ecosystem and the applications enabled by those tools. Beyond that, JuliaCon provides a venue allowing new members to engage with the rest of the community and veterans to spend quality time together in the flesh, after communicating over slack, discourse, github, and email for the previous year. This year we saw not only community growth, but increased diversity, recognition of our need to continue pushing for inclusivity, and ideas/avenues for how we can achieve greater inclusivity.</p>
 <p>For those of you interested in contributing to JuliaCon 2019, we welcome you to join the JuliaCon 2019 organizing committee. Organizing will be in full swing by mid-Fall 2019 and we will be seeking volunteers for tasks such as mentoring, proposal reviewing, and session chairing as conference plans comes together over the course of the next year.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

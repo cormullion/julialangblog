@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p><strong>Note: updated December 2018 for Julia 1.1</strong></p>
+<div class="container"><p><strong>Note: updated December 2018 for Julia 1.1</strong></p>
 <p>Julia makes it easy to write elegant and efficient multidimensional algorithms. The new capabilities rest on two foundations: an iterator called <code>CartesianIndices</code>, and sophisticated array indexing mechanisms.  Before I explain, let me emphasize that developing these capabilities was a collaborative effort, with the bulk of the work done by Matt Bauman &#40;@mbauman&#41;, Jutho Haegeman &#40;@Jutho&#41;, and myself &#40;@timholy&#41;.</p>
 <p>These iterators are deceptively simple, so much so that I&#39;ve never been entirely convinced that this blog post is necessary: once you learn a few principles, there&#39;s almost nothing to it.  However, like many simple concepts, the implications can take a while to sink in. It&#39;s also possible to confuse these techniques with <a href="https://docs.julialang.org/en/latest/devdocs/cartesian/"><code>Base.Cartesian</code></a>, which is a completely different &#40;and more painful&#41; approach to solving the same problem.  There are still a few occasions where <code>Base.Cartesian</code> is helpful or necessary, but for many problems these new capabilities represent a vastly simplified approach.</p>
 <p>Let&#39;s introduce these iterators with an extension of an example taken from the <a href="https://docs.julialang.org/en/latest/manual/arrays/#Iteration-1">manual</a>.</p>
@@ -350,10 +369,7 @@ julia> R .+ CartesianIndex(2, 17)
 <p>The underlying idea is that <code>CartesianIndex&#40;2, 17&#41;</code> needs to act, everywhere, like a pair of scalar indexes; consequently, a <code>CartesianIndex</code> has to be viewed as a single &#40;scalar&#41; entity, rather than as a container in its own right.</p>
 <h1 id="summary"><a href="#summary">Summary</a></h1>
 <p>As is hopefully clear by now, much of the pain of writing generic multidimensional algorithms is eliminated by Julia&#39;s elegant iterators.  The examples here just scratch the surface, but the underlying principles are very simple; it is hoped that these examples will make it easier to write your own algorithms.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

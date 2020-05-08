@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h2 id="introduction_generic_algorithms_with_abstractarrays"><a href="#introduction_generic_algorithms_with_abstractarrays">Introduction: generic algorithms with AbstractArrays</a></h2>
+<div class="container"><h2 id="introduction_generic_algorithms_with_abstractarrays"><a href="#introduction_generic_algorithms_with_abstractarrays">Introduction: generic algorithms with AbstractArrays</a></h2>
 <p>Somewhat unusually, this blog post is future-looking: it mostly focuses on things that don&#39;t yet exist. Its purpose is to lay out the background for community discussion about possible changes to the core API for <code>AbstractArray</code>s, and serves as background reading and reference material for a more focused &quot;julep&quot; &#40;a julia enhancement proposal&#41;.  Here, often I&#39;ll use the shorthand &quot;array&quot; to mean <code>AbstractArray</code>, and use <code>Array</code> if I explicitly mean julia&#39;s concrete <code>Array</code> type.</p>
 <p>As the reader is likely aware, in julia it&#39;s possible to write algorithms for which one or more inputs are only assumed to be <code>AbstractArray</code>s.  This is &quot;generic&quot; code, meaning it should work &#40;i.e., produce a correct result&#41; on any specific concrete array type. In an ideal world — which julia approaches rather well in many cases — generality of code should not have a negative impact on its performance: a generic implementation should be approximately as fast as one restricted to specific array type&#40;s&#41;.  This implies that generic algorithms should be written using lower-level operations that give good performance across a wide variety of array types.</p>
 <p>Providing efficient low-level operations is a different kind of design challenge than one experiences with programming languages that &quot;vectorize&quot; everything.  When successful, it promotes much greater reuse of code, because efficient, generic low-level parts allow you to write a wide variety of efficient, generic higher-level functions.</p>
@@ -259,10 +278,7 @@ end</code></pre>
 </div>
 <h1 id="finding_a_way_forward"><a href="#finding_a_way_forward">Finding a way forward</a></h1>
 <p>Resolving these conflicting demands is not easy. One approach might be to decree that some of these array types simply can&#39;t be supported with generic code. It is possible that this is the right strategy. Alternatively, one can attept to devise an array API that handles all of these types &#40;and hopefully more&#41;.</p>
-<p>In GitHub issue <a href="https://github.com/JuliaLang/julia/issues/15648">#15648</a>, we are discussing APIs that may resolve these challenges. Readers are encouraged to contribute to this discussion.
-
-</div>
-<br><br>
+<p>In GitHub issue <a href="https://github.com/JuliaLang/julia/issues/15648">#15648</a>, we are discussing APIs that may resolve these challenges. Readers are encouraged to contribute to this discussion.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

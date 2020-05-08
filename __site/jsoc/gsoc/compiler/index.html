@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,9 +142,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="compiler_projects_summer_of_code"><a href="#compiler_projects_summer_of_code">Compiler Projects – Summer of Code</a></h1>
+<div class="container"><h1 id="compiler_projects_summer_of_code"><a href="#compiler_projects_summer_of_code">Compiler Projects – Summer of Code</a></h1>
 <h2 id="thread-safety"><a href="#thread-safety">Thread-safety</a></h2>
 <p>There are many remaining components that need to be updated to use thread-safe algorithms before Julia&#39;s threading will be stable for general usage. Some basic data-structures &#40;such as the TypeMap&#41; are missing correct RCU and memory barriers to ensure race-free answers. The <code>realloc</code> operation for arrays &#40;i.e. <code>resize&#33;</code>&#41; may be more reliable if it was implemented using RCU <code>malloc</code> &#40;delaying the free until a gc-safepoint has been reached on all threads&#41;.</p>
 <p><strong>Expected Results</strong>: Demonstrate that a program that fails at the beginning of the summer can now run to completion, or show what remains to be fixed to get it working. Start a test framework to help find bugs and race conditions in the current implementation, and to detect future regressions in multi-threading behavior.</p>
@@ -171,10 +190,7 @@
 </li>
 </ul>
 </div>
-<p><strong>Mentors</strong>: <a href="https://github.com/vtjnash">Jameson Nash</a>
-
-</div>
-<br><br>
+<p><strong>Mentors</strong>: <a href="https://github.com/vtjnash">Jameson Nash</a></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

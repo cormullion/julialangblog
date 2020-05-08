@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017. See also <a href="https://github.com/DoriszAlbrecht/Bayesian_Examples.jl">Bayesian_Examples.jl</a>.</p>
+<div class="container"><p>This is a writeup of my project for the Google Summer of Code 2017. The associated repository contains examples of estimating various models. In addition to this repository, I have collaborated in <a href="https://github.com/tpapp/HamiltonianABC.jl/">HamiltonianABC</a> and its branches as part of the GSOC 2017. See also <a href="https://github.com/DoriszAlbrecht/Bayesian_Examples.jl">Bayesian_Examples.jl</a>.</p>
 <div class="franklin-toc"><ol><li><a href="#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></li><li><a href="#parametric_bayesian_indirect_likelihood_for_the_full_data">Parametric Bayesian Indirect Likelihood for the Full Data</a></li><li><a href="#first_stage_of_my_project">First stage of my project</a></li><li><a href="#second_stage_of_my_project">Second stage of my project</a></li><li><a href="#stochastic_volatility_model">Stochastic Volatility model</a></li><li><a href="#problems_that_i_have_faced_during_gsoc">Problems that I have faced during GSOC</a><ol><li><a href="#1_difficult_auxiliary_model">1 Difficult auxiliary model</a></li><li><a href="#2_type-stability_issues">2 Type-stability issues</a></li></ol></li><li><a href="#future_work">Future work</a></li><li><a href="#references">References</a></li></ol></div>
 <h2 id="gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood"><a href="#gsoc_2017_project_hamiltonian_monte_carlo_and_pseudo-bayesian_indirect_likelihood">GSOC 2017 project: Hamiltonian Monte Carlo and pseudo-Bayesian Indirect Likelihood</a></h2>
 <p>This summer I have had the opportunity to participate in the Google Summer of Code program. My project was in the Julia language and the main goal was to implement Indirect Inference &#40;A. A. Smith 1993; A. Smith 2008&#41; to overcome the typically arising issues &#40;such as intractable or costly to compute likelihoods&#41; when estimating models using likelihood-based methods. Hamiltonian Monte Carlo was expected to result in a more efficient sampling process.</p>
@@ -332,10 +351,7 @@ end</code></pre>
 <li><p>Smith, A. A. &#40;1993&#41;. “Estimating nonlinear time-series models using simulated vector autoregressions”. In Journal of Applied Econometrics 8.S1.</p>
 </li>
 </ul>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

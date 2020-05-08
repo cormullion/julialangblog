@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -67,13 +88,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,9 +138,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="getting_started_with_julia"><a href="#getting_started_with_julia">Getting Started with Julia</a></h1>
+<div class="container"><h1 id="getting_started_with_julia"><a href="#getting_started_with_julia">Getting Started with Julia</a></h1>
 <h2 id="what_is_julia"><a href="#what_is_julia">What is Julia?</a></h2>
 <p>Welcome to the Julia language project&#33; We’re excited that you’re interested in learning Julia and contributing to our project and community. Julia is a new programming language. It is also a general purpose language, which means that you can find a way to build basically any software in it that you could with another language. However, no programming language is the best tool for every problem.</p>
 <p>Julia was designed with technical and scientific users in mind. These users often have very large data sets or very complex mathematical problems that they want to solve. This means they want to write code that can run on a computer very quickly, so that they don’t have to wait days or even weeks to get a result. Most of the programming languages that run very fast are also quite a bit trickier to use than some “high level” languages that you might have heard of, like Python or Matlab. For example, C and Fortran are known to be very fast, but they require that the user provides a lot of information to the computer about the program they are writing as they write it. This takes more time and often more programming experience than working in a language like Python.</p>
@@ -137,10 +156,7 @@
 <h2 id="coming_from_other_languages"><a href="#coming_from_other_languages">Coming from other languages</a></h2>  If you have experience programming in another language, you will find that most of your knowledge will be easily transferred to Julia. We have documented some <a href="https://docs.julialang.org/en/v1/manual/noteworthy-differences/">noteworthy differences</a> from other popular languages: <a href="https://docs.julialang.org/en/v1/manual/noteworthy-differences/#Noteworthy-differences-from-MATLAB-1">Matlab</a>, <a href="https://docs.julialang.org/en/v1/manual/noteworthy-differences/#Noteworthy-differences-from-R-1">R</a>, <a href="https://docs.julialang.org/en/v1/manual/noteworthy-differences/#Noteworthy-differences-from-Python-1">Python</a> and <a href="https://docs.julialang.org/en/v1/manual/noteworthy-differences/#Noteworthy-differences-from-C/C-1">C/C&#43;&#43;</a></p>
 <h2 id="developing_packages"><a href="#developing_packages">Developing packages</a></h2>  It is easy to move from using Julia packages to developing them. Most of our contributors started that way. If you are the user of a Julia package, please believe that you have the skills to contribute bug fixes and new features. Chris Rackaukas has created a video that walks you through the process of creating a new package, or contributing code to an existing package. Find it <a href="https://www.youtube.com/watch?v&#61;QVmU29rCjaA">here on our Youtube channel</a></p>
 <h2 id="looking_for_help"><a href="#looking_for_help">Looking for help</a></h2>
-<p>Programming is fun and exciting. The Julia programming language is no exception. While it is always best to try to answer a question yourself if you can, feel free to ask someone else more experienced&#33; Take a look at the <a href="/community/">Julia Community</a> tab on the website to find all the places you can connect and get help in the Julia Community.
-
-</div>
-<br><br>
+<p>Programming is fun and exciting. The Julia programming language is no exception. While it is always best to try to answer a question yourself if you can, feel free to ask someone else more experienced&#33; Take a look at the <a href="/community/">Julia Community</a> tab on the website to find all the places you can connect and get help in the Julia Community.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

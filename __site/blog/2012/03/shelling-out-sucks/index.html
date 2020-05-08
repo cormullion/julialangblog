@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-  Spawning a pipeline of connected programs via an intermediate shell — a.k.a. &quot;shelling out&quot; — is a really convenient and effective way to get things done. It&#39;s so handy that some &quot;<a href="https://en.wikipedia.org/wiki/Glue_language">glue languages</a>,&quot; like <a href="https://www.perl.org/">Perl</a> and <a href="https://www.ruby-lang.org/">Ruby</a>, even have special syntax for it &#40;backticks&#41;. However, shelling out is also a common source of bugs, security holes, unnecessary overhead, and silent failures. Here are the three reasons why shelling out is problematic:</p>
+<div class="container">  Spawning a pipeline of connected programs via an intermediate shell — a.k.a. &quot;shelling out&quot; — is a really convenient and effective way to get things done. It&#39;s so handy that some &quot;<a href="https://en.wikipedia.org/wiki/Glue_language">glue languages</a>,&quot; like <a href="https://www.perl.org/">Perl</a> and <a href="https://www.ruby-lang.org/">Ruby</a>, even have special syntax for it &#40;backticks&#41;. However, shelling out is also a common source of bugs, security holes, unnecessary overhead, and silent failures. Here are the three reasons why shelling out is problematic:</p>
 <ol>
 <li><p><em><a href="#metacharacter_brittleness">Metacharacter brittleness.</a></em> When commands are constructed programmatically, the resulting code is almost always brittle: if a variable used to construct the command contains any shell metacharacters, including spaces, the command will likely break and do something very different than what was intended — potentially something quite dangerous.</p>
 </li>
@@ -276,10 +295,7 @@ from :0</code></pre>
 </li>
 </ol>
 <p>The trouble is that after doing all of these things, shelling out is no longer terribly convenient, and the code becomes annoyingly verbose. In short, shelling out responsibly kind of sucks.</p>
-<p>As is so often the case, the root of all of these problems is relying on a middleman rather than doing things yourself. If a program constructs and executes pipelines itself, it remains in control of all the subprocesses, can determine their individual exit conditions, automatically handle errors appropriately, and give accurate, comprehensive diagnostic messages when things go wrong. Moreover, without a shell to interpret commands, there is also no shell to treat metacharacters specially, and therefore no danger of metacharacter brittleness. <a href="https://python.org/">Python</a> gets this right: using <a href="https://docs.python.org/library/os.html#os.popen"><code>os.popen</code></a> to shell out is officially deprecated, and the recommended way to call external programs is to use the <a href="https://docs.python.org/library/subprocess.html"><code>subprocess</code></a> module, which spawns external programs without using a shell. Constructing pipelines using <code>subprocess</code> <a href="https://docs.python.org/library/subprocess.html#replacing-shell-pipeline">can be a little verbose</a>, but it is safe and avoids all the problems that shelling out is prone to. In my <a href="/blog/2013/04/put-this-in-your-pipe/">followup post</a>, I will describe how Julia makes constructing and executing pipelines of external commands as safe as Python&#39;s <code>subprocess</code> and as convenient as shelling out.
-
-</div>
-<br><br>
+<p>As is so often the case, the root of all of these problems is relying on a middleman rather than doing things yourself. If a program constructs and executes pipelines itself, it remains in control of all the subprocesses, can determine their individual exit conditions, automatically handle errors appropriately, and give accurate, comprehensive diagnostic messages when things go wrong. Moreover, without a shell to interpret commands, there is also no shell to treat metacharacters specially, and therefore no danger of metacharacter brittleness. <a href="https://python.org/">Python</a> gets this right: using <a href="https://docs.python.org/library/os.html#os.popen"><code>os.popen</code></a> to shell out is officially deprecated, and the recommended way to call external programs is to use the <a href="https://docs.python.org/library/subprocess.html"><code>subprocess</code></a> module, which spawns external programs without using a shell. Constructing pipelines using <code>subprocess</code> <a href="https://docs.python.org/library/subprocess.html#replacing-shell-pipeline">can be a little verbose</a>, but it is safe and avoids all the problems that shelling out is prone to. In my <a href="/blog/2013/04/put-this-in-your-pipe/">followup post</a>, I will describe how Julia makes constructing and executing pipelines of external commands as safe as Python&#39;s <code>subprocess</code> and as convenient as shelling out.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

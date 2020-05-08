@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -67,13 +88,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,9 +138,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="julia_community_-_stewards"><a href="#julia_community_-_stewards">Julia Community - Stewards</a></h1>
+<div class="container"><h1 id="julia_community_-_stewards"><a href="#julia_community_-_stewards">Julia Community - Stewards</a></h1>
 <p>The spirit of community is crucial to free/open-source development. In the large majority of cases, interactions are naturally constructive, but in rare cases conflict can arise. This document explains the mechanisms for conflict reporting and resolution within the Julia community, to handle violations of the <a href="/community/standards/">Julia Community Standards</a>.</p>
 <p>&#40;Our procedures were informed in part by the <a href="https://web.mit.edu/policies/9/9.6.html">Complaint Resolution Policies and Procedures at the Massachusetts Institute of Technology</a>, but are necessarily more informal given the loose nature of the Julia community.&#41;</p>
 <h2 id="stewards_of_the_community_standards"><a href="#stewards_of_the_community_standards">Stewards of the Community Standards</a></h2>
@@ -172,10 +191,7 @@
 <li><p>After a predetermined period, not to exceed six months, the banned individual may request that the ban be lifted, by acknowledging his/her past violations and providing a written plan to avoid such violations in the future. This request will typically be considered by the same committee that recommended the initial ban.</p>
 </li>
 </ul>
-</div>
-
-</div>
-<br><br>
+</div></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

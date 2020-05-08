@@ -8,24 +8,159 @@ If you like Julia, please consider starring us [on GitHub](https://github.com/Ju
 <a class="github-button" href="https://github.com/JuliaLang/julia" data-size="large" data-show-count="true" aria-label="Star JuliaLang/julia on GitHub">Star</a>
 ~~~
 
+
 We provide several ways for you to run Julia:
 
-@@tight-list
 * In the terminal using the built-in Julia command line using the binaries provided below.
 * Using [Docker](https://docs.docker.com/) images from [Docker Hub](https://hub.docker.com/_/julia) maintained by the [Docker Community](https://github.com/docker-library/julia).
 * [JuliaPro](https://juliacomputing.com/products/juliapro.html) by [Julia Computing](https://juliacomputing.com/) includes Julia and the [Juno IDE](https://junolab.org/), along with access to a curated set of packages for plotting, optimization, machine learning, databases and much more (requires registration).
+
+## Current stable release: v1.3.1 (Dec 30, 2019)
+
+~~~
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 20 0 5 0;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0 5 0;
+  font-size: 30px;
+}
+
+.downloads > p {
+  text-align: center;
+  margin: 6px;
+  font-size: 16px;
+}
+
+.grid-container h1 {
+  text-align: center;
+  margin: 16px;
+  font-size: 15px;
+}
+
+.downloads > h1 {
+  text-align: center;
+  margin: 16px;
+  font-size: 15px;
+}
+
+.downloads {
+  border: 2px solid #dddddd;
+  margin: 3px;
+  border-radius: 8px;
+}
+
+</style>
+
+<div class="grid-container">
+<!-- four columns -->
+	<div class="platform">
+		<img src="/assets/images/windows-logo-black-and-white.png" width="80px" height="80px">
+		<h1>
+			Windows
+		</h1>
+	</div>
+	<div class="platform">
+		<img src="/assets/images/apple-logo-black-and-white.png" width="80px" height="80px">
+		<h1>
+			macOS
+		</h1>
+	</div>
+	<div class="platform">
+		<img src="/assets/images/linux-logo-black-and-white.png" width="80px" height="80px">
+		<h1>
+			Linux
+		</h1>
+	</div>
+	<div class="platform">
+		<img src="/assets/images/github-logo-black-and-white.png" width="80px" height="80px">
+		<h1>
+			Source
+		</h1>
+	</div>
+<!-- windows -->
+	<div class="downloads">
+		<p>
+			<a href="/downloads/platform/#windows">(.exe) [help]</a>
+		</p>
+		<p>
+			<a href="https://julialang-s3.julialang.org/bin/winnt/x86/1.3/julia-1.3.1-win32.exe">32-bit</a>
+		</p>
+		<p>
+			<a href="https://julialang-s3.julialang.org/bin/winnt/x64/1.3/julia-1.3.1-win64.exe">64-bit</a>
+		</p>
+	</div>
+<!-- macos -->
+	<div class="downloads">
+		<p>
+			<a href="/downloads/platform/#macos">10.8+ (.dmg) [help]</a>
+		</p>
+		<p>
+			<a href="https://julialang-s3.julialang.org/bin/mac/x64/1.3/julia-1.3.1-mac64.dmg">64-bit</a>
+		</p>
+	</div>
+<!-- linux -->
+	<div class="downloads">
+		<p>
+			<a href="/downloads/platform/#linux_and_freebsd"> (.tar.gz) [help]</a>
+		</p>
+		<h1>
+			For x86:
+		</h1>
+		<p>
+			<a href="https://julialang-s3.julialang.org/bin/linux/x86/1.3/julia-1.3.1-linux-i686.tar.gz">32-bit</a> (<a href="https://julialang-s3.julialang.org/bin/linux/x86/1.3/julia-1.3.1-linux-i686.tar.gz.asc">GPG</a>)
+		</p>
+		<p>
+			<a href="https://julialang-s3.julialang.org/bin/linux/x64/1.3/julia-1.3.1-linux-x86_64.tar.gz">64-bit</a> (<a href="https://julialang-s3.julialang.org/bin/linux/x64/1.3/julia-1.3.1-linux-x86_64.tar.gz.asc">GPG</a>)
+		</p>
+		<h1>
+			For ARM:
+		</h1>
+			<p>
+				<p>
+					<a href="https://julialang-s3.julialang.org/bin/linux/armv7l/1.3/julia-1.3.1-linux-armv7l.tar.gz">32-bit (ARMv7-a hard float)</a> (<a href="https://julialang-s3.julialang.org/bin/linux/armv7l/1.3/julia-1.3.1-linux-armv7l.tar.gz.asc">GPG</a>)
+				</p>
+				<p>
+					<a href="https://julialang-s3.julialang.org/bin/linux/aarch64/1.3/julia-1.3.1-linux-aarch64.tar.gz">64-bit (AArch64)</a> (<a href="https://julialang-s3.julialang.org/bin/linux/aarch64/1.3/julia-1.3.1-linux-aarch64.tar.gz.asc">GPG</a>)
+				</p>
+				<p>
+					FreeBSD Binaries for x86
+				</p>
+				<p>
+					<a href="https://julialang-s3.julialang.org/bin/freebsd/x64/1.3/julia-1.3.1-freebsd-x86_64.tar.gz">64-bit</a> (<a href="https://julialang-s3.julialang.org/bin/freebsd/x64/1.3/julia-1.3.1-freebsd-x86_64.tar.gz.asc">GPG</a>)
+				</p>
+	</div>
+
+  <!-- source -->
+
+  <div class="downloads">
+  <p><a href="https://github.com/JuliaLang/julia/tree/v1.3.1">GitHub</a> </p>
+  <p><a href="https://github.com/JuliaLang/julia/releases/download/v1.3.1/julia-1.3.1.tar.gz">Tarball</a>
+        (<a href="https://github.com/JuliaLang/julia/releases/download/v1.3.1/julia-1.3.1.tar.gz.asc">GPG</a>)
+  </p>
+  <p><a href="https://github.com/JuliaLang/julia/releases/download/v1.3.1/julia-1.3.1-full.tar.gz">Tarball with dependencies</a>
+    (<a href="https://github.com/JuliaLang/julia/releases/download/v1.3.1/julia-1.3.1-full.tar.gz.asc">GPG</a>)
+  </p>
+  </div>
+</div>
+~~~
 
 Please see [platform specific instructions](/downloads/platform/) for further installation instructions and if you have trouble installing Julia.
 If the provided download files do not work for you, please [file an issue in the Julia project](https://github.com/JuliaLang/julia/issues).
 Different OSes and architectures have varying [tiers of support](/downloads/#support_tiers), and are listed at the bottom of this page.
 @@
 
-
-## Current stable release: v1.3.1 (Dec 30, 2019)
-
 Checksums for this release are available in both [MD5](https://julialang-s3.julialang.org/bin/checksums/julia-1.3.1.md5) and [SHA256](https://julialang-s3.julialang.org/bin/checksums/julia-1.3.1.sha256) formats.
 
+
+
 @@row @@col-12
+
 ~~~
 <table class="downloads table table-hover table-bordered">
   <tbody>

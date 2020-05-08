@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>This blog briefly summarises my GSoC 2018 project &#40;<a href="https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/">Parallel Graph Development</a>&#41; and the results achieved. For a detailed description, please refer to my <a href="https://sohamtamba.github.io/GSoC">GSoC blog</a>.</p>
+<div class="container"><p>This blog briefly summarises my GSoC 2018 project &#40;<a href="https://summerofcode.withgoogle.com/archive/2018/projects/5193483178475520/">Parallel Graph Development</a>&#41; and the results achieved. For a detailed description, please refer to my <a href="https://sohamtamba.github.io/GSoC">GSoC blog</a>.</p>
 <p>The project is spread over the <a href="https://github.com/JuliaGraphs/LightGraphs.jl">LightGraphs</a> codebase. It involved:</p>
 <ol>
 <li><p>Producing parallel implementations of crucial graph algorithms.</p>
@@ -244,10 +263,7 @@ td{
 </ul>
 <h1 id="acknowledgements"><a href="#acknowledgements">Acknowledgements</a></h1>
 <p>I would like to thank my mentor, <a href="https://github.com/somil55">Divyansh Srivastava</a> and LightGraphs co-owner, <a href="https://github.com/sbromberger">Seth Bromberger</a> for reviewing my code and providing valuable advice during the summer. I would also like to thank <a href="/project/">The Julia Project</a> and <a href="https://numfocus.org">NUMFocus</a> for sponsoring my attendance to <a href="https://juliacon.org/2018/">JuliaCon 2018</a>.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

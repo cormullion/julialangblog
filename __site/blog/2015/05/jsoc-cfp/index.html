@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,19 +154,14 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Thanks to a generous grant from the <a href="https://www.moore.org/">Moore Foundation</a>, we are happy to announce the 2015 <strong>Julia Summer of Code &#40;JSoC&#41;</strong> administered by <a href="https://numfocus.org/">NumFocus</a>. We realize that this announcement comes quite late in the summer internship process, but we are hoping to fund six projects. The duration of JSoC 2015 will be June 15-September 15. Last date for submitting applications is June 1.</p>
+<div class="container"><p>Thanks to a generous grant from the <a href="https://www.moore.org/">Moore Foundation</a>, we are happy to announce the 2015 <strong>Julia Summer of Code &#40;JSoC&#41;</strong> administered by <a href="https://numfocus.org/">NumFocus</a>. We realize that this announcement comes quite late in the summer internship process, but we are hoping to fund six projects. The duration of JSoC 2015 will be June 15-September 15. Last date for submitting applications is June 1.</p>
 <p>Stipends will match those of the Google Summer of Code &#40;GSoC&#41; at &#36;5500 for the summer <strong>plus travel support to attend this year&#39;s <a href="https://juliacon.org/">JuliaCon</a> at MIT</strong>. Some amazing work from last year&#39;s GSoC includes the <a href="https://junolab.org/">Juno IDE</a>, the <a href="https://github.com/JuliaLang/Interact.jl">Interact.jl</a> package, and <a href="https://github.com/SimonDanisch/GLPlot.jl">GLPlot</a>; we hope to support another round of fun and useful projects.</p>
 <p><strong>If you are looking for a project</strong>, first, find a mentor. You may want to contact your favorite core developer, package author, or look through some of the previously proposed projects. Mentors will be looking for some evidence that you have experience using Julia and contributing to open source projects, but you are not expected to be an expert in the proposed project area. In fact, JSoC could be a great opportunity to explore an entirely new subject. <strong>If you&#39;re already a contributor to Julia or a Julia package and want to get paid to continue an existing project, that&#39;s okay too&#33;</strong> In this case we still ask you to find a mentor who&#39;s familiar with your field of work.</p>
 <p><strong>If you are a mentor looking for a student</strong>, advertise the project&#33; Post it on <a href="https://groups.google.com/forum/#&#33;forum/julia-users">julia-users</a> and relevant community forums. Keep in mind that project proposals should be concrete but flexible enough to adapt to the interests of a broad range of potential applicants.</p>
 <p><strong>Once a mentor and student have agreed on a project</strong>, send an email to juliasoc@googlegroups.com for feedback and approval. We ask for this to be done by <strong>June 1st</strong> at the latest &#40;yes that&#39;s soon&#33;&#41;.</p>
 <p>Note that we use student in the broad sense. Participation is open to all, in accordance with applicable regulations. Participants do not need to demonstrate student status in any formal way. Contact juliasoc@googlegroups.com with any questions regarding eligibility.</p>
 <p>Happy coding&#33;</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

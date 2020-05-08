@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn&#39;t have it any other way. I am thankful to the Julia community, and especially my mentor <a href="https://github.com/mikeinnes">@MikeInnes</a>, for supporting me through this. I&#39;ve learned a lot and become even more familiar with neural nets than I was before, and I learned how to do basic GPU programming, which will be incredibly useful for my academic career.</p>
+<div class="container"><p>Here we are on the other end of Google Summer of Code 2018. It has been a challenging and educational experience, and I wouldn&#39;t have it any other way. I am thankful to the Julia community, and especially my mentor <a href="https://github.com/mikeinnes">@MikeInnes</a>, for supporting me through this. I&#39;ve learned a lot and become even more familiar with neural nets than I was before, and I learned how to do basic GPU programming, which will be incredibly useful for my academic career.</p>
 <p>The rest of this blog post will summarize my project and the work I&#39;ve done over the whole summer, remark on what work remains to be done, and conclude with a brief tutorial of how to run the code I&#39;ve written to try it out for yourself.</p>
 <div class="franklin-toc"><ol><li><a href="#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></li><li><a href="#results_of_the_ctc_network">Results of the CTC network</a></li><li><a href="#results_of_the_framewise_network">Results of the framewise network</a></li><li><a href="#what_remains_to_be_done">What remains to be done</a></li><li><a href="#running_the_models">Running the models</a><ol><li><a href="#ctc_model">CTC model</a></li><li><a href="#framewise_model">Framewise model</a></li></ol></li><li><a href="#get_the_code">Get the code</a></li><li><a href="#references">References</a></li></ol></div>
 <h1 id="have_you_ever_wanted_your_computer_to_understand_speech"><a href="#have_you_ever_wanted_your_computer_to_understand_speech">Have you ever wanted your computer to understand speech?</a></h1>
@@ -204,10 +223,7 @@
 <li><p>Zhang, Y., Pezeshki, M., Brakel, P., Zhang, S., Bengio, C. L. Y., &amp; Courville, A. &#40;2017&#41;. Towards end-to-end speech recognition with deep convolutional neural networks. <em>arXiv preprint arXiv:1701.02720</em>.</p>
 </li>
 </ul>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

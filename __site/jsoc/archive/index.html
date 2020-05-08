@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -67,13 +88,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,9 +138,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="summer_of_code_archives"><a href="#summer_of_code_archives">Summer of Code Archives</a></h1>
+<div class="container"><h1 id="summer_of_code_archives"><a href="#summer_of_code_archives">Summer of Code Archives</a></h1>
 <p>Julia has greatly benefited from the Google Summer of Code. In the last 6 years, over 70&#43; students have contributed to Julia and various Julia packages. Many of these students have become regular Julia contributors well beyond their summer projects. Take a look at the <a href="/jsoc">Ideas Page</a> and contribute your ideas.</p>
 <h2 id="gsoc_2019"><a href="#gsoc_2019">GSoC 2019</a></h2>
 <p>In 2019, we recieved an even larger number of very high quality applications but could only fufill 15 slots through GSoC. Not wanting to lose some very impressive students and their exciting projects, we decided to supplement the program with the Julia Season of Contributions &#40;JSoC&#41;, using some community funds. Details on the program were announced here: https://discourse.julialang.org/t/julia-seasons-of-contributions-to-supplement-gsoc/23922</p>
@@ -163,10 +182,7 @@
 <li><p><strong>Shashi Gowda</strong> - <a href="https://www.google-melange.com/gsoc/project/details/google/gsoc2014/g0/5113880120393728">IJulia Interactive Widgets</a></p>
 </li>
 </ul>
-</div>
-
-</div>
-<br><br>
+</div></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

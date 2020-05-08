@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>In this summer, I have worked on a project to develop tools that make BioJulia run faster. As an outcome, Automa.jl now generates more efficient code to parse text files, ConcurrentCalls.jl runs multiple tasks in parallel, and simple and efficient interfaces to various compression formats are provided in TranscodingStreams.jl.</p>
+<div class="container"><p>In this summer, I have worked on a project to develop tools that make BioJulia run faster. As an outcome, Automa.jl now generates more efficient code to parse text files, ConcurrentCalls.jl runs multiple tasks in parallel, and simple and efficient interfaces to various compression formats are provided in TranscodingStreams.jl.</p>
 <h2 id="instruction-level_parallelism"><a href="#instruction-level_parallelism">Instruction-level parallelism</a></h2>
 <p>Instruction-level parallelism is a technique to run multiple instructions simultaneously on a CPU core. This may sound odd but actually it is possible because CPU instructions are executed in multiple stages such as fetch, decode, execute, and so on. This is called <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">instruction pipelining</a> and modern processors can execute these stages in parallel and hence processing throughput may be boosted by utilizing it.</p>
 <p>I implemented automatic loop unrolling in <a href="https://github.com/BioJulia/Automa.jl">Automa.jl</a>, which is a package to generate finite state machine &#40;FSM&#41; from regular expressions. We use it to generate high-performance parsers for various file formats used in bioinformatics.  The loop unrolling factor can be specified as an argument of <a href="https://biojulia.net/Automa.jl/latest/references.html#Automa.CodeGenContext"><code>Automa.CodeGenContext</code></a>. For example, you can specify the value 8 in this way: <code>context &#61;
@@ -205,10 +224,7 @@ end</code></pre>
 <p>Speeding up programs never ends. I still have some pending pull requests that are required to work well with these tools &#40;<a href="https://github.com/BioJulia/BioCore.jl/pull/7">https://github.com/BioJulia/BioCore.jl/pull/7</a>, <a href="https://github.com/BioJulia/BioAlignments.jl/pull/4">https://github.com/BioJulia/BioAlignments.jl/pull/4</a>, <a href="https://github.com/BioJulia/BioSequences.jl/pull/25">https://github.com/BioJulia/BioSequences.jl/pull/25</a>&#41;. ConcurrentCalls.jl lacks examples, tests, benchmarks, and many features to be used in real work. CodecZstd.jl will support the seekable format once it gets stable. I really welcome feedbacks of these designs and ideas to improve them further.</p>
 <h2 id="acknowledgments"><a href="#acknowledgments">Acknowledgments</a></h2>
 <p>I appreciate contributions of my mentor Shashi Gowda and other members of the Julia community.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

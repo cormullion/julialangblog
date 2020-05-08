@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h2 id="congratulations_to_tim_besard_katharine_hyatt_chris_rackauckas_and_elliot_saba"><a href="#congratulations_to_tim_besard_katharine_hyatt_chris_rackauckas_and_elliot_saba">Congratulations to Tim Besard, Katharine Hyatt, Chris Rackauckas and Elliot Saba</a></h2>
+<div class="container"><h2 id="congratulations_to_tim_besard_katharine_hyatt_chris_rackauckas_and_elliot_saba"><a href="#congratulations_to_tim_besard_katharine_hyatt_chris_rackauckas_and_elliot_saba">Congratulations to Tim Besard, Katharine Hyatt, Chris Rackauckas and Elliot Saba</a></h2>
 <p>The Julia Community Prizes celebrate the amazing set of scientists, developers and designers who have come together build such a strong and diverse ecosystem for numerical computing. Each of the four individuals chosen for the first award in 2018 have made immense contributions to Julia over many years, and all of them have been crucial to Julia&#39;s success.</p>
 <p>The prizes were announced at JuliaCon 2018 in London, and each awardee was presented with certificate of accomplishment and a cash prize of &#36;1000.</p>
 <h2 id="tim_besard"><a href="#tim_besard">Tim Besard</a></h2>  For extending Julia natively to the GPU <img src="/assets/blog/2018-09-04-julia-community-prizes/tim-besard.jpg" alt="Tim Besard" /></p>
@@ -143,10 +162,7 @@
 <h2 id="chris_rackauckas"><a href="#chris_rackauckas">Chris Rackauckas</a></h2>  For his development of JuliaDiffEq and his community engagement <img src="/assets/blog/2018-09-04-julia-community-prizes/chris-rackauckas.jpg" alt="Chris Rackauckas" /></p>
 <h2 id="elliott_saba"><a href="#elliott_saba">Elliott Saba</a></h2>  For his design and stewardship of Julia&#39;s community infrastructure <img src="/assets/blog/2018-09-04-julia-community-prizes/elliot-saba.jpg" alt="Elliot Saba" /></p>
 <p>Please join us in congratulating the winners, and thanking the awards committee.</p>
-<h2 id="awards_committee"><a href="#awards_committee">Awards Committee</a></h2>  The members of the committee for 2018 were Prof Alan Edelman, MIT; Prof Tim Holy, WU; and Mr Curtis Vogt, Invenia.
-
-</div>
-<br><br>
+<h2 id="awards_committee"><a href="#awards_committee">Awards Committee</a></h2>  The members of the committee for 2018 were Prof Alan Edelman, MIT; Prof Tim Holy, WU; and Mr Curtis Vogt, Invenia.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

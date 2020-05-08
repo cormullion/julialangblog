@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Jeff and I will be giving a <a href="https://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Julia">presentation on Julia</a> at the upcoming <a href="https://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012">Lang.NEXT conference</a>, a gathering of &quot;programming language design experts and enthusiasts&quot; featuring &quot;talks, panels and discussion on leading programming language work from industry and research.&quot; We are honored and excited to have been invited to speak at an event alongside so many programming language luminaries.</p>
+<div class="container"><p>Jeff and I will be giving a <a href="https://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Julia">presentation on Julia</a> at the upcoming <a href="https://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012">Lang.NEXT conference</a>, a gathering of &quot;programming language design experts and enthusiasts&quot; featuring &quot;talks, panels and discussion on leading programming language work from industry and research.&quot; We are honored and excited to have been invited to speak at an event alongside so many programming language luminaries.</p>
 <p><strong>Abstract:</strong></p>
 <p>Julia is a dynamic language in the tradition of Lisp, Perl, Python and Ruby. It aims to advance  expressiveness and convenience for scientific and technical computing beyond that of environments like Matlab and NumPy, while simultaneously closing the performance gap with compiled languages like C, C&#43;&#43;, Fortran and Java.</p>
 <p>Most high-performance dynamic language implementations have taken an existing interpreted language and worked to accelerate its execution. In creating Julia, we have reconsidered the basic language design, taking into account the capabilities of modern JIT compilers and the specific needs of technical computing. Our design includes:</p>
@@ -151,10 +170,7 @@
 </ul>
 <p>Julia feels light and natural for data exploration and algorithm prototyping, but has performance that lets you deploy your prototypes.</p>
 <p><strong>Update:</strong> You can see the slides for our talk <a href="/assets/images/lang.next.pdf">here</a>. Video of the presentation is available <a href="https://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Julia">here</a>.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -51,7 +72,8 @@
 	<link rel="icon" href="/assets/infra/julia.ico">
 
   <!-- Franklin stylesheets for generated pages -->
-  
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+      
   
    <title>Numerical Projects – Summer of Code</title>   
 
@@ -71,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,9 +143,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="numerical_projects_summer_of_code"><a href="#numerical_projects_summer_of_code">Numerical Projects – Summer of Code</a></h1>
+<div class="container"><h1 id="numerical_projects_summer_of_code"><a href="#numerical_projects_summer_of_code">Numerical Projects – Summer of Code</a></h1>
 <p>For all of these projects, potential mentors are <a href="https://github.com/stevengj">Steven Johnson</a>.</p>
 <div class="franklin-toc"><ol><li><a href="#numerical_linear_algebra">Numerical Linear Algebra</a><ol><li><a href="#petsc_integration_for_scalable_technical_computing">PETSc integration for scalable technical computing</a></li><li><a href="#parallel_dense_linear_algebra_routines">Parallel dense linear algebra routines</a></li><li><a href="#parallel_sparse_linear_algebra_routines">Parallel sparse linear algebra routines</a></li><li><a href="#generic_linear_algebra">Generic linear algebra</a></li><li><a href="#special_functions">Special functions</a></li><li><a href="#matrix_functions">Matrix functions</a></li></ol></li><li><a href="#interval_arithmetic">Interval arithmetic</a><ol><li><a href="#a_standards-compliant_interval_arithmetic_library">A standards-compliant interval arithmetic library</a></li><li><a href="#guaranteed_root_finding_with_intervals">Guaranteed root finding with intervals</a></li><li><a href="#global_optimization_with_intervals">Global optimization with intervals</a></li><li><a href="#taylor_models_and_a_guaranteed_ode_solver">Taylor models and a guaranteed ODE solver</a></li></ol></li><li><a href="#better_bignums_integration">Better Bignums Integration</a></li></ol></div>
 <h2 id="numerical_linear_algebra"><a href="#numerical_linear_algebra">Numerical Linear Algebra</a></h2>
@@ -216,12 +236,14 @@
 <p>This experimentation could be carried out as a package with a new implementation, or as patches over the existing implementation in Base.</p>
 <p><strong>Expected Results</strong>: An implementation of BigNums in Julia with increased performance over the current one.</p>
 <p><strong>Require Skills</strong>: Familiarity with extended precision numerics OR performance considerations. Familiarity either with Julia or GMP.</p>
-<p><strong>Mentors</strong>: <a href="https://github.com/vtjnash">Jameson Nash</a>
-
-</div>
-<br><br>
+<p><strong>Mentors</strong>: <a href="https://github.com/vtjnash">Jameson Nash</a></div><br><br>
 
 <!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
     
     
 

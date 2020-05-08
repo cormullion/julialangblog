@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p><em><a href="https://juliacon.org">JuliaCon 2015</a> is being held at the Massachusetts Institute of Technology from June 24th to the 28th. <a href="https://www.eventbrite.com/e/juliacon-2015-tickets-16517619645">Get your tickets</a> and <a href="https://juliacon.org/#accom">book your hotel</a> before June 4th to take advantage of early bird pricing.</em></p>
+<div class="container"><p><em><a href="https://juliacon.org">JuliaCon 2015</a> is being held at the Massachusetts Institute of Technology from June 24th to the 28th. <a href="https://www.eventbrite.com/e/juliacon-2015-tickets-16517619645">Get your tickets</a> and <a href="https://juliacon.org/#accom">book your hotel</a> before June 4th to take advantage of early bird pricing.</em></p>
 <p>The <a href="https://juliacon.org/2014/">first ever JuliaCon</a> was held in Chicago last year and was a great success. JuliaCon is back for 2015, this time in Cambridge, Massachusetts at <a href="https://web.mit.edu/">MIT</a>&#39;s architecturally-delightful Stata Center, the <a href="https://www.csail.mit.edu/">home of computer science at MIT</a>. Last year we had a single-track format, but this year we&#39;ve expanded into a four-day extravaganza:</p>
 <ul>
 <li><p>On Wednesday 24th there will an introduction to Julia workshop run by <a href="https://github.com/dpsanders">David P. Sanders &#40;@dpsanders&#41;</a> as well as a Julia <strong>hackathon</strong> - a great chance to get some help for your new Julia projects, or to begin contributing to Julia or its many packages.</p>
@@ -166,10 +185,7 @@
 <p>The parallel computing session will tackle parallelism at all levels. Contributor <a href="https://github.com/amitmurthy/">Amit Murthy &#40;@amitmurthy&#41;</a> will open the session with a discussion of his recent work and plans for managing Julia in a cluster. We&#39;ll also hear about work being done to <strong>make Julia multithreaded</strong> at Intel, and about running Julia on a <strong>Cray supercomputer</strong>.</p>
 <p>After all that you will surely be inspired to hack on Julia projects all night, but make sure to wake up for a full day of <strong>workshops</strong> on Saturday&#33;</p>
 <p>Remember to <a href="https://www.eventbrite.com/e/juliacon-2015-tickets-16517619645">get your tickets</a> and <a href="https://juliacon.org/#accom">book your hotel</a> before June 4th to take advantage of early bird pricing. We&#39;d also like to thank our <strong>platinum sponsors</strong>: the Gordon and Betty Moore Foundation, BlackRock, and Julia Computing. We can&#39;t forget out <strong>silver sponsors</strong> either: Intel and Invenia. We&#39;re looking forward to seeing you there&#33;</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,9 +142,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="scientific_projects_summer_of_code"><a href="#scientific_projects_summer_of_code">Scientific Projects – Summer of Code</a></h1>
+<div class="container"><h1 id="scientific_projects_summer_of_code"><a href="#scientific_projects_summer_of_code">Scientific Projects – Summer of Code</a></h1>
 <h2 id="quantum_computation_simualation_of_noisy_circuits"><a href="#quantum_computation_simualation_of_noisy_circuits">Quantum Computation: Simualation of Noisy Circuits</a></h2>
 <p><a href="https://arxiv.org/abs/1801.00862">Noisy Intermediate-Scale Quantum &#40;NISQ&#41; technology will be available in the near future.</a> However, it would be much more convenient if we could test our algorithm with noise and simulate our quantum algorithm on noisy circuits to explore their stability, efficiency. To assist the research of NISQ, enhance the quantum circuit simulator in Julia <a href="https://github.com/QuantumBFS/Yao.jl">Yao.jl</a> with noisy circuit simulation would be quite useful. We are planning to implement the algorithm in a recent paper as our SoC project: <a href="https://arxiv.org/pdf/1810.03176.pdf">Efficient classical simulation of noisy quantum computation</a>.</p>
 <p><strong>Recommended Skills</strong>: Background knowledge in quantum information and tensor networks and the ability of coding with Julia.</p>
@@ -135,10 +154,7 @@
 <p><strong>Recommended Skills:</strong> Basic knowledge on convex geometry and polyhedral computations is preferred but can be learned along the way. A taste for writing efficient code.</p>
 <p><strong>Expected Results:</strong> Some possibilities are: overapproximation of zonotopes with polytopes, zonotope-polytope intersections, order reduction metods, Minkowski difference of zonotopes.</p>
 <p><strong>Mentors:</strong> <a href="https://github.com/mforets">Marcelo Forets</a> and <a href="https://github.com/schillic">Christian Schilling</a>.</p>
-<p><strong>References:</strong> See <a href="https://juliareach.github.io/Reachability.jl/stable/publications/">Reachability.jl#Publications</a> and references therein, or contact us in the <a href="https://gitter.im/JuliaReach/Lobby">gitter channel</a>.
-
-</div>
-<br><br>
+<p><strong>References:</strong> See <a href="https://juliareach.github.io/Reachability.jl/stable/publications/">Reachability.jl#Publications</a> and references therein, or contact us in the <a href="https://gitter.im/JuliaReach/Lobby">gitter channel</a>.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

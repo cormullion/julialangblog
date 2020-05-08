@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in <a href="https://github.com/haampie/JacobiDavidson.jl">JacobiDavidson.jl</a>. This method computes a few approximate solutions of the eigenvalue problem \(Ax = \lambda Bx\) for large and sparse matrices \(A\) and \(B\). As it uses iterative solvers internally, much time has gone into improving <a href="https://github.com/JuliaMath/IterativeSolvers.jl">IterativeSolvers.jl</a> in general. Lastly, as iterative solvers are typically used with preconditioners, I have implemented the incomplete LU factorization for sparse matrices as well in <a href="https://github.com/haampie/ILU.jl">ILU.jl</a>.</p>
+<div class="container"><p>The central part of my GSoC project is about implementing the Jacobi-Davidson method natively in Julia, available in <a href="https://github.com/haampie/JacobiDavidson.jl">JacobiDavidson.jl</a>. This method computes a few approximate solutions of the eigenvalue problem \(Ax = \lambda Bx\) for large and sparse matrices \(A\) and \(B\). As it uses iterative solvers internally, much time has gone into improving <a href="https://github.com/JuliaMath/IterativeSolvers.jl">IterativeSolvers.jl</a> in general. Lastly, as iterative solvers are typically used with preconditioners, I have implemented the incomplete LU factorization for sparse matrices as well in <a href="https://github.com/haampie/ILU.jl">ILU.jl</a>.</p>
 <div class="franklin-toc"><ol><li><a href="#jacobidavidsonjl">JacobiDavidson.jl</a></li><li><a href="#iterativesolversjl">IterativeSolvers.jl</a></li><li><a href="#ilujl">ILU.jl</a></li><li><a href="#examples">Examples</a><ol><li><a href="#jacobi-davidson">Jacobi-Davidson</a></li><li><a href="#ilu_example">ILU example</a></li></ol></li><li><a href="#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="jacobidavidsonjl"><a href="#jacobidavidsonjl">JacobiDavidson.jl</a></h2>  The <a href="https://github.com/haampie/JacobiDavidson.jl">Jacobi-Davidson implementation</a> is ready for use and can be applied to solving the &#40;generalized&#41; eigenvalue problem for non-Hermitian matrices. It&#39;s similar to the <code>eigs</code> method already available in Julia: it gives you a couple eigenvalues near a specified target in the complex plane.</p>
 <p>At this point no official release has been tagged yet, as there is still some work to be done: hopefully the functions for the generalized and ordinary eigenvalue problem can largely be merged as they are very similar. Also, some optimizations for Hermitian problems should yet be implemented; lastly the methods do not yet support generic vectors and numbers.</p>
@@ -238,10 +257,7 @@ b = A * x</code></pre>
 <p>So all in all the problem is solved about 36&#37; faster. However, if we have multiple right-hand sides for the same matrix, we can construct the preconditioner only once and use it multiple times. Even when the matrix changes slightly you could reuse the ILU factorization. The latter is exactly what happens in Jacobi-Davidson.</p>
 <h2 id="acknowledgements"><a href="#acknowledgements">Acknowledgements</a></h2>
 <p>I would really want to thank my GSoC mentor Andreas Noack for the many discussions we had in chat and video calls. Also I would like to thank the Julia community in general for giving me a warm welcome, both online and at JuliaCon 2017.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

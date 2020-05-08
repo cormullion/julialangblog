@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Software performance depends more and more on exploiting multiple processor cores. The <a href="https://www.gotw.ca/publications/concurrency-ddj.htm">free lunch</a> from Moore&#39;s Law is still over. Well, we here in the Julia developer community have something of a reputation for caring about performance. In pursuit of it, we have already built a lot of functionality for multi-process, distributed and GPUs, but we&#39;ve known for years that we would also need a good story for composable multi-threading. Today we are happy to announce a major new chapter in that story. We are releasing a preview of an entirely new threading interface for Julia programs: general task parallelism, inspired by parallel programming systems like <a href="https://cilk.mit.edu/">Cilk</a>, <a href="https://software.intel.com/en-us/intel-tbb/">Intel Threading Building Blocks</a><a href="TBB"></a> and <a href="https://tour.golang.org/concurrency/1">Go</a>. Task parallelism is now available in the v1.3.0-alpha release, an early preview of Julia version 1.3.0 likely to be released in a couple months. You can find binaries with this feature on the <a href="/downloads/">downloads page</a>, or build the <a href="https://github.com/JuliaLang/julia">master branch</a> from source.</p>
+<div class="container"><p>Software performance depends more and more on exploiting multiple processor cores. The <a href="https://www.gotw.ca/publications/concurrency-ddj.htm">free lunch</a> from Moore&#39;s Law is still over. Well, we here in the Julia developer community have something of a reputation for caring about performance. In pursuit of it, we have already built a lot of functionality for multi-process, distributed and GPUs, but we&#39;ve known for years that we would also need a good story for composable multi-threading. Today we are happy to announce a major new chapter in that story. We are releasing a preview of an entirely new threading interface for Julia programs: general task parallelism, inspired by parallel programming systems like <a href="https://cilk.mit.edu/">Cilk</a>, <a href="https://software.intel.com/en-us/intel-tbb/">Intel Threading Building Blocks</a><a href="TBB"></a> and <a href="https://tour.golang.org/concurrency/1">Go</a>. Task parallelism is now available in the v1.3.0-alpha release, an early preview of Julia version 1.3.0 likely to be released in a couple months. You can find binaries with this feature on the <a href="/downloads/">downloads page</a>, or build the <a href="https://github.com/JuliaLang/julia">master branch</a> from source.</p>
 <p>In this paradigm, any piece of a program can be marked for execution in parallel, and a &quot;task&quot; will be started to run that code automatically on an available thread. A dynamic scheduler handles all the decisions and details for you. Here&#39;s an example of parallel code you can now write in Julia:</p>
 <pre><code class="language-julia">import Base.Threads.@spawn
 
@@ -338,10 +357,7 @@ end</code></pre>
 <p>We would like to gratefully acknowledge funding support from <a href="https://www.intel.com/">Intel</a> and <a href="https://relational.ai/">relationalAI</a> that made it possible to develop these new capabilities.</p>
 <p>We are also grateful to the several people who patiently tried this functionality while it was in development and filed bug reports or pull requests, and spurred us to keep going. If you encounter any issues using threads in Julia, please let us know on <a href="https://github.com/JuliaLang/julia/issues">GitHub</a> or our <a href="https://discourse.julialang.org/">Discourse</a> forum&#33;</p>
 </p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

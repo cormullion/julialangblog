@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -73,13 +94,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -135,9 +156,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>Throughout this Google Summer of Code project I, along with my mentors, aimed to create a Wrapper for the FEniCS Finite Element Toolbox in the Julia Language. Our work done can be found at <a href="https://github.com/JuliaDiffEq/FEniCS.jl">FEniCS.jl</a> . This would allow users to perform FEM calculations directly in Julia, utilizing our <a href="https://github.com/JuliaPy/PyCall.jl">PyCall.jl</a> wrapping functionality. We currently have wrapped the main  functionality, along with providing the necessary instructions to add further components when they are deemed necessary. Members of the Julia community not directly related to the project also contributed small fixes and suggestions throughout the project. The majority of the code produced has already been merged to the GitHub repository &#40;which was created specifically for this project&#41;. One of the main improvements which would greatly increase its usage would be the further integration with the JuliaDiffEq package.</p>
+<div class="container"><p>Throughout this Google Summer of Code project I, along with my mentors, aimed to create a Wrapper for the FEniCS Finite Element Toolbox in the Julia Language. Our work done can be found at <a href="https://github.com/JuliaDiffEq/FEniCS.jl">FEniCS.jl</a> . This would allow users to perform FEM calculations directly in Julia, utilizing our <a href="https://github.com/JuliaPy/PyCall.jl">PyCall.jl</a> wrapping functionality. We currently have wrapped the main  functionality, along with providing the necessary instructions to add further components when they are deemed necessary. Members of the Julia community not directly related to the project also contributed small fixes and suggestions throughout the project. The majority of the code produced has already been merged to the GitHub repository &#40;which was created specifically for this project&#41;. One of the main improvements which would greatly increase its usage would be the further integration with the JuliaDiffEq package.</p>
 <div class="franklin-toc"><ol><li><a href="#what_is_fenics">What is FEniCS?</a></li><li><a href="#but_how_does_it_work">But, how does it work?</a></li><li><a href="#and_internally">And, internally?</a></li><li><a href="#demonstration">Demonstration</a></li><li><a href="#challenges">Challenges</a></li><li><a href="#further_improvements">Further Improvements</a></li><li><a href="#on_the_shoulders_of_giants">On the Shoulders of Giants</a></li><li><a href="#acknowledgements">Acknowledgements</a></li></ol></div>
 <h2 id="what_is_fenics"><a href="#what_is_fenics">What is FEniCS?</a></h2>
 <p><strong><a href="https://fenicsproject.org/">FEniCS</a></strong> describes itself as a popular open-source &#40;LGPLv3&#41; computing platform for solving partial differential equations &#40;PDEs&#41;. FEniCS enables users to quickly translate scientific models into efficient finite element code, i.e. it allows us to describe &#40;some&#41; complicated mathematical equations and solve them automatically using computer simulations.</p>
@@ -197,10 +216,7 @@ FEniCS.Plot(U)</code></pre>
 <p>JuliaCon 2017 attendees</p>
 <h2 id="acknowledgements"><a href="#acknowledgements">Acknowledgements</a></h2>
 <p>First and foremost I would like to thank my mentors Chris and Bart. Chris despite the significant timezone difference has always been there to answer my &#40;very often&#41; questions and provide suggestions. Bart has found lots of the initial errors and inconsistencies in the code, providing the necessary information to fix these errors. Julia Computing, who along with NumFOCUS, provided funding for me to attend JuliaCon 2017 and present a poster. Finally the Google Open Source program, who provided the necessary funding so I could undertake this project throughout the summer months and have a wonderful experience.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

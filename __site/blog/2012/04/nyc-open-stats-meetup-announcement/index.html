@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,19 +154,14 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>I&#39;ll be giving a talk on Julia at the <a href="https://www.meetup.com/nyhackr/events/60839932/">New York Open Statistical Programming Meetup on May 1st</a>. After my presentation, <a href="https://www.johnmyleswhite.com/">John Myles White</a> and <a href="https://www.statalgo.com/">Shane Conway</a> are going to give followup demos of statistical applications using Julia. Then we&#39;re going to hang out and grab drinks nearby. Thanks to <a href="https://www.harlan.harris.name/">Harlan Harris</a> and <a href="https://www.drewconway.com/">Drew Conway</a> for setting the whole thing up&#33;</p>
+<div class="container"><p>I&#39;ll be giving a talk on Julia at the <a href="https://www.meetup.com/nyhackr/events/60839932/">New York Open Statistical Programming Meetup on May 1st</a>. After my presentation, <a href="https://www.johnmyleswhite.com/">John Myles White</a> and <a href="https://www.statalgo.com/">Shane Conway</a> are going to give followup demos of statistical applications using Julia. Then we&#39;re going to hang out and grab drinks nearby. Thanks to <a href="https://www.harlan.harris.name/">Harlan Harris</a> and <a href="https://www.drewconway.com/">Drew Conway</a> for setting the whole thing up&#33;</p>
 <p><strong>Announcement:</strong></p>
 <p>After a brief hiatus, we are very excited to announce our May meetup will feature one of the hottest new languages in statistical computing: Julia.  We are delighted to welcome Stefan Karpinski, one of the creators of Julia, to give an introduction to the language and his perspective on statistical computing.</p>
 <p>Julia is a general-purpose, high-level, dynamic language in the tradition of Lisp, Perl, Python and Ruby. It is designed to take advantage of modern techniques for executing dynamic languages with statically-compiled performance. As part of this design, the language has an expressive type system, which programmers may leverage for dispatch and error checking — incidentally providing the compiler with useful type information. Using types is entirely optional, however: &quot;typeless Julia&quot; is a valid and useful subset of the language, similar to traditional dynamic languages, which nevertheless runs at statically compiled speeds.<br /> Julia is especially good at running Matlab and R-style programs. Given its level of performance, we envision a new era of technical computing where libraries can be developed in a high-level language instead of C or Fortran. We have also experimented with cloud API integration, and begun to develop a web-based interactive computing environment. The ultimate goal is to make cloud-based supercomputing as easy and accessible as Google Docs.</p>
 <p>We will also hear from a mix of people who have already started developing in Julia and see some examples of what they have developed.</p>
 <p>The meetup will follow our typical schedule: pizza will begin at 6:15pm, Stefan will begin promptly at 7pm, and we will head to The Central Bar around 8:30pm.</p>
 <p><strong>Update:</strong> You can see the slides for the talk <a href="/assets/blog/nyhackr.pdf">here</a>. There was no video of the talk, but hopefully the slides are informative — there are, among other things, a lot of code examples that should just work if pasted into the Julia repl.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

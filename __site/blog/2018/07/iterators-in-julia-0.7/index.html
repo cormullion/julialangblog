@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h3 id="with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface"><a href="#with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface">With the upcoming 0.7 release, Julia has simplified its iteration interface.</a></h3>
+<div class="container"><h3 id="with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface"><a href="#with_the_upcoming_07_release_julia_has_simplified_its_iteration_interface">With the upcoming 0.7 release, Julia has simplified its iteration interface.</a></h3>
 <p>This post originally appeared on the <a href="https://invenia.github.io/blog/2018/07/06/iteratorsinjulia07/">Invenia blog</a>.</p>
 <p>With the upcoming 0.7 release, Julia has simplified its iteration interface. The <a href="/downloads/">0.7-beta</a> release is available for download. This was a <a href="https://github.com/JuliaLang/julia/pull/25261">huge undertaking</a> which mostly fell to the prolific <a href="https://github.com/Keno">Keno Fischer</a>, who wrote an entirely new optimizer for the language to accomplish it&#33; As the most active maintainer of the <a href="https://github.com/JuliaCollections/IterTools.jl">IterTools</a> package, I decided to spend a week rewriting its iterators for the new interface. I&#39;d like to share that experience with you to introduce the new interface and assist in transitioning to Julia 0.7.</p>
 <h2 id="iteration_in_julia_06"><a href="#iteration_in_julia_06">Iteration in Julia 0.6</a></h2>
@@ -410,10 +429,7 @@ end</code></pre>
         <td class="fndef-content">We <em>could</em>, but we&#39;d need to do something different depending on the length of the tuple, which would add another conditional check in addition to the splatting.</td>
     </tr>
 </table>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

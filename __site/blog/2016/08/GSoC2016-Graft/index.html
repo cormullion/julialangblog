@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -54,7 +75,7 @@
   
    <link rel="stylesheet" href="/libs/highlight/github.min.css">
   
-   <title>Graft.jl - General purpose graph analytics for Julia</title>   
+   <title>Vertex and Edge Metadata</title>   
 
   
   <style>
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -121,23 +142,22 @@
 
 
 <div class="container blog-title">
-	<h1>Graft.jl - General purpose graph analytics for Julia</h1>
+	<h1>Vertex and Edge Metadata</h1>
   <h3>
    <span style="font-weight: lighter;"> 22 August 2016 </span>
 	|
 	
 	 <span style="font-weight: bold;"></span> 
   <!-- assumption that only one of the two is defined -->
-   <span style="font-weight: bold;"><a href="https://github.com/pranavtbhat">Pranav Thulasiram Bhat</a> </span> 
+  
   </h3>
 </div>
 
 
 <!-- Content appended here -->
-
-<div class="container">
+<div class="container"><p>@def rss &#61; &quot;&quot;&quot; Graft.jl - General purpose graph analytics for Julia | This blog post describes my work on Graft.jl &#40;https://github.com/pranavtbhat/Graft.jl&#41;, a general purpose graph analysis package for Julia. For those unfamiliar with graph algorithms, a quick introduction &#40;https://www.cl.cam.ac.uk/teaching/1011/PrincComm/slides/graph<em>theory</em>1-11.pdf&#41; might help.... &quot;&quot;&quot; @def title &#61; &quot;Graft.jl - General purpose graph analytics for Julia&quot; @def authors &#61; &quot;&quot;&quot;&lt;a href&#61;&quot;https://github.com/pranavtbhat&quot;&gt;Pranav Thulasiram Bhat&lt;/a&gt;&quot;&quot;&quot;</p>
 <p>This blog post describes my work on <a href="https://github.com/pranavtbhat/Graft.jl">Graft.jl</a>, a general purpose graph analysis package for Julia. For those unfamiliar with graph algorithms, a quick <a href="https://www.cl.cam.ac.uk/teaching/1011/PrincComm/slides/graph_theory_1-11.pdf">introduction</a> might help.</p>
-<h1 id="proposal"><a href="#proposal">Proposal</a></h1>
+<h1>Proposal</h1>
 <p>My proposal, titled <a href="https://github.com/pranavtbhat/Gsoc2016/blob/master/Proposal.md">ParallelGraphs</a>, was to develop a parallelized/distributed graph algorithms library. However, in the first month or so, we decided to work towards a more general framework that supports data analysis on networks &#40;graphs with attributes defined on vertices and edges&#41;. Our change in direction was mainly motivated by:</p>
 <ul>
 <li><p>The challenges associated with distributed graph computations. <a href="https://www.frankmcsherry.org/graph/scalability/cost/2015/01/15/COST.html">This</a> blog post was an eye opener.</p>
@@ -160,7 +180,8 @@
 <li><p>Compatibility with <code>LightGraphs</code></p>
 </li>
 </ul>
-<h1 id="graft"><a href="#graft">Graft</a></h1>  <code>ParallelGraphs</code> turned out to be a misnomer, since we were moving towards a more general purpose data analysis framework. So we chose the name <code>Graft</code>, a kind of abbreviation for Graph Toolkit. The following sections detail <code>Graft&#39;s</code> features:</p>
+<h1>Graft</h1>
+<code>ParallelGraphs</code> turned out to be a misnomer, since we were moving towards a more general purpose data analysis framework. So we chose the name <code>Graft</code>, a kind of abbreviation for Graph Toolkit. The following sections detail <code>Graft&#39;s</code> features:</p>
 <h2 id="vertex_and_edge_metadata"><a href="#vertex_and_edge_metadata">Vertex and Edge Metadata</a></h2>  Graphs are often representations of real world entities, and the relationships between them. Such entities &#40;and their relationships&#41;, often have data attached to them. While it is quite straightforward to store vertex data &#40;a simple table will suffice&#41;, storing edges and their data is very tricky. The data should be structured on the source and target vertices, should support random access and should be vectorized for queries.</p>
 <p>At first we tried placing the edge data in a SparseMatrixCSC. This turned out to be a bad idea, because sparse matrices are designed for numeric storage. A simpler solution is to store edge metadata in a DataFrame, and have a SparseMatrixCSC map edges onto indices for the DataFrame. This strategy needed a lot less code, and the benchmarks were more promising. Mutations such as the addition or removal of vertices and edges become more complicated however.</p>
 <h2 id="vertex_labelling"><a href="#vertex_labelling">Vertex Labelling</a></h2>  Most graph libraries do not support vertex labelling. It can be very confusing to refer to a vertex by its &#40;often long&#41; integer identifier. It is also computationally expensive to use non-integer labels in the implementation of the package &#40;any such implementation would involve dictionaries&#41;. There is no reason, however, for the user to have to use integer labels externally. Graft supports two modes of vertex labelling. By default, a vertex is identified by its internal identifier. A user can assign labels of any arbitrary Julia type to identify vertices, overriding the internal identifiers. This strategy, we feel, makes a reasonable compromise between user experience and performance.</p>
@@ -188,69 +209,69 @@
    )
 )</code></pre>
 <p>Cleary, using labels internally is a very bad idea. Any sort of data access would set off multiple dictionary look-ups. Instead, if a bidirectional map could be used to translate labels into vertex identifiers and back, the number of dictionary lookups could be reduced to one. The data would also be better structured for query processing.</p>
-<pre><code># Label Map to resolve queries
-LabelMap&#40;
+<pre><code class="language-julia"># Label Map to resolve queries
+LabelMap(
    # Forward map : labels to vertex identifiers
-   Dict&#40;&quot;Alice&quot; &#61;&gt; 1, &quot;David&quot; &#61;&gt; 4, &quot;Charlie&quot; &#61;&gt; 3, &quot;Bob&quot; &#61;&gt; 2&#41;,
+   Dict("Alice" => 1, "David" => 4, "Charlie" => 3, "Bob" => 2),
 
    # Reverse map : vertex identifiers to labels
-   String&#91;&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;&#93;
-&#41;
+   String["Alice", "Bob", "Charlie", "David"]
+)
 
 # Vertex DataFrame
 4×2 DataFrames.DataFrame
 │ Row │ age │ occupation          │
 ├─────┼─────┼─────────────────────┤
-│ 1   │ 34  │ &quot;Doctor&quot;            │
-│ 2   │ 36  │ &quot;Software Engineer&quot; │
-│ 3   │ 30  │ &quot;Lawyer&quot;            │
-│ 4   │ 29  │ &quot;Athlete&quot;           │
+│ 1   │ 34  │ "Doctor"            │
+│ 2   │ 36  │ "Software Engineer" │
+│ 3   │ 30  │ "Lawyer"            │
+│ 4   │ 29  │ "Athlete"           │
 
 # SparseMatrixCSC : maps edges onto indices into Edge DataFrame
 4×4 sparse matrix with 4 Int64 nonzero entries:
-   &#91;4, 1&#93;  &#61;  1
-   &#91;1, 2&#93;  &#61;  2
-   &#91;2, 3&#93;  &#61;  3
-   &#91;3, 4&#93;  &#61;  4
+   [4, 1]  =  1
+   [1, 2]  =  2
+   [2, 3]  =  3
+   [3, 4]  =  4
 
 # Edge DataFrame
 4×1 DataFrames.DataFrame
 │ Row │ relationship │
 ├─────┼──────────────┤
-│ 1   │ &quot;follow&quot;     │
-│ 2   │ &quot;friend&quot;     │
-│ 3   │ &quot;follow&quot;     │
-│ 4   │ &quot;friend&quot;     │</code></pre>
+│ 1   │ "follow"     │
+│ 2   │ "friend"     │
+│ 3   │ "follow"     │
+│ 4   │ "friend"     │</code></pre>
 <h2 id="sql_like_queries"><a href="#sql_like_queries">SQL Like Queries</a></h2>  Graft&#39;s query notation is borrowed from <a href="https://github.com/davidagold/jplyr.jl">Jplyr</a>. The <code>@query</code> macro is used to simplify the query syntax, and accepts a pipeline of abstractions separated by the pipe operator <code>|&gt;</code>. The stages are described through abstractions:</p>
-<h3 id="eachvertex"><a href="#eachvertex">eachvertex</a></h3>  Accepts an expression, that is run over every vertex. Vertex properties can be expressed using the dot notation. Some reserved properties are <code>v.id</code>, <code>v.label</code>, <code>v.adj</code>, <code>v.indegree</code> and <code>v.outdegree</code>. Examples: <pre><code class="language-julia"># Check if the user has overridden the default labels
-julia> @query(g |> eachvertex(v.id == v.label)) |> all
+<h3 id="eachvertex"><a href="#eachvertex">eachvertex</a></h3>  Accepts an expression, that is run over every vertex. Vertex properties can be expressed using the dot notation. Some reserved properties are <code>v.id</code>, <code>v.label</code>, <code>v.adj</code>, <code>v.indegree</code> and <code>v.outdegree</code>. Examples:</p>
+<p># Check if the user has overridden the default labels
+julia&gt; @query&#40;g |&gt; eachvertex&#40;v.id &#61;&#61; v.label&#41;&#41; |&gt; all
 
-# Kirchoff's law :P
-julia> @query(g |> eachvertex(v.outdegree - v.indegree)) .== 0</code></pre><pre><code class="language-julia"># Kirchoff's law :P
-julia> @query(g |> eachvertex(v.outdegree - v.indegree)) .== 0</code></pre>
-<h3 id="eachedge"><a href="#eachedge">eachedge</a></h3>  Accepts an expression, that is run over every edge. The symbol <code>s</code> is used to denote the source vertex, and <code>t</code> is used to denote the target vertex in the edge. The symbol <code>e</code> is used to denote the edge itself. Edge properties can be expressed through the dot notation. Some reserved properties are <code>e.source</code>, <code>e.target</code>, <code>e.mutualcount</code>, and <code>e.mutual</code>. Examples: <pre><code class="language-julia"># Arithmetic expression on edge, source and target properties
-julia> @query g |> eachedge(e.p1 - s.p1 - t.p1)
+# Kirchoff&#39;s law :P
+julia&gt; @query&#40;g |&gt; eachvertex&#40;v.outdegree - v.indegree&#41;&#41; .&#61;&#61; 0</p>
+<h3 id="eachedge"><a href="#eachedge">eachedge</a></h3>  Accepts an expression, that is run over every edge. The symbol <code>s</code> is used to denote the source vertex, and <code>t</code> is used to denote the target vertex in the edge. The symbol <code>e</code> is used to denote the edge itself. Edge properties can be expressed through the dot notation. Some reserved properties are <code>e.source</code>, <code>e.target</code>, <code>e.mutualcount</code>, and <code>e.mutual</code>. Examples:</p>
+<p># Arithmetic expression on edge, source and target properties
+julia&gt; @query g |&gt; eachedge&#40;e.p1 - s.p1 - t.p1&#41;
 
 
 # Check if constituent vertices have the same outdegree
-julia> @query g |> eachedge(s.outdegree == t.outdegree)
+julia&gt; @query g |&gt; eachedge&#40;s.outdegree &#61;&#61; t.outdegree&#41;
 
 
-# Count the number of "mutual friends" between the source and target vertices in each edge
-julia> @query g |> eachedge(e.mutualcount)</code></pre><pre><code class="language-julia"># Count the number of "mutual friends" between the source and target vertices in each edge
-julia> @query g |> eachedge(e.mutualcount)</code></pre>
-<h3 id="filter"><a href="#filter">filter</a></h3>  Accepts vertex or edge expressions and computes subgraphs with a subset of vertices, or a subset of edges, or both. Examples: <pre><code class="language-julia"># Remove vertices where property p1 equals property p2
-@query g |> filter(v.p1 != v.p2)
+# Count the number of &quot;mutual friends&quot; between the source and target vertices in each edge
+julia&gt; @query g |&gt; eachedge&#40;e.mutualcount&#41;</p>
+<h3 id="filter"><a href="#filter">filter</a></h3>  Accepts vertex or edge expressions and computes subgraphs with a subset of vertices, or a subset of edges, or both. Examples:</p>
+<p># Remove vertices where property p1 equals property p2
+@query g |&gt; filter&#40;v.p1 &#33;&#61; v.p2&#41;
 
 # Remove self loops from the graph
-@query g |> filter(e.source != e.target)</code></pre><pre><code class="language-julia"># Remove self loops from the graph
-@query g |> filter(e.source != e.target)</code></pre>
-<h3 id="select"><a href="#select">select</a></h3>  Returns a subgraph with a subset of vertex properties, or a subset of edge properties or both. Examples: <pre><code class="language-julia"># Preserve vertex properties p1, p2 and nothing else
-@query g |> select(v.p1, v.p2)
+@query g |&gt; filter&#40;e.source &#33;&#61; e.target&#41;</p>
+<h3 id="select"><a href="#select">select</a></h3>  Returns a subgraph with a subset of vertex properties, or a subset of edge properties or both. Examples:</p>
+<p># Preserve vertex properties p1, p2 and nothing else
+@query g |&gt; select&#40;v.p1, v.p2&#41;
 
 # Preserve vertex property p1 and edge property p2
-@query g |> select(v.p1, e.p2)</code></pre><pre><code class="language-julia"># Preserve vertex property p1 and edge property p2
-@query g |> select(v.p1, e.p2)</code></pre>
+@query g |&gt; select&#40;v.p1, e.p2&#41;</p>
 <h1 id="demonstration"><a href="#demonstration">Demonstration</a></h1>
 <p>The typical workflow we hope to support with <code>Graft</code> is:</p>
 <ul>
@@ -287,10 +308,7 @@ julia> @query g |> eachedge(e.mutualcount)</code></pre>
 <p>More information can be found <a href="https://github.com/pranavtbhat/Graft.jl/issues">here</a></p>
 <h1 id="acknowledgements"><a href="#acknowledgements">Acknowledgements</a></h1>
 <p>This work was carried out as part of the Google Summer of Code program, under the guidance of mentors: <a href="https://github.com/viralbshah">Viral B Shah</a> and <a href="https://github.com/shashi">Shashi Gowda</a>.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

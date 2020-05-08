@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -72,13 +93,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -134,9 +155,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>The 0.7 release of Julia will soon introduce first-class support for statistical missing values. Being essential for statistical analyses and data management, this feature is common among specialized languages, such as <a href="https://en.wikipedia.org/wiki/Null_&#40;SQL&#41;">SQL</a> &#40;with the <code>NULL</code> value&#41;, <a href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html#NA-handling">R</a> &#40;<code>NA</code>&#41;, <a href="https://support.sas.com/documentation/cdl/en/lrcon/62955/HTML/default/viewer.htm#a001292604.htm">SAS</a> &#40;<code>.</code>, <code>&#39; &#39;</code>, etc.&#41; or <a href="https://www.stata.com/support/faqs/data-management/logical-expressions-and-missing-values/">Stata</a> &#40;<code>.</code>, etc.&#41;. It is however quite rare among general-purpose languages, where <a href="https://en.wikipedia.org/wiki/Nullable_type"><code>Nullable</code></a> or <a href="https://en.wikipedia.org/wiki/Option_type"><code>Option</code></a> types generally do not allow implicit propagation of null values &#40;they require <a href="https://blogs.msdn.microsoft.com/ericlippert/2007/06/27/what-exactly-does-lifted-mean/">lifting</a>&#41; and do not provide an efficient representation of arrays with missing values<sup id="fnref:nullable"><a href="#fndef:nullable" class="fnref">[1]</a></sup>.</p>
+<div class="container"><p>The 0.7 release of Julia will soon introduce first-class support for statistical missing values. Being essential for statistical analyses and data management, this feature is common among specialized languages, such as <a href="https://en.wikipedia.org/wiki/Null_&#40;SQL&#41;">SQL</a> &#40;with the <code>NULL</code> value&#41;, <a href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html#NA-handling">R</a> &#40;<code>NA</code>&#41;, <a href="https://support.sas.com/documentation/cdl/en/lrcon/62955/HTML/default/viewer.htm#a001292604.htm">SAS</a> &#40;<code>.</code>, <code>&#39; &#39;</code>, etc.&#41; or <a href="https://www.stata.com/support/faqs/data-management/logical-expressions-and-missing-values/">Stata</a> &#40;<code>.</code>, etc.&#41;. It is however quite rare among general-purpose languages, where <a href="https://en.wikipedia.org/wiki/Nullable_type"><code>Nullable</code></a> or <a href="https://en.wikipedia.org/wiki/Option_type"><code>Option</code></a> types generally do not allow implicit propagation of null values &#40;they require <a href="https://blogs.msdn.microsoft.com/ericlippert/2007/06/27/what-exactly-does-lifted-mean/">lifting</a>&#41; and do not provide an efficient representation of arrays with missing values<sup id="fnref:nullable"><a href="#fndef:nullable" class="fnref">[1]</a></sup>.</p>
 <p>Starting from Julia 0.7, missing values are represented using the new <code>missing</code> object. Resulting from intense design discussions, experimentations and language improvements developed over several years, it is the heir of the <code>NA</code> value implemented in the <a href="https://github.com/JuliaStats/DataArrays.jl">DataArrays</a> package, which used to be the standard way of representing missing data in Julia. <code>missing</code> is actually very similar to its predecessor <code>NA</code>, but it benefits from many improvements in the Julia compiler and language which make it fast, making it possible to drop the <code>DataArray</code> type and using the standard <code>Array</code> type instead<sup id="fnref:PDA"><a href="#fndef:PDA" class="fnref">[2]</a></sup>. Drawing from the experience of existing languages, the design of <code>missing</code> closely follows that of SQL&#39;s <code>NULL</code> and R&#39;s <code>NA</code>, which can be considered as the most consistent implementations with regard to the support of missing values. Incidentally, this makes it easy to generate SQL requests from Julia code or to have R and Julia interoperate.</p>
 <p>This framework is used by <a href="https://discourse.julialang.org/t/dataframes-0-11-released/7296/">version 0.11</a> of the <a href="https://github.com/JuliaStats/DataFrames.jl/">DataFrames</a> package, which already works on Julia 0.6 via the <a href="https://github.com/JuliaData/Missings.jl">Missings</a> package, even if performance improvements are only available on Julia 0.7.</p>
 <p>The new implementation of statistical missing values follows three principles we deem as essential for a modern scientific computing environment:</p>
@@ -361,10 +380,7 @@ See for example Olivier Godechot&#39;s <a href="/assets/blog/chemin-wasmer-09.pd
     </tr>
 </table>
 In <a href="https://www.johnmyleswhite.com/notebook/2014/11/29/whats-wrong-with-statistics-in-julia/">a 2014 blog post</a>, John Myles White advocated the use of <code>Nullable</code> due to its much higher performance compared with<code>Union&#123;T,NA&#125;</code>. This performance gap no longer exists thanks to compiler improvements which have been a game-changer for missing values support.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>A Julia workshop in China was hosted by <a href="https://github.com/JuliaCN">JuliaCN</a> in Beijing on Aug 24, 2019. This is the 5th Julia workshop in China hosted by <a href="https://github.com/JuliaCN">JuliaCN</a> since 2016. We thank the Julia community and our kind sponsors: <a href="https://caiyunapp.com/">Colorful Clouds</a>, <a href="https://microsoft.com/">Microsoft</a>, <a href="https://swarma.org">Swarma club</a>, and <a href="https://syncedreview.com/">SyncedReview</a>. We received over 100 registrations for this event, and roughly 50 offline participants. The online video stream had 1,600 live viewers.</p>
+<div class="container"><p>A Julia workshop in China was hosted by <a href="https://github.com/JuliaCN">JuliaCN</a> in Beijing on Aug 24, 2019. This is the 5th Julia workshop in China hosted by <a href="https://github.com/JuliaCN">JuliaCN</a> since 2016. We thank the Julia community and our kind sponsors: <a href="https://caiyunapp.com/">Colorful Clouds</a>, <a href="https://microsoft.com/">Microsoft</a>, <a href="https://swarma.org">Swarma club</a>, and <a href="https://syncedreview.com/">SyncedReview</a>. We received over 100 registrations for this event, and roughly 50 offline participants. The online video stream had 1,600 live viewers.</p>
 <p>These videos have been uploaded to <a href="https://www.bilibili.com/video/av65371788">Bilibili.com</a>, and the related materials are uploaded to <a href="https://github.com/JuliaCN/MeetUpMaterials">JuliaCN/MeetUpMaterials</a>.</p>
 <p><img src="/assets/blog/2019-08-31-julia-beijing-2019/people.jpg" alt="people" /></p>
 <h2 id="localization_prize"><a href="#localization_prize">Localization Prize</a></h2>
@@ -219,10 +238,7 @@
 </li>
 </ul>
 <p>See you next year in China&#33;</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>We’re pleased to announce that the Julia Language is taking part in this year’s <a href="https://summerofcode.withgoogle.com">Google Summer of Code</a>. This means that interested students will have the opportunity to spend their summers getting paid to write code on a project of their choice.</p>
+<div class="container"><p>We’re pleased to announce that the Julia Language is taking part in this year’s <a href="https://summerofcode.withgoogle.com">Google Summer of Code</a>. This means that interested students will have the opportunity to spend their summers getting paid to write code on a project of their choice.</p>
 <p>Student applications are open from <strong>March 14th – 25th</strong> on the SoC website, but there’s no reason not to get going right away&#33; To get you started thinking about what you’d like to work on, there are a bunch of interesting projects on our <a href="/soc/ideas-page/">ideas page</a>. At this stage, it’s also a good idea to start getting involved with the community around your area of interest by opening issues, sending PRs and speaking to developers on relevant packages. Finding a good mentor for your project will be a big help for most applications, and showing mentors your enthusiasm is a great way to get them on board. Once you’re ready to start writing an application, check out our <a href="/jsoc/guidelines/">guidelines</a> which gives some hints on what to include.</p>
 <p>To give an idea of the kind of projects we&#39;d like to support:</p>
 <ul>
@@ -159,10 +178,7 @@
 <p>We welcome involvement in our summer frivolities even if you’re not a student. Firstly, if you happen to know any students, please let them know&#33; We’d also like to encourage people to step up as mentors, so if you’re interested then please contact us &#40;see below&#41; and let us know what areas you’d like to help with. Please also feel free to give technical feedback on proposals that come up on our mailing lists.</p>
 <p>The primary point of contact for the community is our mailing list, julia-users@googlegroups.com. For more administrative questions you can also reach out to us privately at juliasoc@googlegroups.com. Feel free to start discussions about projects and ideas, although note that it’s easier for us to answer broad questions about the process than to give specific technical feedback.</p>
 <p>Our participation in previous years has resulted in some great projects, so we’re really looking forward to working with you this year and seeing what you can do. Good luck&#33;</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -67,13 +88,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,9 +138,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="julias_google_season_of_docs_projects"><a href="#julias_google_season_of_docs_projects">Julia&#39;s Google Season of Docs Projects</a></h1>
+<div class="container"><h1 id="julias_google_season_of_docs_projects"><a href="#julias_google_season_of_docs_projects">Julia&#39;s Google Season of Docs Projects</a></h1>
 <p>Below are the projects which have been proposed for Google Season of Docs.</p>
 <h2 id="differential_equations"><a href="#differential_equations">Differential Equations</a></h2>
 <p>DifferentialEquations.jl is a widely used Julia library for solving ordinary, stochastic, delay, any many more types of differential equations. Below are the proposed projects in this area. Technical writers may wish to do a combination of these projects. The mentor for the JuliaDiffEq projects is <a href="https://github.com/ChrisRackauckas">Chris Rackauckas</a>.</p>
@@ -153,10 +172,7 @@
 <h2 id="vs_code_extension"><a href="#vs_code_extension">VS Code extension</a></h2>
 <p>The <a href="https://github.com/JuliaEditorSupport/julia-vscode">Julia VS Code extension</a> currently has hardly any documentation. We are looking for someone to flesh out the docs and the <a href="https://www.julia-vscode.org/">homepage</a> for the extension.</p>
 <h2 id="queryverse"><a href="#queryverse">Queryverse</a></h2>
-<p><a href="https://www.queryverse.org/">Queryverse</a> is a family of packages in the data science space. Many packages have rudimentary documentation but could use updates, polish, proper tutorials etc. We are looking for help with documentation for all packages, and to build out the homepage for the project.
-
-</div>
-<br><br>
+<p><a href="https://www.queryverse.org/">Queryverse</a> is a family of packages in the data science space. Many packages have rudimentary documentation but could use updates, polish, proper tutorials etc. We are looking for help with documentation for all packages, and to build out the homepage for the project.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

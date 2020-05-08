@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -67,13 +88,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -117,17 +138,12 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<h1 id="julia_micro-benchmarks"><a href="#julia_micro-benchmarks">Julia Micro-Benchmarks</a></h1>
+<div class="container"><h1 id="julia_micro-benchmarks"><a href="#julia_micro-benchmarks">Julia Micro-Benchmarks</a></h1>
 <p>These micro-benchmarks, while not comprehensive, do test compiler performance on a range of common code patterns, such as function calls, string parsing, sorting, numerical loops, random number generation, recursion, and array operations.</p>
 <p>It is important to note that the benchmark codes are not written for absolute maximal performance &#40;the fastest code to compute <code>recursion_fibonacci&#40;20&#41;</code> is the constant literal <code>6765</code>&#41;. Instead, the benchmarks are written to test the performance of identical algorithms and code patterns implemented in each language. For example, the Fibonacci benchmarks all use the same &#40;inefficient&#41; doubly-recursive algorithm, and the pi summation benchmarks use the same for-loop. The “algorithm” for matrix multiplication is to call the most obvious built-in/standard random-number and matmul routines &#40;or to directly call BLAS if the language does not provide a high-level matmul&#41;, except where a matmul/BLAS call is not possible &#40;such as in JavaScript&#41;.</p>
 <p><img src="/assets/benchmarks/benchmarks.svg" alt="Benchmark results" /></p>
 <p>The benchmark data shown above were computed with Julia v1.0.0, SciLua v1.0.0-b12, Rust 1.27.0, Go 1.9, Java 1.8.0<em>17, Javascript V8 6.2.414.54, Matlab R2018a, Anaconda Python 3.6.3, R 3.5.0, and Octave 4.2.2. C and Fortran are compiled with gcc 7.3.1, taking the best timing from all optimization levels &#40;-O0 through -O3&#41;. C, Fortran, Go, Julia, Lua, Python, and Octave use <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a> v0.2.20 for matrix operations; Mathematica uses Intel® MKL. The Python implementations of matrix</em>statistics and matrix_multiply use <a href="https://www.numpy.org/">NumPy</a> v1.14.0 and OpenBLAS v0.2.20 functions; the rest are pure Python implementations. Raw benchmark numbers in CSV format are available <a href="/assets/benchmarks/benchmarks.csv">here</a> and the benchmark source code for each language can be found in the perf. files listed <a href="https://github.com/JuliaLang/Microbenchmarks">here</a>. The plot is generated using this <a href="/assets/benchmarks/benchmarks.ipynb">IJulia benchmarks notebook</a>.</p>
-<p>These micro-benchmark results were obtained on a single core &#40;serial execution&#41; on an Intel® Core™ i7-3960X 3.30GHz CPU with 64GB of 1600MHz DDR3 RAM, running openSUSE LEAP 15.0 Linux.
-
-</div>
-<br><br>
+<p>These micro-benchmark results were obtained on a single core &#40;serial execution&#41; on an Intel® Core™ i7-3960X 3.30GHz CPU with 64GB of 1600MHz DDR3 RAM, running openSUSE LEAP 15.0 Linux.</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     

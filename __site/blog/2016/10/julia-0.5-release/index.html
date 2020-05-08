@@ -32,8 +32,29 @@
 		ga('send', 'pageview');
 	}
 </script>
+
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
+<script type="application/javascript">
+	function changeBackgroundSplashImage() {
+		var numberOfImages = 10; /*  must remember indexing is 0-based :) */
+		var firstJan = Math.floor((new Date().setFullYear(new Date().getFullYear(),0,1))/86400000);
+    var today = Math.ceil((new Date().getTime())/86400000);
+    var dayOfYear = today - firstJan;
+
+		/* select a new image every day */
+		imgpath = '../assets/images/backsplash/backsplash-' + (dayOfYear % numberOfImages) + '.png';
+
+
+		/* but for testing, select a new one every second */
+		var s = new Date().getSeconds();
+		imgpath = '../assets/images/backsplash/backsplash-' + (s % numberOfImages) + '.png';
+
+		document.getElementById('main-jumbo').style.backgroundImage = 'url(' + imgpath + ')';
+		return 1;
+	}
+  window.onload=changeBackgroundSplashImage;
+</script>
 
 
 
@@ -71,13 +92,13 @@
 
 <body>
 
-<div class="smalllogo">
-  <a href="/" id="smalllogo">
-  <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
-  </a>
-</div>
 <div class="container py-3 py-lg-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-menu">
+    <div class="smalllogo">
+      <a href="/" id="smalllogo">
+        <img src="/assets/infra/logo.svg" height="55" width="85" alt="JuliaLang Logo"/>
+      </a>
+    </div>
     <button class="navbar-toggler ml-auto hidden-sm-up float-xs-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -133,9 +154,7 @@
 
 
 <!-- Content appended here -->
-
-<div class="container">
-<p>After over a year of development, the Julia community is proud to announce the release of version 0.5 of the Julia language and standard library. This release contains major language refinements and numerous standard library improvements. A long list of changes is available in the <a href="https://github.com/JuliaLang/julia/blob/release-0.5/NEWS.md#julia-v050-release-notes">NEWS log</a> found in our main repository, with a summary reproduced below. A separate blog post detailing some of the <a href="/blog/2016/10/julia-0.5-highlights/">highlights of the new release</a> has also been posted.</p>
+<div class="container"><p>After over a year of development, the Julia community is proud to announce the release of version 0.5 of the Julia language and standard library. This release contains major language refinements and numerous standard library improvements. A long list of changes is available in the <a href="https://github.com/JuliaLang/julia/blob/release-0.5/NEWS.md#julia-v050-release-notes">NEWS log</a> found in our main repository, with a summary reproduced below. A separate blog post detailing some of the <a href="/blog/2016/10/julia-0.5-highlights/">highlights of the new release</a> has also been posted.</p>
 <p>We&#39;ll be releasing regular bugfix backports from the 0.5.x line, which is recommended for users requiring a stable language and API. Major feature work is ongoing on master for 0.6-dev.</p>
 <p>The Julia ecosystem continues to grow, and there are now <a href="https://pkg.julialang.org/pulse.html">over one thousand</a> registered packages&#33; The third annual <a href="https://juliacon.org/">JuliaCon</a> took place in Cambridge, MA in the <a href="/blog/2016/09/juliacon2016/">summer of 2016</a>, with an exciting line up of talks and keynotes. Most of them are <a href="https://www.youtube.com/playlist?list&#61;PLP8iPy9hna6SQPwZUDtAM59-wPzCPyD_S">available to view</a>.</p>
 <p>Binaries are available from the <a href="/downloads/">main download page</a> or visit <a href="https://juliabox.com/">JuliaBox</a> to try this release from the comfort of your browser. Happy Coding&#33;</p>
@@ -162,10 +181,7 @@
 <p>Julia now runs on the ARM and Power architectures, making it possible to use it on the widest variety of hardware, from the smallest embedded machines to the largest HPC systems. Porting a language to a new architecture is never easy, so special thanks to the people who made it possible. Part of the work to create the Power port was supported by IBM, for which we are grateful.</p>
 <h3 id="developing_with_julia"><a href="#developing_with_julia">Developing with Julia</a></h3>
 <p>The Julia debugger, <a href="https://github.com/Keno/Gallium.jl">Gallium</a>, is now ready to use. It allows for a full, multi language debug experience, debugging Julia and C code with ease. The debugger is also integrated with <a href="https://junolab.org">Juno</a>, the Julia IDE that is now fully featured and ready to use.</p>
-
-
-</div>
-<br><br>
+</div><br><br>
 
 <!-- CONTENT ENDS HERE -->
     
