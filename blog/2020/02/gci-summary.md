@@ -2,6 +2,7 @@
 @def published = "10 February 2020"
 @def title = "Google's Code-In Contest Wrap up"
 @def rss_pubdate = Date(2020, 2, 10)
+
 @def rss = """Over the last couple of months, 212 young people have completed over 690 tasks using Julia as part of the Google Code-In program. You may have seen PR’s to your projects or blog posts around the internet. With this being the first year that we’ve participated in the program,..."""
 
 Over the last couple of months, 212 young people have completed over [690 tasks using Julia](https://codein.withgoogle.com/tasks/?sp-organization=6302639764013056) as part of the Google Code-In program. You may have seen PR’s to your projects or blog posts around the internet.
